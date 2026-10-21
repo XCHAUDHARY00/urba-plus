@@ -2,19 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sendIssueStatusEmailNotification, EmailNotificationPayload } from '@/lib/emailService';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, getDocs, query, where, orderBy, limit as firestoreLimit } from 'firebase/firestore';
-import { initializeApp, getApps, getApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import defaultConfig from '../../../../firebase-applet-config.json';
+import { getAdminDb } from '@/lib/firebaseAdmin';
 
 export const dynamic = 'force-dynamic';
-
-function getAdminDb() {
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || defaultConfig.projectId;
-  const databaseId = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_ID || defaultConfig.firestoreDatabaseId;
-
-  const adminApp = !getApps().length ? initializeApp({ projectId }) : getApp();
-  return getFirestore(adminApp, databaseId);
-}
 
 // POST: Trigger email notification to citizen
 export async function POST(req: NextRequest) {
@@ -84,8 +74,10 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({
-      success: true,
-      message: `Notification email dispatched to citizen (${recipientEmail})`,
+      success: result.success,
+      message: result.success
+        ? `Notification email dispatched to citizen (${recipientEmail})`
+        : `Email delivery failed: ${result.error}`,
       notification: result,
     });
   } catch (error: any) {
@@ -103,55 +95,60 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const recipientEmail = searchParams.get('recipientEmail');
     const ticketId = searchParams.get('ticketId');
-    const limitCount = parseInt(searchParams.get('limit') || '50', 10);
+    const limitCount = Math.min(parseInt(searchParams.get('limit') || '50', 10), 200);
 
     let notifications: any[] = [];
 
     try {
-      let q = collection(db, 'emailNotifications');
-      const snapshot = await getDocs(q);
-      notifications = snapshot.docs.map((d) => ({
-        id: d.id,
-        ...d.data(),
-      }));
+      // Build a targeted Firestore query — avoid full collection scan
+      const ref = collection(db, 'emailNotifications');
+      const constraints: any[] = [];
+
+      if (recipientEmail) {
+        constraints.push(where('recipientEmail', '==', recipientEmail.toLowerCase().trim()));
+      } else if (ticketId) {
+        constraints.push(where('ticketId', '==', ticketId.trim()));
+      }
+
+      constraints.push(orderBy('sentAt', 'desc'));
+      constraints.push(firestoreLimit(limitCount));
+
+      const snapshot = await getDocs(query(ref, ...constraints));
+      notifications = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+
+      // Apply secondary filter if both params provided
+      if (recipientEmail && ticketId) {
+        const tidLower = ticketId.trim().toLowerCase();
+        notifications = notifications.filter(
+          (n) => (n.ticketId || '').toLowerCase() === tidLower
+        );
+      }
     } catch (clientErr) {
-      console.warn('Client DB fetch notifications offline, trying admin DB:', clientErr);
+      // Firestore index not yet built or offline — fall back to admin SDK with same filters
+      console.warn('[Notifications GET] Client SDK query failed, trying admin SDK:', (clientErr as any)?.message);
       try {
         const adminDb = getAdminDb();
-        const snap = await adminDb.collection('emailNotifications').get();
-        notifications = snap.docs.map((d) => ({
-          id: d.id,
-          ...d.data(),
-        }));
+        let adminQ = adminDb.collection('emailNotifications') as any;
+
+        if (recipientEmail) {
+          adminQ = adminQ.where('recipientEmail', '==', recipientEmail.toLowerCase().trim());
+        } else if (ticketId) {
+          adminQ = adminQ.where('ticketId', '==', ticketId.trim());
+        }
+
+        adminQ = adminQ.orderBy('sentAt', 'desc').limit(limitCount);
+        const snap = await adminQ.get();
+        notifications = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
+
+        if (recipientEmail && ticketId) {
+          const tidLower = ticketId.trim().toLowerCase();
+          notifications = notifications.filter(
+            (n) => (n.ticketId || '').toLowerCase() === tidLower
+          );
+        }
       } catch (adminErr) {
-        console.error('Admin DB fetch error:', adminErr);
+        console.error('[Notifications GET] Admin SDK also failed:', adminErr);
       }
-    }
-
-    // Filter in-memory
-    if (recipientEmail) {
-      const emailLower = recipientEmail.toLowerCase().trim();
-      notifications = notifications.filter(
-        (n) => (n.recipientEmail || '').toLowerCase().trim() === emailLower
-      );
-    }
-
-    if (ticketId) {
-      const ticketLower = ticketId.toLowerCase().trim();
-      notifications = notifications.filter(
-        (n) => (n.ticketId || '').toLowerCase().trim() === ticketLower
-      );
-    }
-
-    // Sort descending by sentAt
-    notifications.sort((a, b) => {
-      const timeA = new Date(a.sentAt || 0).getTime();
-      const timeB = new Date(b.sentAt || 0).getTime();
-      return timeB - timeA;
-    });
-
-    if (limitCount > 0) {
-      notifications = notifications.slice(0, limitCount);
     }
 
     return NextResponse.json({

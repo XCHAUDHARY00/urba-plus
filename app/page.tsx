@@ -19,34 +19,14 @@ import { SAMPLE_ACCOUNTS, SampleAccount } from '@/lib/sampleAccounts';
 import CivicLogo from '@/components/CivicLogo';
 import {
   Building2,
-  Shield,
   User,
   Loader2,
   LogOut,
   ArrowRight,
-  Mail,
-  Lock,
-  UserPlus,
-  LogIn,
   Key,
-  ShieldCheck,
-  Check,
-  Trophy,
-  Sparkles,
-  Camera,
-  MapPin,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize2,
-  Minimize2,
   X,
-  Video,
-  Settings,
   ChevronRight,
-  Flame,
-  Radio,
+  Play,
 } from 'lucide-react';
 
 export default function UrbaPlusLandingPage() {
@@ -65,26 +45,8 @@ export default function UrbaPlusLandingPage() {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState('');
 
-  // Full-Screen Video State
-  const [videoUrl, setVideoUrl] = useState<string>(
-    // Default high-quality modern smart city / municipal infrastructure video
-    'https://assets.mixkit.co/videos/preview/mixkit-futuristic-city-traffic-at-night-42861-large.mp4'
-  );
-  const [customUrlInput, setCustomUrlInput] = useState('');
-  const [showVideoSettings, setShowVideoSettings] = useState(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [activeStepTab, setActiveStepTab] = useState<number>(1);
-  const [videoFailed, setVideoFailed] = useState(false);
-
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const pageContainerRef = useRef<HTMLDivElement>(null);
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const isSigningInRef = useRef(false);
-
-  // Web Audio ambient civic synthesizer for optional music
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const musicIntervalRef = useRef<any>(null);
 
   const redirectByRole = useCallback(
     (userRole: string) => {
@@ -142,94 +104,6 @@ export default function UrbaPlusLandingPage() {
 
     return () => unsubscribe();
   }, []);
-
-  // Ambient civic music synthesizer
-  const toggleAmbientMusic = () => {
-    if (!isMuted) {
-      if (audioCtxRef.current) audioCtxRef.current.suspend();
-      if (musicIntervalRef.current) clearInterval(musicIntervalRef.current);
-      setIsMuted(true);
-    } else {
-      try {
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-        if (!audioCtxRef.current) audioCtxRef.current = new AudioContextClass();
-        if (audioCtxRef.current.state === 'suspended') audioCtxRef.current.resume();
-
-        const ctx = audioCtxRef.current;
-        const playChime = (freq: number, duration: number, gainVal = 0.05) => {
-          try {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, ctx.currentTime);
-            gain.gain.setValueAtTime(0, ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + duration);
-          } catch {
-            // ignore
-          }
-        };
-
-        const chords = [
-          [261.63, 329.63, 392.0, 523.25], // C Major
-          [349.23, 440.0, 523.25, 659.25], // F Major
-          [392.0, 493.88, 587.33, 698.46], // G Major
-          [220.0, 261.63, 329.63, 440.0],  // A Minor
-        ];
-        let idx = 0;
-        const playProgression = () => {
-          const chord = chords[idx % chords.length];
-          idx++;
-          chord.forEach((f, i) => {
-            setTimeout(() => playChime(f, 3.2, 0.04), i * 160);
-          });
-        };
-        playProgression();
-        if (musicIntervalRef.current) clearInterval(musicIntervalRef.current);
-        musicIntervalRef.current = setInterval(playProgression, 3600);
-
-        setIsMuted(false);
-      } catch (e) {
-        console.warn('Audio error:', e);
-      }
-    }
-  };
-
-  // Video play/pause
-  const toggleVideoPlayback = () => {
-    if (videoRef.current) {
-      if (isVideoPlaying) {
-        videoRef.current.pause();
-        setIsVideoPlaying(false);
-      } else {
-        videoRef.current.play().catch(() => {});
-        setIsVideoPlaying(true);
-      }
-    }
-  };
-
-  // Fullscreen toggle
-  const toggleFullscreenMode = () => {
-    if (!isFullscreen) {
-      if (pageContainerRef.current) {
-        if (pageContainerRef.current.requestFullscreen) {
-          pageContainerRef.current.requestFullscreen().catch(() => setIsFullscreen(true));
-        } else {
-          setIsFullscreen(true);
-        }
-      }
-      setIsFullscreen(true);
-    } else {
-      if (document.fullscreenElement && document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {});
-      }
-      setIsFullscreen(false);
-    }
-  };
 
   // 1-Click Quick Demo Login (for Hackathon Judges)
   const handleQuickDemoLogin = async (acc: SampleAccount) => {
@@ -478,353 +352,364 @@ export default function UrbaPlusLandingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      <div className="min-h-screen bg-[#f9f8f6] flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
       </div>
     );
   }
 
   return (
-    <div
-      ref={pageContainerRef}
-      className="relative min-h-screen w-full bg-slate-950 text-white font-sans overflow-hidden select-none"
-    >
-      {/* 1. FULL PAGE VIDEO BACKGROUND LAYER */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {!videoFailed ? (
-          <video
-            ref={videoRef}
-            src={videoUrl}
-            autoPlay
-            loop
-            muted={isMuted}
-            playsInline
-            onError={() => setVideoFailed(true)}
-            className="w-full h-full object-cover scale-105 filter brightness-[0.75] contrast-[1.08] transition-all duration-700"
-          />
-        ) : (
-          /* High-Tech Animated Municipal Grid Fallback */
-          <div className="w-full h-full bg-radial from-blue-950/70 via-slate-950 to-black relative">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+    <div className="min-h-screen bg-[#f9f8f6] text-slate-900 font-sans flex flex-col">
+
+      {/* ── HEADER ── */}
+      <header className="w-full border-b border-slate-200 bg-[#f9f8f6]/90 backdrop-blur-sm sticky top-0 z-30">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <CivicLogo size="md" appName="UrbaPlus" theme="light" />
+
+          <div className="flex items-center gap-2.5">
+            {currentUser ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => redirectByRole(existingRole || 'citizen')}
+                  className="px-4 py-2 bg-slate-900 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  Go to dashboard
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await signOut(auth);
+                    setCurrentUser(null);
+                    setExistingRole(null);
+                    if (typeof window !== 'undefined') {
+                      localStorage.removeItem('user_role');
+                      localStorage.removeItem('user_email');
+                      localStorage.removeItem('user_uid');
+                    }
+                  }}
+                  className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-500 transition-colors cursor-pointer"
+                  title="Sign out"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => { setAuthMode('signin'); setAuthError(''); setAuthModalOpen(true); }}
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  Sign in
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setAuthMode('signup'); setAuthError(''); setAuthModalOpen(true); }}
+                  className="px-4 py-2 text-xs font-semibold bg-slate-900 hover:bg-slate-700 text-white rounded-lg transition-colors cursor-pointer"
+                >
+                  Get started
+                </button>
+              </>
+            )}
           </div>
-        )}
-
-        {/* Sophisticated Dark Vignette Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-slate-950/80 pointer-events-none" />
-        <div className="absolute inset-0 bg-radial from-transparent via-slate-950/30 to-slate-950/85 pointer-events-none" />
-      </div>
-
-      {/* 2. MINIMALIST TOP BAR: ONLY APP LOGO (LEFT) & EXACTLY 2 BUTTONS (RIGHT) */}
-      <header className="relative z-30 max-w-7xl mx-auto px-6 sm:px-8 h-20 flex items-center justify-between">
-        {/* Left: Clean Brand Logo */}
-        <div className="flex items-center gap-3">
-          <CivicLogo size="md" appName="UrbaPlus" theme="dark" />
         </div>
+      </header>
 
-        {/* Right: Exactly 2 Buttons */}
-        <div className="flex items-center gap-3">
-          {currentUser ? (
-            <div className="flex items-center gap-2.5">
+      {/* ── HERO ── */}
+      <main className="flex-1 max-w-6xl mx-auto px-6 w-full">
+
+        {/* Hero section */}
+        <section className="pt-20 pb-16 sm:pt-28 sm:pb-20">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500 tracking-wide uppercase mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+              IBM Smarter Cities · AI Municipal Platform
+            </span>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.1] text-slate-900 mb-5">
+              Civic infrastructure,<br />
+              <span className="text-slate-400">fixed intelligently.</span>
+            </h1>
+
+            <p className="text-base text-slate-500 leading-relaxed mb-8 max-w-xl">
+              UrbaPlus lets citizens report defects with a photo. Gemini AI classifies damage, merges duplicate tickets, dispatches officers, and verifies repairs — closing the loop automatically.
+            </p>
+
+            <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => redirectByRole(existingRole || 'citizen')}
-                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-blue-600/30 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                onClick={() => { setAuthMode('signup'); setAuthError(''); setAuthModalOpen(true); }}
+                className="px-5 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
               >
-                <span>Enter {(existingRole || 'citizen').toUpperCase()} Portal</span>
+                Get started free
                 <ArrowRight className="w-4 h-4" />
               </button>
               <button
                 type="button"
-                onClick={async () => {
-                  await signOut(auth);
-                  setCurrentUser(null);
-                  setExistingRole(null);
-                  if (typeof window !== 'undefined') {
-                    localStorage.removeItem('user_role');
-                    localStorage.removeItem('user_email');
-                    localStorage.removeItem('user_uid');
-                  }
-                }}
-                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 border border-white/10 transition-colors"
-                title="Sign Out"
+                onClick={() => { setAuthMode('signin'); setAuthError(''); setAuthModalOpen(true); }}
+                className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
               >
-                <LogOut className="w-4 h-4" />
+                Sign in
               </button>
             </div>
-          ) : (
-            <>
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthMode('signin');
-                  setAuthError('');
-                  setAuthModalOpen(true);
-                }}
-                className="px-4 sm:px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white text-xs font-bold border border-white/15 transition-all cursor-pointer hover:scale-105 active:scale-95"
-              >
-                Sign In
-              </button>
+          </div>
+        </section>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthMode('signup');
-                  setAuthError('');
-                  setAuthModalOpen(true);
-                }}
-                className="px-4 sm:px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold shadow-lg shadow-blue-600/30 transition-all cursor-pointer hover:scale-105 active:scale-95"
-              >
-                Create Account
-              </button>
-            </>
-          )}
-        </div>
-      </header>
+        {/* Divider */}
+        <div className="border-t border-slate-200" />
 
-      {/* 3. HERO CONTENT OVERLAY ON FULL-PAGE VIDEO */}
-      <main className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 flex-1 flex flex-col justify-center py-10">
-        <div className="max-w-3xl space-y-6">
-          {/* IBM Smart Cities Project Pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 backdrop-blur-md border border-blue-400/40 text-blue-300 text-xs font-mono font-bold tracking-wide">
-            <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
-            <span>UrbaPlus · AI Municipal Redressal & Verification Engine</span>
+        {/* Demo video */}
+        <section className="py-14">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+            <div>
+              <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-1.5">See it in action</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Watch the app demo</h2>
+            </div>
+            <p className="text-xs text-slate-500 max-w-xs text-right hidden sm:block">
+              Full walkthrough — report, classify, dispatch, verify.
+            </p>
           </div>
 
-          {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
-            Smarter Urban Infrastructure with{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400">
-              AI Vision & Citizen Consensus
-            </span>
-          </h1>
-
-          {/* Description */}
-          <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-            UrbaPlus automates civic grievance redressal for smart cities. Citizens photograph civic defects with instant GPS geotagging. Gemini AI detects damage severity, merges duplicate ward tickets, dispatches municipal officers, and mathematically verifies concrete repairs through video inspection.
-          </p>
-
-          {/* How It Works 4-Step Interactive Horizontal Scrubber */}
-          <div className="pt-2 space-y-3">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold block">
-              How UrbaPlus Operates:
-            </span>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              {[
-                { step: 1, title: 'AI Capture', desc: 'GPS Geotag & Defect Detection' },
-                { step: 2, title: 'Deduplication', desc: 'Spatial Proximity Radar' },
-                { step: 3, title: 'Video Audit', desc: 'AI Repair Frame Inspection' },
-                { step: 4, title: 'Consensus', desc: 'Citizen Karma & Badges' },
-              ].map((item) => (
+          {/* Video container */}
+          <div className="relative w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 shadow-sm"
+               style={{ aspectRatio: '16/9' }}>
+            {!videoPlaying ? (
+              /* Thumbnail + play button overlay */
+              <>
+                <img
+                  src="https://img.youtube.com/vi/mTynBqld2T8/maxresdefault.jpg"
+                  alt="UrbaPlus app demo thumbnail"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      'https://img.youtube.com/vi/mTynBqld2T8/hqdefault.jpg';
+                  }}
+                />
+                {/* Dark overlay */}
+                <div className="absolute inset-0 bg-slate-900/30" />
+                {/* Play button */}
                 <button
-                  key={item.step}
                   type="button"
-                  onClick={() => setActiveStepTab(item.step)}
-                  className={`p-3 rounded-2xl border text-left transition-all backdrop-blur-md cursor-pointer ${
-                    activeStepTab === item.step
-                      ? 'bg-blue-600/30 border-blue-400 text-white shadow-lg shadow-blue-500/10 ring-1 ring-blue-400/50'
-                      : 'bg-black/40 hover:bg-black/60 border-white/10 text-slate-300'
-                  }`}
+                  onClick={() => setVideoPlaying(true)}
+                  className="absolute inset-0 flex items-center justify-center group cursor-pointer"
+                  aria-label="Play demo video"
                 >
-                  <span className="font-mono text-[10px] text-blue-400 font-bold block">
-                    0{item.step}
-                  </span>
-                  <span className="font-bold text-xs block text-white mt-0.5">{item.title}</span>
-                  <span className="text-[10px] text-slate-400 leading-tight block mt-0.5">{item.desc}</span>
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/95 flex items-center justify-center shadow-xl group-hover:scale-105 transition-transform duration-200">
+                    <Play className="w-7 h-7 sm:w-8 sm:h-8 text-slate-900 fill-slate-900 ml-1" />
+                  </div>
                 </button>
-              ))}
-            </div>
+                {/* Label */}
+                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+                  <span className="text-white text-xs font-semibold bg-slate-900/60 px-2.5 py-1 rounded-md backdrop-blur-sm">
+                    UrbaPlus · Full App Demo
+                  </span>
+                  <span className="text-white/70 text-[10px] bg-slate-900/50 px-2 py-1 rounded backdrop-blur-sm font-mono">
+                    youtube.com
+                  </span>
+                </div>
+              </>
+            ) : (
+              /* Embedded YouTube player — autoplay, no redirect */
+              <iframe
+                src="https://www.youtube.com/embed/mTynBqld2T8?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+                title="UrbaPlus App Demo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            )}
           </div>
-        </div>
+
+          {/* Caption row */}
+          <div className="flex flex-wrap items-center gap-4 mt-4">
+            {[
+              'AI photo analysis',
+              'GPS geotagging',
+              'Duplicate detection',
+              'Resolution verification',
+              'Citizen notifications',
+            ].map((tag) => (
+              <span key={tag} className="text-[11px] text-slate-500 flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-slate-300 inline-block" />
+                {tag}
+              </span>
+            ))}
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="border-t border-slate-200" />
+
+        {/* How it works */}
+        <section className="py-14">
+          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-8">How it works</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-slate-200 rounded-xl overflow-hidden border border-slate-200">
+            {[
+              { n: '01', title: 'Capture & tag', desc: 'Citizen photos a defect. GPS coordinates are locked automatically.' },
+              { n: '02', title: 'AI classification', desc: 'Gemini AI identifies issue type, severity, and responsible department.' },
+              { n: '03', title: 'Deduplication', desc: 'Spatial radar merges overlapping ward tickets into one tracked case.' },
+              { n: '04', title: 'Verify & close', desc: 'Repair video is inspected frame-by-frame. Ticket closes only when verified.' },
+            ].map((item) => (
+              <div key={item.n} className="bg-[#f9f8f6] p-6 sm:p-7">
+                <span className="text-[11px] font-mono font-bold text-slate-300 block mb-3">{item.n}</span>
+                <span className="text-sm font-semibold text-slate-800 block mb-1.5">{item.title}</span>
+                <span className="text-xs text-slate-500 leading-relaxed">{item.desc}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="border-t border-slate-200" />
+
+        {/* Portal cards */}
+        <section className="py-14">
+          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-8">Portals</p>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              {
+                role: 'citizen',
+                label: 'Citizen',
+                desc: 'Report issues, track progress, and verify resolutions in your ward.',
+                accent: 'bg-blue-50 border-blue-100 text-blue-700',
+                dot: 'bg-blue-400',
+              },
+              {
+                role: 'authority',
+                label: 'Authority',
+                desc: 'Manage incoming tickets, dispatch field crews, and submit resolution proofs.',
+                accent: 'bg-emerald-50 border-emerald-100 text-emerald-700',
+                dot: 'bg-emerald-400',
+              },
+              {
+                role: 'admin',
+                label: 'Admin',
+                desc: 'Full oversight — analytics, audit logs, and system configuration.',
+                accent: 'bg-violet-50 border-violet-100 text-violet-700',
+                dot: 'bg-violet-400',
+              },
+            ].map((p) => (
+              <button
+                key={p.role}
+                type="button"
+                onClick={() => { setAuthMode('signin'); setAuthError(''); setAuthModalOpen(true); }}
+                className="group text-left p-6 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer"
+              >
+                <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border mb-4 ${p.accent}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${p.dot}`} />
+                  {p.label}
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed mb-4">{p.desc}</p>
+                <span className="text-xs font-semibold text-slate-900 flex items-center gap-1 group-hover:gap-2 transition-all">
+                  Enter portal <ChevronRight className="w-3.5 h-3.5" />
+                </span>
+              </button>
+            ))}
+          </div>
+        </section>
       </main>
 
-      {/* 4. BOTTOM FLOATING VIDEO CONTROLS DOCK */}
-      <footer className="relative z-30 max-w-7xl mx-auto px-6 sm:px-8 pb-6 w-full flex flex-wrap items-center justify-between gap-4">
-        {/* Video Playback & Audio Controls */}
-        <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md p-1.5 rounded-2xl border border-white/15">
-          <button
-            type="button"
-            onClick={toggleVideoPlayback}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
-            title={isVideoPlaying ? 'Pause Background Video' : 'Play Background Video'}
-          >
-            {isVideoPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-white" />}
-            <span className="text-[11px] pr-1">{isVideoPlaying ? 'Pause Video' : 'Play Video'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={toggleAmbientMusic}
-            className={`p-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-              !isMuted ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm' : 'bg-white/10 hover:bg-white/20 text-slate-300'
-            }`}
-            title="Toggle Ambient Civic Soundtrack"
-          >
-            {!isMuted ? <Volume2 className="w-3.5 h-3.5 animate-bounce" /> : <VolumeX className="w-3.5 h-3.5" />}
-            <span className="text-[11px] pr-1">{!isMuted ? 'Music: On' : 'Play Music'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={toggleFullscreenMode}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
-            title="Toggle Fullscreen"
-          >
-            {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-          </button>
-
-          {/* Video URL Settings Button */}
-          <button
-            type="button"
-            onClick={() => setShowVideoSettings(!showVideoSettings)}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-all cursor-pointer"
-            title="Replace Video URL / File"
-          >
-            <Settings className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        {/* Video Switcher Popup when user wants to paste their own video */}
-        {showVideoSettings && (
-          <div className="bg-slate-900/95 backdrop-blur-md p-4 rounded-2xl border border-white/20 shadow-2xl flex items-center gap-2 text-xs animate-in fade-in">
-            <input
-              type="text"
-              value={customUrlInput}
-              onChange={(e) => setCustomUrlInput(e.target.value)}
-              placeholder="Paste your video URL (.mp4 / link)..."
-              className="bg-black/60 border border-white/20 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 w-64"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                if (customUrlInput.trim()) {
-                  setVideoUrl(customUrlInput.trim());
-                  setVideoFailed(false);
-                  setShowVideoSettings(false);
-                }
-              }}
-              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs"
-            >
-              Apply Video
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowVideoSettings(false)}
-              className="p-1.5 text-slate-400 hover:text-white"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-
-        <div className="flex items-center gap-3">
+      {/* ── FOOTER ── */}
+      <footer className="border-t border-slate-200 bg-[#f9f8f6]">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+          <span>UrbaPlus · IBM Smarter Cities Hackathon</span>
           <Link
             href="/presentation"
-            className="text-[11px] font-mono font-semibold text-blue-300 hover:text-white bg-blue-950/70 hover:bg-blue-900/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-blue-500/40 flex items-center gap-1.5 transition-all shadow-sm"
+            className="hover:text-slate-700 transition-colors underline underline-offset-2"
           >
-            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-            <span>Hackathon PPT Pitch Deck</span>
+            Pitch deck →
           </Link>
-          <div className="text-[11px] font-mono text-slate-400 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 hidden sm:block">
-            IBM Smarter Cities Hackathon Submission &bull; UrbaPlus
-          </div>
         </div>
       </footer>
 
-      {/* 5. ULTRA-CLEAN POPUP AUTH MODAL (FOR SIGN IN & CREATE ACCOUNT) */}
+      {/* ── AUTH MODAL ── */}
       {authModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
-          <div className="bg-[#0e1424] border border-white/15 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative text-white my-8">
-            {/* Close Button */}
+        <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-xl relative my-8">
+
+            {/* Close */}
             <button
               type="button"
               onClick={() => setAuthModalOpen(false)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
 
-            {/* Modal Brand Header */}
-            <div className="text-center mb-6 space-y-1">
-              <CivicLogo size="md" appName="UrbaPlus" theme="dark" className="justify-center mb-2" />
-              <h2 className="text-xl font-black text-white tracking-tight">
-                {authMode === 'signin' ? 'Sign In to UrbaPlus' : 'Create Your Account'}
+            {/* Header */}
+            <div className="mb-6">
+              <CivicLogo size="sm" appName="UrbaPlus" theme="light" className="mb-3" />
+              <h2 className="text-lg font-bold text-slate-900">
+                {authMode === 'signin' ? 'Welcome back' : 'Create your account'}
               </h2>
-              <p className="text-xs text-slate-400">
-                {authMode === 'signin'
-                  ? 'Access your municipal or citizen dashboard'
-                  : 'Join your ward community in decentralized governance'}
+              <p className="text-xs text-slate-500 mt-0.5">
+                {authMode === 'signin' ? 'Sign in to your dashboard' : 'Join your ward community'}
               </p>
             </div>
 
-            {/* Mode Switcher Tabs */}
-            <div className="flex bg-white/5 p-1 rounded-xl border border-white/10 mb-5">
+            {/* Tabs */}
+            <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 mb-5">
               <button
                 type="button"
-                onClick={() => {
-                  setAuthMode('signin');
-                  setAuthError('');
-                }}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  authMode === 'signin' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                onClick={() => { setAuthMode('signin'); setAuthError(''); }}
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                  authMode === 'signin' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
-                Sign In
+                Sign in
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  setAuthMode('signup');
-                  setAuthError('');
-                }}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  authMode === 'signup' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                onClick={() => { setAuthMode('signup'); setAuthError(''); }}
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                  authMode === 'signup' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
-                Create Account
+                Create account
               </button>
             </div>
 
-            {/* Traditional Email & Password Form */}
-            <form onSubmit={handleAuthSubmit} className="space-y-3.5">
+            {/* Form */}
+            <form onSubmit={handleAuthSubmit} className="space-y-3">
               {authMode === 'signup' && (
                 <>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">Full name</label>
                     <input
                       type="text"
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="e.g. Aarav Mehta"
-                      className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      placeholder="Aarav Mehta"
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300 bg-white"
                     />
                   </div>
-
                   <div>
-                    <label className="block text-[11px] font-semibold text-slate-300 mb-1.5">Select Role</label>
+                    <label className="block text-xs font-medium text-slate-700 mb-1.5">Role</label>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => setSignupRole('citizen')}
-                        className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        className={`py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                           signupRole === 'citizen'
-                            ? 'border-blue-500 bg-blue-500/20 text-blue-300 font-bold'
-                            : 'border-white/10 bg-white/5 text-slate-400 hover:text-white'
+                            ? 'border-slate-900 bg-slate-900 text-white'
+                            : 'border-slate-200 text-slate-600 hover:border-slate-300'
                         }`}
                       >
-                        <User className="w-3.5 h-3.5 text-blue-400" /> Citizen
+                        <User className="w-3.5 h-3.5" /> Citizen
                       </button>
                       <button
                         type="button"
                         onClick={() => setSignupRole('authority')}
-                        className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        className={`py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                           signupRole === 'authority'
-                            ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold'
-                            : 'border-white/10 bg-white/5 text-slate-400 hover:text-white'
+                            ? 'border-slate-900 bg-slate-900 text-white'
+                            : 'border-slate-200 text-slate-600 hover:border-slate-300'
                         }`}
                       >
-                        <Building2 className="w-3.5 h-3.5 text-emerald-400" /> Authority
+                        <Building2 className="w-3.5 h-3.5" /> Authority
                       </button>
                     </div>
                   </div>
@@ -832,117 +717,91 @@ export default function UrbaPlusLandingPage() {
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Email</label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="user@example.com"
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  placeholder="you@example.com"
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300 bg-white"
                 />
               </div>
-
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Password</label>
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300 bg-white"
                 />
               </div>
 
               {authError && (
-                <div className="text-xs text-rose-300 bg-rose-500/10 border border-rose-500/30 p-2.5 rounded-xl font-medium">
+                <p className="text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-2 rounded-lg">
                   {authError}
-                </div>
+                </p>
               )}
 
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+                className="w-full py-2.5 bg-slate-900 hover:bg-slate-700 text-white font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 mt-1"
               >
                 {authLoading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <>
-                    <span>{authMode === 'signin' ? 'Sign In & Enter' : `Register as ${signupRole}`}</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span>{authMode === 'signin' ? 'Sign in' : `Create account`}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </>
                 )}
               </button>
             </form>
 
-            <div className="relative flex items-center justify-center my-4">
-              <div className="border-t border-white/10 w-full" />
-              <span className="bg-[#0e1424] px-2.5 text-[10px] font-mono text-slate-500 uppercase">Or</span>
+            {/* Divider */}
+            <div className="relative flex items-center my-4">
+              <div className="flex-1 border-t border-slate-200" />
+              <span className="px-3 text-[10px] text-slate-400 uppercase tracking-wide">or</span>
+              <div className="flex-1 border-t border-slate-200" />
             </div>
 
-            {/* Google OAuth Button */}
+            {/* Google */}
             <button
               type="button"
               onClick={handleGoogleAuth}
               disabled={authLoading}
-              className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+              className="w-full border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-xs py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  fill="#4285F4"
-                />
-                <path
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  fill="#34A853"
-                />
-                <path
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  fill="#FBBC05"
-                />
-                <path
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  fill="#EA4335"
-                />
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
-              <span>Continue with Google</span>
+              Continue with Google
             </button>
 
-            {/* 1-Click Role Logins for Hackathon Evaluators */}
-            <div className="mt-5 pt-4 border-t border-white/10">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
-                  <Key className="w-3.5 h-3.5 text-amber-400" />
-                  <span>1-Click Hackathon Evaluator Logins:</span>
-                </span>
-              </div>
-
+            {/* Quick demo logins */}
+            <div className="mt-5 pt-4 border-t border-slate-100">
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-1 mb-2.5">
+                <Key className="w-3 h-3" /> Demo logins
+              </p>
               <div className="grid grid-cols-3 gap-2">
-                {SAMPLE_ACCOUNTS.map((acc) => {
-                  const isCitizen = acc.role === 'citizen';
-                  const isAuthority = acc.role === 'authority';
-
-                  return (
-                    <button
-                      key={acc.role}
-                      type="button"
-                      disabled={authLoading}
-                      onClick={() => handleQuickDemoLogin(acc)}
-                      className={`p-2 rounded-xl border text-center transition-all cursor-pointer bg-white/5 ${
-                        isCitizen
-                          ? 'border-blue-500/30 hover:border-blue-400 hover:bg-blue-500/10 text-blue-300'
-                          : isAuthority
-                          ? 'border-emerald-500/30 hover:border-emerald-400 hover:bg-emerald-500/10 text-emerald-300'
-                          : 'border-purple-500/30 hover:border-purple-400 hover:bg-purple-500/10 text-purple-300'
-                      }`}
-                    >
-                      <span className="block text-xs font-bold capitalize">{acc.role}</span>
-                      <span className="block text-[9px] text-slate-400 truncate mt-0.5">{acc.name.split(' ')[0]}</span>
-                    </button>
-                  );
-                })}
+                {SAMPLE_ACCOUNTS.map((acc) => (
+                  <button
+                    key={acc.role}
+                    type="button"
+                    disabled={authLoading}
+                    onClick={() => handleQuickDemoLogin(acc)}
+                    className="p-2 rounded-lg border border-slate-200 hover:border-slate-400 hover:bg-slate-50 text-center transition-all cursor-pointer"
+                  >
+                    <span className="block text-xs font-semibold text-slate-800 capitalize">{acc.role}</span>
+                    <span className="block text-[9px] text-slate-400 truncate mt-0.5">{acc.name.split(' ')[0]}</span>
+                  </button>
+                ))}
               </div>
             </div>
           </div>

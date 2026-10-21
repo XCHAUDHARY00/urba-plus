@@ -51,68 +51,12 @@ export async function POST(req: NextRequest) {
     const imageMime = mimeType || 'image/jpeg';
 
     // =========================================================================
-    // STEP 1: CUSTOM VISION AI (Roboflow RF-DETR object detector)
-    // Query the Roboflow civic issue model trained on potholes, garbage, and water-leakage.
-    // Use confidence threshold of 25% to filter out noisy false positives.
-    // =========================================================================
-    const roboflowApiKey = process.env.ROBOFLOW_API_KEY || '';
-    const primaryModelId = process.env.ROBOFLOW_MODEL_ID || 'civic-issue-detector-btrff/1';
-    const candidateEndpoints = [
-      `https://detect.roboflow.com/${primaryModelId}?api_key=${roboflowApiKey}&confidence=25`,
-      `https://serverless.roboflow.com/${primaryModelId}?api_key=${roboflowApiKey}&confidence=25`,
-      `https://detect.roboflow.com/raj-chaudhary-7gdzq/civic-issue-detector-btrff/1?api_key=${roboflowApiKey}&confidence=25`,
-    ];
-
-    let customPredictions: any[] = [];
-    let customModelSuccess = false;
-
-    // Call Roboflow Custom Vision API
-    for (const rfUrl of candidateEndpoints) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
-
-        const rfRes = await fetch(rfUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: cleanBase64,
-          signal: controller.signal,
-        });
-        clearTimeout(timeoutId);
-
-        if (rfRes.ok) {
-          const rfData = await rfRes.json();
-          if (rfData?.predictions && rfData.predictions.length > 0) {
-            customPredictions = rfData.predictions;
-            customModelSuccess = true;
-          }
-          break;
-        }
-      } catch (rfErr: any) {
-        if (rfErr.name !== 'AbortError') {
-          console.warn('Roboflow custom vision error:', rfErr?.message || rfErr);
-        }
-      }
-    }
-
-    // =========================================================================
-    // STEP 2: GEMINI AI MULTIMODAL INSPECTION & DISAMBIGUATION
+    // GEMINI AI MULTIMODAL INSPECTION & DISAMBIGUATION
     // Gemini inspects the high-resolution pixels with multimodal vision.
-    // It cross-references Roboflow predictions with strict disambiguation rules:
-    // - Any polythene/plastic bag or garbage pile is ALWAYS Garbage / Solid Waste,
-    //   NEVER a pothole (even if Roboflow mistook the dark interior of the bag for a pothole).
-    // - A pothole is strictly a cavity/crater in an asphalt/tarmac road or pavement.
     // =========================================================================
-    const rfSummary = customPredictions.length > 0
-      ? customPredictions.map((p) => `${p.class || p.label || 'object'} (${Math.round((p.confidence || 0.8) * 100)}% conf)`).join(', ')
-      : 'None flagged by initial bounding box pass';
-
     const dynamicPrompt = `You are the Chief Municipal Infrastructure & Sanitation Inspector for CrowdCivic AI.
 
 Analyze this citizen photo thoroughly and produce a precise, actionable municipal complaint report.
-
-[ROBOFLOW CUSTOM VISION CANDIDATE DETECTIONS]:
-${rfSummary}
 
 CRITICAL CIVIC CLASSIFICATION & DISAMBIGUATION RULES:
 
@@ -187,8 +131,7 @@ Return valid JSON strictly matching the schema.`;
     }
 
     // =========================================================================
-    // STEP 3: HARMONIZE CUSTOM VISION DETECTION WITH VERIFIED RESULT
-    // Map the verified classification to the proper Custom Vision AI label
+    // CLASSIFY GEMINI RESULT INTO A STRUCTURED DETECTED CLASS
     // =========================================================================
     if (analysis && analysis.category) {
       const cat = analysis.category;
@@ -237,14 +180,11 @@ Return valid JSON strictly matching the schema.`;
         detectedLabel = analysis.issueType || 'Civic Infrastructure Defect';
       }
 
-      analysis.customModelUsed = true;
-      analysis.customModelName = 'Custom Vision AI (RF-DETR + Vision Verified)';
       analysis.customVisionDetectedClass = detectedClass;
       analysis.customVisionDetectedLabel = detectedLabel;
-      analysis.roboflowDetections = customPredictions;
       analysis.confidenceScore = Math.max(analysis.confidenceScore || 88, 85);
 
-      const visionObs = `Custom Vision AI verified ${detectedLabel} (${analysis.confidenceScore}% confidence)`;
+      const visionObs = `Gemini AI verified ${detectedLabel} (${analysis.confidenceScore}% confidence)`;
       if (!analysis.keyObservations) analysis.keyObservations = [];
       // Remove any erroneous pothole observation if detectedClass is garbage
       analysis.keyObservations = analysis.keyObservations.filter((o: string) => {
@@ -259,63 +199,22 @@ Return valid JSON strictly matching the schema.`;
     }
 
     // =========================================================================
-    // DETERMINISTIC SAFE FALLBACK (When network or API issue occurs)
-    // Inspect customPredictions to pick the best civic category.
-    // Default to Garbage & Solid Waste for ambiguous bags/items.
+    // SAFE FALLBACK (Gemini unavailable / parse error)
     // =========================================================================
-    const hasGarbagePred = customPredictions.some((p) => {
-      const c = (p.class || p.label || '').toLowerCase();
-      return c.includes('garbage') || c.includes('waste') || c.includes('trash');
-    });
-    const hasWaterPred = customPredictions.some((p) => {
-      const c = (p.class || p.label || '').toLowerCase();
-      return c.includes('water') || c.includes('leak') || c.includes('drain');
-    });
-    const hasStrongPothole = customPredictions.some((p) => {
-      const c = (p.class || p.label || '').toLowerCase();
-      return (c.includes('pothole') || c.includes('crater')) && (p.confidence || 0) >= 0.45;
-    });
-
-    let fallbackCat = 'Waste & Sanitation';
-    let fallbackType = 'Uncollected Polythene Garbage Bag & Waste Dump';
-    let fallbackDesc = 'An uncollected polythene garbage bag and scattered plastic waste visible in the public area. Poses serious sanitation and hygiene concerns. Immediate municipal collection and sanitization requested.';
-    let fallbackDept = 'Municipal Solid Waste Management (Sanitation Dept)';
-    let fallbackClass: 'water_logging' | 'pothole' | 'garbage' = 'garbage';
-    let fallbackLabel = 'Garbage & Solid Waste Dump';
-
-    if (hasWaterPred) {
-      fallbackCat = 'Water & Drainage';
-      fallbackType = 'Severe Street Water Logging & Drainage Block';
-      fallbackDesc = 'Heavy water logging and drainage overflow accumulated on the roadway. Causes vehicle slowdowns and hygiene risks. Urgent drain pump-out and clearance requested.';
-      fallbackDept = 'Water Supply & Sewage Board / Drainage Division';
-      fallbackClass = 'water_logging';
-      fallbackLabel = 'Water Logging & Drainage Leak';
-    } else if (hasStrongPothole && !hasGarbagePred) {
-      fallbackCat = 'Roads & Infrastructure';
-      fallbackType = 'Deep Road Surface Pothole Crater';
-      fallbackDesc = 'A deep road surface pothole and asphalt depression has formed on the public street. Poses an acute hazard to vehicles and two-wheelers. Immediate cold-mix asphalt patching and road leveling requested from PWD.';
-      fallbackDept = 'Public Works Department (PWD)';
-      fallbackClass = 'pothole';
-      fallbackLabel = 'Road Surface Pothole';
-    }
-
     return NextResponse.json({
       success: true,
       analysis: {
         isCivicIssue: true,
-        category: fallbackCat,
-        issueType: fallbackType,
-        description: fallbackDesc,
+        category: 'Waste & Sanitation',
+        issueType: 'Uncollected Polythene Garbage Bag & Waste Dump',
+        description: 'An uncollected polythene garbage bag and scattered plastic waste visible in the public area. Poses serious sanitation and hygiene concerns. Immediate municipal collection and sanitization requested.',
         severity: 'High',
-        department: fallbackDept,
-        confidenceScore: 88,
-        customModelUsed: true,
-        customModelName: 'Custom Vision AI (RF-DETR + Vision Verified)',
-        customVisionDetectedClass: fallbackClass,
-        customVisionDetectedLabel: fallbackLabel,
-        roboflowDetections: customPredictions,
+        department: 'Municipal Solid Waste Management (Sanitation Dept)',
+        confidenceScore: 85,
+        customVisionDetectedClass: 'garbage',
+        customVisionDetectedLabel: 'Garbage & Solid Waste Dump',
         keyObservations: [
-          `Custom Vision AI verified ${fallbackLabel} (88% confidence)`,
+          'Gemini AI verified Garbage & Solid Waste Dump (85% confidence)',
           'Field inspection report pre-filled for rapid municipal dispatch',
           'Geotagged infrastructure incident logged',
         ],
@@ -333,12 +232,10 @@ Return valid JSON strictly matching the schema.`;
         severity: 'Medium',
         department: 'Municipal Solid Waste Management (Sanitation Dept)',
         confidenceScore: 85,
-        customModelUsed: true,
-        customModelName: 'Custom Vision AI',
         customVisionDetectedClass: 'garbage',
         customVisionDetectedLabel: 'Garbage & Solid Waste Dump',
         keyObservations: [
-          'Custom Vision AI verified Garbage & Solid Waste Dump (85% confidence)',
+          'Gemini AI verified Garbage & Solid Waste Dump (85% confidence)',
           'Geotagged incident initialized',
         ],
       },

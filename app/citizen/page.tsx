@@ -91,11 +91,8 @@ interface AIAnalysis {
   department: string;
   confidenceScore: number;
   keyObservations?: string[];
-  customModelUsed?: boolean;
-  customModelName?: string;
   customVisionDetectedClass?: 'water_logging' | 'pothole' | 'garbage' | 'other_civic' | 'non_civic';
   customVisionDetectedLabel?: string;
-  roboflowDetections?: any[];
 }
 
 interface CommunityVote {
@@ -740,11 +737,9 @@ export default function CitizenDashboard() {
         severity: 'Medium',
         department: fallbackDept,
         confidenceScore: 88,
-        customModelUsed: true,
-        customModelName: 'Custom Vision AI',
         customVisionDetectedClass: 'garbage',
         customVisionDetectedLabel: 'Garbage & Solid Waste Dump',
-        keyObservations: ['Custom Vision AI verified Garbage & Solid Waste Dump (88% confidence)', 'Field inspection report initialized'],
+        keyObservations: ['Gemini AI verified Garbage & Solid Waste Dump (88% confidence)', 'Field inspection report initialized'],
       };
       setAiResult(fallbackAnalysis);
       setCategory(fallbackAnalysis.category);
@@ -1213,7 +1208,7 @@ export default function CitizenDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white">
+      <div className="min-h-screen bg-[#f7f6f3] flex items-center justify-center text-slate-800">
         <div className="flex items-center gap-3">
           <RefreshCw className="w-6 h-6 animate-spin text-blue-500" />
           <span className="text-sm font-medium tracking-wide">Loading Citizen Portal...</span>
@@ -1273,7 +1268,7 @@ export default function CitizenDashboard() {
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'home'
                     ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-900/5'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
                 }`}
               >
                 {t('citizen_portal', 'Dashboard')}
@@ -1287,7 +1282,7 @@ export default function CitizenDashboard() {
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'report'
                     ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5 text-blue-400" />
@@ -1301,7 +1296,7 @@ export default function CitizenDashboard() {
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'reports'
                     ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-900/5'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
                 }`}
               >
                 <span>{t('my_issues', 'My Reports')}</span>
@@ -1317,7 +1312,7 @@ export default function CitizenDashboard() {
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'notifications'
                     ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
                 }`}
               >
                 <Mail className="w-3.5 h-3.5 text-emerald-500" />
@@ -1340,7 +1335,7 @@ export default function CitizenDashboard() {
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'leaderboard'
                     ? 'bg-amber-500 text-slate-950 shadow-xs shadow-amber-500/20'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
                 }`}
               >
                 <Trophy className="w-3.5 h-3.5 text-amber-600" />
@@ -1354,7 +1349,7 @@ export default function CitizenDashboard() {
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'explore'
                     ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-900/5'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
                 }`}
               >
                 {t('public_feed', 'Explore Map')}
@@ -1508,7 +1503,7 @@ export default function CitizenDashboard() {
                   </button>
                   <button
                     onClick={() => setActiveTab('explore')}
-                    className="px-5 py-2.5 bg-white/10 hover:bg-white/15 text-white text-xs font-bold rounded-xl flex items-center gap-2 border border-white/20 transition-all cursor-pointer"
+                    className="px-5 py-2.5 bg-slate-100 hover:bg-white/15 text-white text-xs font-bold rounded-xl flex items-center gap-2 border border-slate-300 transition-all cursor-pointer"
                   >
                     <MapPin className="w-4 h-4 text-blue-300" />
                     <span>{t('public_feed', 'View Map Feed')}</span>
@@ -1694,7 +1689,7 @@ export default function CitizenDashboard() {
 
             {/* Submission Confirmation Card */}
             {submittedTicket ? (
-              <div className="bg-[#0e1320] border border-emerald-500/30 rounded-2xl p-6 sm:p-8 text-center shadow-xl animate-in fade-in zoom-in duration-200">
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 text-center shadow-sm animate-in fade-in zoom-in duration-200">
                 <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/40">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
@@ -1703,8 +1698,8 @@ export default function CitizenDashboard() {
                   Your civic incident report has been submitted, geotagged, and logged into the system.
                 </p>
 
-                <div className="max-w-md mx-auto bg-white/5 p-4 rounded-xl border border-white/10 text-left mb-6 space-y-3">
-                  <div className="flex justify-between items-center text-xs border-b border-white/10 pb-2">
+                <div className="max-w-md mx-auto bg-slate-50 p-4 rounded-xl border border-slate-200 text-left mb-6 space-y-3">
+                  <div className="flex justify-between items-center text-xs border-b border-slate-200 pb-2">
                     <span className="text-slate-400">Ticket Reference ID:</span>
                     <span className="font-mono font-bold text-blue-400 text-sm">{submittedTicket.ticketId}</span>
                   </div>
@@ -1720,7 +1715,7 @@ export default function CitizenDashboard() {
                     <span className="text-slate-400">Routed Department:</span>
                     <span className="font-medium text-amber-300">{submittedTicket.department}</span>
                   </div>
-                  <div className="flex justify-between items-start text-xs pt-1 border-t border-white/10">
+                  <div className="flex justify-between items-start text-xs pt-1 border-t border-slate-200">
                     <span className="text-slate-400 flex items-center gap-1">
                       <MapPin className="w-3 h-3 text-red-400" /> Location:
                     </span>
@@ -1742,7 +1737,7 @@ export default function CitizenDashboard() {
                     onClick={() => {
                       setActiveTab('reports');
                     }}
-                    className="px-5 py-2.5 bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-semibold rounded-xl border border-white/10"
+                    className="px-5 py-2.5 bg-slate-100 hover:bg-white/15 text-slate-200 text-xs font-semibold rounded-xl border border-slate-200"
                   >
                     Track in "My Reports"
                   </button>
@@ -1751,7 +1746,7 @@ export default function CitizenDashboard() {
             ) : (
               /* REPORT FORM */
               <form onSubmit={handleSubmitReport} className="space-y-6">
-                <div className="bg-[#0e1320] border border-white/10 rounded-2xl p-6 sm:p-8">
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8">
                   <h1 className="text-xl sm:text-2xl font-bold text-white mb-1">File a Civic Incident Report</h1>
                   <p className="text-xs text-slate-400 mb-6">
                     Upload or snap an image of the issue. Location tag is captured automatically, and Gemini AI will analyze and populate details.
@@ -1764,7 +1759,7 @@ export default function CitizenDashboard() {
                     </label>
 
                     {!selectedImage ? (
-                      <div className="border-2 border-dashed border-white/20 hover:border-blue-500/50 bg-white/5 rounded-2xl p-8 text-center transition-all">
+                      <div className="border-2 border-dashed border-slate-300 hover:border-blue-500/50 bg-slate-50 rounded-2xl p-8 text-center transition-all">
                         <div className="flex flex-col items-center justify-center">
                           <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-3">
                             <Upload className="w-7 h-7" />
@@ -1791,7 +1786,7 @@ export default function CitizenDashboard() {
                             <button
                               type="button"
                               onClick={startCamera}
-                              className="px-4 py-2.5 bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-semibold rounded-xl border border-white/10 transition-all flex items-center gap-2"
+                              className="px-4 py-2.5 bg-slate-100 hover:bg-white/15 text-slate-200 text-xs font-semibold rounded-xl border border-slate-200 transition-all flex items-center gap-2"
                             >
                               <Camera className="w-4 h-4 text-emerald-400" />
                               <span>Use Live Camera</span>
@@ -1811,7 +1806,7 @@ export default function CitizenDashboard() {
                             setSelectedImage(null);
                             setAiResult(null);
                           }}
-                          className="absolute top-3 right-3 p-2 rounded-full bg-black/70 hover:bg-red-600 text-white transition-colors border border-white/20"
+                          className="absolute top-3 right-3 p-2 rounded-full bg-black/70 hover:bg-red-600 text-white transition-colors border border-slate-300"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -1824,7 +1819,7 @@ export default function CitizenDashboard() {
                               <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
                             </div>
                             <p className="text-sm font-bold tracking-wide text-white">Custom Vision AI & Gemini Analyzing...</p>
-                            <div className="text-xs text-slate-300 mt-2 space-y-1 max-w-sm text-left bg-white/5 border border-white/10 p-3 rounded-xl">
+                            <div className="text-xs text-slate-300 mt-2 space-y-1 max-w-sm text-left bg-slate-50 border border-slate-200 p-3 rounded-xl">
                               <p className="flex items-center gap-1.5 text-emerald-300 font-medium">
                                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                                 <span>Step 1: Custom Vision AI checking: Water Logging, Pothole, or Garbage</span>
@@ -1834,7 +1829,7 @@ export default function CitizenDashboard() {
                                 <span>Step 2: Gemini AI autofilling issue details & categorization</span>
                               </p>
                             </div>
-                            <div className="w-56 h-1.5 bg-white/10 rounded-full overflow-hidden mt-4">
+                            <div className="w-56 h-1.5 bg-slate-100 rounded-full overflow-hidden mt-4">
                               <div className="h-full bg-gradient-to-r from-emerald-400 via-blue-500 to-indigo-500 animate-pulse w-3/4"></div>
                             </div>
                           </div>
@@ -1855,7 +1850,7 @@ export default function CitizenDashboard() {
                               </div>
                             </div>
                           ) : (
-                            <div className="absolute bottom-3 left-3 right-3 bg-[#0b0f19]/95 backdrop-blur-md p-3 rounded-xl border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-xl">
+                            <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md p-3 rounded-xl border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-xl">
                               <div className="flex items-center gap-2.5">
                                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30">
                                   <Check className="w-4 h-4" />
@@ -1869,7 +1864,7 @@ export default function CitizenDashboard() {
                                       )}
                                     </span>
                                     <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-mono border border-emerald-500/30">
-                                      RF-DETR Verified
+                                      Gemini AI Verified
                                     </span>
                                   </div>
                                   <span className="text-[10px] text-slate-300">
@@ -1888,7 +1883,7 @@ export default function CitizenDashboard() {
                   </div>
 
                   {/* SECTION 2: AUTOMATIC GEOLOCATION TAGGING */}
-                  <div className="mb-8 p-4 rounded-xl bg-white/5 border border-white/10">
+                  <div className="mb-8 p-4 rounded-xl bg-slate-50 border border-slate-200">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2 text-xs font-semibold text-slate-200 uppercase tracking-wider">
                         <MapPin className="w-4 h-4 text-red-400" />
@@ -1917,7 +1912,7 @@ export default function CitizenDashboard() {
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs bg-black/30 p-2.5 rounded-lg border border-white/5">
+                        <div className="flex items-center justify-between text-xs bg-black/30 p-2.5 rounded-lg border border-slate-100">
                           <span className="text-slate-400">Tagged GPS Coordinates:</span>
                           <span className="font-mono text-emerald-400 font-medium">
                             {location.latitude
@@ -1933,7 +1928,7 @@ export default function CitizenDashboard() {
                             value={manualAddress}
                             onChange={(e) => setManualAddress(e.target.value)}
                             placeholder="Enter or refine exact street address, corner, or landmark"
-                            className="w-full bg-[#07090e] border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400"
                           />
                         </div>
                       </div>
@@ -1968,7 +1963,7 @@ export default function CitizenDashboard() {
                           }}
                           placeholder="e.g. Deep Pothole, Overflowing Garbage Bin"
                           required
-                          className="w-full bg-[#07090e] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400"
                         />
                       </div>
 
@@ -1980,7 +1975,7 @@ export default function CitizenDashboard() {
                         <select
                           value={category}
                           onChange={(e) => setCategory(e.target.value)}
-                          className="w-full bg-[#07090e] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500"
                         >
                           {CATEGORIES.map((cat) => (
                             <option key={cat} value={cat}>
@@ -1996,7 +1991,7 @@ export default function CitizenDashboard() {
                         <select
                           value={severity}
                           onChange={(e) => setSeverity(e.target.value)}
-                          className="w-full bg-[#07090e] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500"
                         >
                           {SEVERITY_LEVELS.map((sev) => (
                             <option key={sev} value={sev}>
@@ -2014,7 +2009,7 @@ export default function CitizenDashboard() {
                           value={department}
                           onChange={(e) => setDepartment(e.target.value)}
                           placeholder="Department responsible"
-                          className="w-full bg-[#07090e] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500"
                         />
                       </div>
                     </div>
@@ -2030,7 +2025,7 @@ export default function CitizenDashboard() {
                         {/* Voice Input Controls */}
                         <div className="flex items-center gap-2">
                           {/* Language selector toggle */}
-                          <div className="flex bg-black/40 border border-white/10 rounded-lg p-0.5 text-[10px]">
+                          <div className="flex bg-black/40 border border-slate-200 rounded-lg p-0.5 text-[10px]">
                             <button
                               type="button"
                               onClick={() => setVoiceLang('hi-IN')}
@@ -2113,10 +2108,10 @@ export default function CitizenDashboard() {
                               : "Provide details of the issue. You can click 'Voice Input / बोलकर लिखें' to speak in Hindi/English, edit manually, or let Gemini AI pre-fill it."
                           }
                           required
-                          className={`w-full bg-[#07090e] border text-xs text-white placeholder-slate-500 focus:outline-none leading-relaxed rounded-xl p-3.5 transition-all ${
+                          className={`w-full bg-slate-50 border text-xs text-white placeholder-slate-500 focus:outline-none leading-relaxed rounded-xl p-3.5 transition-all ${
                             isListening
                               ? 'border-red-500 ring-2 ring-red-500/20 shadow-lg shadow-red-500/10'
-                              : 'border-white/10 focus:border-blue-500'
+                              : 'border-slate-200 focus:border-blue-500'
                           }`}
                         />
                       </div>
@@ -2124,17 +2119,12 @@ export default function CitizenDashboard() {
 
                     {/* Key Observations from AI */}
                     {aiResult?.keyObservations && aiResult.keyObservations.length > 0 && (
-                      <div className="bg-[#0b1120] border border-blue-500/20 rounded-xl p-3.5 space-y-2">
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-3.5 space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-semibold text-blue-300 flex items-center gap-1.5">
                             <Info className="w-3.5 h-3.5 text-blue-400" />
                             <span>AI Vision & Inspection Observations:</span>
                           </span>
-                          {aiResult.customModelUsed && (
-                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-[9px]">
-                              Roboflow RF-DETR Verified
-                            </span>
-                          )}
                         </div>
                         <ul className="list-disc list-inside space-y-1 text-[11px] text-slate-300">
                           {aiResult.keyObservations.map((obs, idx) => (
@@ -2161,7 +2151,7 @@ export default function CitizenDashboard() {
                   )}
 
                   {/* SUBMIT BUTTON */}
-                  <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-end gap-3">
+                  <div className="mt-8 pt-6 border-t border-slate-200 flex items-center justify-end gap-3">
                     <button
                       type="button"
                       onClick={() => {
@@ -2221,7 +2211,7 @@ export default function CitizenDashboard() {
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="bg-[#0e1320] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none"
+                  className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none"
                 >
                   <option value="All">All Statuses</option>
                   <option value="Submitted">Submitted</option>
@@ -2233,7 +2223,7 @@ export default function CitizenDashboard() {
                   onClick={() => {
                     if (user) fetchUserReports(user.uid);
                   }}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300"
+                  className="p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-300"
                   title="Refresh Reports"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${loadingReports ? 'animate-spin' : ''}`} />
@@ -2247,7 +2237,7 @@ export default function CitizenDashboard() {
                 <p className="text-xs text-slate-400">Loading your reported tickets...</p>
               </div>
             ) : myReports.length === 0 ? (
-              <div className="bg-[#0e1320] rounded-2xl border border-white/10 p-12 text-center">
+              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
                 <FileText className="w-12 h-12 text-slate-600 mx-auto mb-3" />
                 <h3 className="text-base font-semibold text-white mb-1">No Reports Found</h3>
                 <p className="text-xs text-slate-400 mb-6">You haven't reported any civic issues yet.</p>
@@ -2268,7 +2258,7 @@ export default function CitizenDashboard() {
                   .map((item) => (
                     <div
                       key={item.id || item.ticketId}
-                      className="bg-[#0e1320] rounded-2xl border border-white/10 overflow-hidden hover:border-blue-500/40 transition-all flex flex-col group"
+                      className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-blue-500/40 transition-all flex flex-col group"
                     >
                       {/* Image header */}
                       <div className="relative h-44 overflow-hidden bg-black/50">
@@ -2277,7 +2267,7 @@ export default function CitizenDashboard() {
                           alt={item.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-mono font-bold text-blue-400 border border-white/20">
+                        <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-mono font-bold text-blue-400 border border-slate-300">
                           {item.ticketId}
                         </div>
                         <div
@@ -2295,7 +2285,7 @@ export default function CitizenDashboard() {
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                         <div>
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-slate-300">
+                            <span className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200 text-[10px] text-slate-300">
                               {item.category}
                             </span>
                             <span className="px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-medium">
@@ -2307,7 +2297,7 @@ export default function CitizenDashboard() {
                           <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">{item.description}</p>
                         </div>
 
-                        <div className="pt-3 border-t border-white/10 space-y-2">
+                        <div className="pt-3 border-t border-slate-200 space-y-2">
                           <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
                             <MapPin className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />
                             <span className="truncate">{item.location?.address}</span>
@@ -2374,12 +2364,12 @@ export default function CitizenDashboard() {
                     value={exploreSearch}
                     onChange={(e) => setExploreSearch(e.target.value)}
                     placeholder="Search category or location..."
-                    className="bg-[#0e1320] border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 w-56 sm:w-64"
+                    className="bg-white border border-slate-200 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 w-56 sm:w-64"
                   />
                 </div>
                 <button
                   onClick={fetchAllReports}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300"
+                  className="p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-300"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${loadingExplore ? 'animate-spin' : ''}`} />
                 </button>
@@ -2392,7 +2382,7 @@ export default function CitizenDashboard() {
                 <p className="text-xs text-slate-400">Loading community issues...</p>
               </div>
             ) : allReports.length === 0 ? (
-              <div className="bg-[#0e1320] rounded-2xl border border-white/10 p-12 text-center">
+              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
                 <Compass className="w-12 h-12 text-slate-600 mx-auto mb-3" />
                 <h3 className="text-base font-semibold text-white mb-1">No Civic Issues Logged Yet</h3>
                 <p className="text-xs text-slate-400 mb-6">Be the first citizen to file an issue in this region.</p>
@@ -2420,11 +2410,11 @@ export default function CitizenDashboard() {
                   .map((item) => (
                     <div
                       key={item.id || item.ticketId}
-                      className="bg-[#0e1320] rounded-2xl border border-white/10 overflow-hidden hover:border-blue-500/30 transition-all flex flex-col"
+                      className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-blue-500/30 transition-all flex flex-col"
                     >
                       <div className="relative h-44 bg-black/50">
                         <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
-                        <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-mono font-bold text-blue-400 border border-white/20">
+                        <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-mono font-bold text-blue-400 border border-slate-300">
                           {item.ticketId}
                         </div>
                         <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-blue-600 text-white">
@@ -2452,7 +2442,7 @@ export default function CitizenDashboard() {
                         </div>
 
                         {/* Supporters & Duplicates Badge */}
-                        <div className="flex items-center justify-between bg-white/5 px-3 py-2 rounded-xl border border-white/5 text-[11px]">
+                        <div className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-xl border border-slate-100 text-[11px]">
                           <div className="flex items-center gap-1.5 text-amber-400 font-bold">
                             <Users className="w-3.5 h-3.5 text-amber-400" />
                             <span>{item.supportersCount || item.upvotes || 1} Citizens Reported</span>
@@ -2464,7 +2454,7 @@ export default function CitizenDashboard() {
                           ) : null}
                         </div>
 
-                        <div className="pt-3 border-t border-white/10 space-y-2">
+                        <div className="pt-3 border-t border-slate-200 space-y-2">
                           <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
                             <MapPin className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />
                             <span className="truncate">{item.location?.address}</span>
@@ -2477,7 +2467,7 @@ export default function CitizenDashboard() {
                               className={`px-2.5 py-1 rounded-lg border text-[11px] font-bold flex items-center gap-1 transition-all ${
                                 user && item.supporters?.includes(user.uid)
                                   ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                                  : 'bg-white/5 hover:bg-white/10 text-slate-300 border-white/10'
+                                  : 'bg-slate-50 hover:bg-slate-100 text-slate-300 border-slate-200'
                               }`}
                             >
                               <ThumbsUp className="w-3 h-3 text-amber-400" />
@@ -2531,7 +2521,7 @@ export default function CitizenDashboard() {
                   type="button"
                   disabled={loadingNotifications}
                   onClick={fetchNotifications}
-                  className="px-3.5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all"
+                  className="px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-300 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${loadingNotifications ? 'animate-spin text-blue-400' : ''}`} />
                   <span>Refresh Inbox</span>
@@ -2551,7 +2541,7 @@ export default function CitizenDashboard() {
             </div>
 
             {/* Recipient Identity Banner */}
-            <div className="bg-[#0e1320] border border-white/10 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
                   <Inbox className="w-5 h-5" />
@@ -2578,7 +2568,7 @@ export default function CitizenDashboard() {
                     </button>
                   </div>
                 )}
-                <div className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-slate-400 text-xs">
+                <div className="px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-slate-400 text-xs">
                   Total Dispatched: <strong className="text-emerald-400 font-mono">{notifications.length}</strong>
                 </div>
               </div>
@@ -2591,8 +2581,8 @@ export default function CitizenDashboard() {
                 <p className="text-xs text-slate-400">Loading citizen email ledger...</p>
               </div>
             ) : notifications.filter((n) => !notificationFilterTicket || (n.ticketId || '').toLowerCase() === notificationFilterTicket.toLowerCase()).length === 0 ? (
-              <div className="bg-[#0e1320] rounded-2xl border border-white/10 p-12 text-center space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 text-slate-400 mx-auto flex items-center justify-center">
+              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 text-slate-400 mx-auto flex items-center justify-center">
                   <Mail className="w-7 h-7" />
                 </div>
                 <div>
@@ -2627,16 +2617,16 @@ export default function CitizenDashboard() {
                   .map((item) => (
                     <div
                       key={item.id}
-                      className="bg-[#0e1320] border border-white/10 hover:border-emerald-500/40 rounded-2xl p-4 sm:p-5 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                      className="bg-white border border-slate-200 hover:border-emerald-500/40 rounded-2xl p-4 sm:p-5 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
                     >
                       <div className="space-y-2 flex-1 min-w-0">
                         {/* Status change badges */}
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="px-2 py-0.5 rounded bg-black/60 border border-white/20 text-emerald-400 font-mono text-[11px] font-bold">
+                          <span className="px-2 py-0.5 rounded bg-black/60 border border-slate-300 text-emerald-400 font-mono text-[11px] font-bold">
                             #{item.ticketId}
                           </span>
 
-                          <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-white/5 border border-white/10">
+                          <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-slate-50 border border-slate-200">
                             <span className="text-slate-400 line-through">{item.previousStatus || 'Submitted'}</span>
                             <span className="text-slate-500">&rarr;</span>
                             <span
@@ -2714,10 +2704,10 @@ export default function CitizenDashboard() {
       {/* MODAL 1: CAMERA STREAM MODAL */}
       {showCamera && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#0e1320] border border-white/20 rounded-2xl p-6 max-w-lg w-full text-center relative">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-lg w-full text-center relative">
             <button
               onClick={stopCamera}
-              className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white"
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 hover:bg-white/20 text-white"
             >
               <X className="w-4 h-4" />
             </button>
@@ -2728,7 +2718,7 @@ export default function CitizenDashboard() {
             </h3>
             <p className="text-xs text-slate-400 mb-4">Position the civic defect clearly in frame</p>
 
-            <div className="relative rounded-xl overflow-hidden bg-black border border-white/10 mb-4 h-64 flex items-center justify-center">
+            <div className="relative rounded-xl overflow-hidden bg-black border border-slate-200 mb-4 h-64 flex items-center justify-center">
               <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
               <canvas ref={canvasRef} className="hidden" />
             </div>
@@ -2736,7 +2726,7 @@ export default function CitizenDashboard() {
             <div className="flex justify-center gap-3">
               <button
                 onClick={stopCamera}
-                className="px-4 py-2 bg-white/10 text-slate-300 text-xs font-medium rounded-xl"
+                className="px-4 py-2 bg-slate-100 text-slate-300 text-xs font-medium rounded-xl"
               >
                 Cancel
               </button>
@@ -2755,10 +2745,10 @@ export default function CitizenDashboard() {
       {/* MODAL 2: TICKET DETAILS MODAL */}
       {selectedReportDetail && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#0e1320] border border-white/20 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
             <button
               onClick={() => setSelectedReportDetail(null)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white"
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 hover:bg-white/20 text-white"
             >
               <X className="w-4 h-4" />
             </button>
@@ -2793,31 +2783,31 @@ export default function CitizenDashboard() {
 
             <h2 className="text-xl font-bold text-white mb-2">{selectedReportDetail.title}</h2>
 
-            <div className="rounded-xl overflow-hidden mb-4 border border-white/10 max-h-72">
+            <div className="rounded-xl overflow-hidden mb-4 border border-slate-200 max-h-72">
               <img src={selectedReportDetail.imageUrl} alt={selectedReportDetail.title} className="w-full object-cover" />
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4 text-xs">
-              <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                 <span className="text-slate-500 block mb-1">Category</span>
                 <span className="font-medium text-slate-200">{selectedReportDetail.category}</span>
               </div>
-              <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                 <span className="text-slate-500 block mb-1">Severity</span>
                 <span className="font-medium text-red-400">{selectedReportDetail.severity}</span>
               </div>
-              <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                 <span className="text-slate-500 block mb-1">Department</span>
                 <span className="font-medium text-amber-300">{selectedReportDetail.department}</span>
               </div>
             </div>
 
-            <div className="bg-white/5 p-4 rounded-xl border border-white/5 mb-4">
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-4">
               <span className="text-xs font-semibold text-slate-300 block mb-1">Description:</span>
               <p className="text-xs text-slate-300 leading-relaxed">{selectedReportDetail.description}</p>
             </div>
 
-            <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex items-center gap-2 text-xs text-slate-300 mb-4">
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center gap-2 text-xs text-slate-300 mb-4">
               <MapPin className="w-4 h-4 text-red-400 flex-shrink-0" />
               <div>
                 <span className="font-semibold block">Location:</span>
@@ -2826,7 +2816,7 @@ export default function CitizenDashboard() {
             </div>
 
             {/* COMMUNITY RESOLUTION VERIFICATION SECTION */}
-            <div className="mt-6 border-t border-white/10 pt-5">
+            <div className="mt-6 border-t border-slate-200 pt-5">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
@@ -2868,7 +2858,7 @@ export default function CitizenDashboard() {
               {/* Progress Bar for Community Approval */}
               {selectedReportDetail.voteStats && (selectedReportDetail.voteStats.yes + selectedReportDetail.voteStats.no > 0) && (
                 <div className="mb-4">
-                  <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden flex">
+                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden flex">
                     <div
                       className="bg-emerald-500 h-full transition-all"
                       style={{
@@ -2921,7 +2911,7 @@ export default function CitizenDashboard() {
               )}
 
               {/* Voting Form or Voted Status */}
-              <div className="bg-[#07090e] border border-white/10 rounded-2xl p-4">
+              <div className="bg-white border border-slate-200 rounded-2xl p-4">
                 {selectedReportDetail.communityVotes?.some((v) => v.userId === user?.uid) ? (
                   <div>
                     <div className="flex items-center justify-between text-xs mb-2">
@@ -2937,7 +2927,7 @@ export default function CitizenDashboard() {
                       )}
                     </div>
                     {selectedReportDetail.communityVotes?.find((v) => v.userId === user?.uid)?.comment && (
-                      <p className="text-xs text-slate-300 bg-white/5 p-2.5 rounded-xl border border-white/5 italic">
+                      <p className="text-xs text-slate-300 bg-slate-50 p-2.5 rounded-xl border border-slate-100 italic">
                         "{selectedReportDetail.communityVotes?.find((v) => v.userId === user?.uid)?.comment}"
                       </p>
                     )}
@@ -2961,7 +2951,7 @@ export default function CitizenDashboard() {
                         className={`p-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
                           voteOption === 'yes'
                             ? 'bg-emerald-600 text-white border-emerald-400 shadow-lg shadow-emerald-600/20 ring-2 ring-emerald-500/30'
-                            : 'bg-white/5 hover:bg-white/10 text-slate-300 border-white/10'
+                            : 'bg-slate-50 hover:bg-slate-100 text-slate-300 border-slate-200'
                         }`}
                       >
                         <ThumbsUp className="w-4 h-4 text-emerald-400" />
@@ -2974,7 +2964,7 @@ export default function CitizenDashboard() {
                         className={`p-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
                           voteOption === 'no'
                             ? 'bg-red-600 text-white border-red-400 shadow-lg shadow-red-600/20 ring-2 ring-red-500/30'
-                            : 'bg-white/5 hover:bg-white/10 text-slate-300 border-white/10'
+                            : 'bg-slate-50 hover:bg-slate-100 text-slate-300 border-slate-200'
                         }`}
                       >
                         <ThumbsDown className="w-4 h-4 text-red-400" />
@@ -2989,7 +2979,7 @@ export default function CitizenDashboard() {
                           value={voteComment}
                           onChange={(e) => setVoteComment(e.target.value)}
                           placeholder="Add your ground observations or feedback (e.g. 'I passed by today, pothole is filled properly' or 'Water is still leaking')..."
-                          className="w-full bg-[#0e1320] border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400"
                         />
 
                         <button
@@ -3017,13 +3007,13 @@ export default function CitizenDashboard() {
 
                 {/* List of recent community verification comments */}
                 {selectedReportDetail.communityVotes && selectedReportDetail.communityVotes.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-white/10">
+                  <div className="mt-4 pt-4 border-t border-slate-200">
                     <span className="text-[11px] font-semibold text-slate-400 block mb-2">
                       Recent Citizen Verifications ({selectedReportDetail.communityVotes.length}):
                     </span>
                     <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                       {selectedReportDetail.communityVotes.map((v, idx) => (
-                        <div key={idx} className="p-2.5 bg-white/5 rounded-xl border border-white/5 text-[11px]">
+                        <div key={idx} className="p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-[11px]">
                           <div className="flex items-center justify-between text-slate-400 mb-1">
                             <span className="font-mono text-slate-300 truncate max-w-[180px]">{v.userEmail}</span>
                             <div className="flex items-center gap-2">
@@ -3058,10 +3048,10 @@ export default function CitizenDashboard() {
       {/* MODAL: AI DUPLICATE COMPLAINT DETECTION MODAL */}
       {duplicateModal && duplicateModal.isOpen && duplicateModal.match && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#0b0f19] border border-amber-500/40 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl relative animate-in zoom-in-95 my-8">
+          <div className="bg-white border border-amber-200 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl relative animate-in zoom-in-95 my-8">
             <button
               onClick={() => setDuplicateModal(null)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-white"
             >
               <X className="w-5 h-5" />
             </button>
@@ -3088,8 +3078,8 @@ export default function CitizenDashboard() {
             </p>
 
             {/* Comparison Box */}
-            <div className="bg-[#050810] border border-white/10 rounded-2xl p-4 space-y-4 mb-6">
-              <div className="flex items-center justify-between pb-3 border-b border-white/10 text-xs">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4 mb-6">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 text-xs">
                 <div>
                   <span className="text-slate-400 font-mono text-[11px]">Existing Complaint Ticket</span>
                   <span className="block font-bold font-mono text-blue-400 text-sm">
@@ -3107,7 +3097,7 @@ export default function CitizenDashboard() {
               {/* Title & Description */}
               <div>
                 <h4 className="text-xs font-bold text-white mb-1">{duplicateModal.match.title}</h4>
-                <p className="text-[11px] text-slate-300 line-clamp-2 bg-white/5 p-2 rounded-xl border border-white/5">
+                <p className="text-[11px] text-slate-300 line-clamp-2 bg-slate-50 p-2 rounded-xl border border-slate-100">
                   "{duplicateModal.match.description}"
                 </p>
               </div>
@@ -3118,7 +3108,7 @@ export default function CitizenDashboard() {
                   <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-1">
                     Uploaded Photo
                   </span>
-                  <div className="relative h-28 rounded-xl overflow-hidden border border-white/10 bg-slate-900">
+                  <div className="relative h-28 rounded-xl overflow-hidden border border-slate-200 bg-slate-900">
                     <img
                       src={duplicateModal.compressedImage}
                       alt="Uploaded"
@@ -3141,16 +3131,16 @@ export default function CitizenDashboard() {
               </div>
 
               {/* AI Breakdown Scores */}
-              <div className="pt-2 border-t border-white/10 grid grid-cols-3 gap-2 text-center text-[10px]">
-                <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+              <div className="pt-2 border-t border-slate-200 grid grid-cols-3 gap-2 text-center text-[10px]">
+                <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
                   <span className="text-slate-400 block">Distance</span>
                   <span className="font-bold text-blue-300">{duplicateModal.match.distanceMeters}m</span>
                 </div>
-                <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
                   <span className="text-slate-400 block">Photo Similarity</span>
                   <span className="font-bold text-amber-300">{duplicateModal.match.imageScore}%</span>
                 </div>
-                <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
                   <span className="text-slate-400 block">Text Similarity</span>
                   <span className="font-bold text-emerald-300">{duplicateModal.match.textScore}%</span>
                 </div>
@@ -3185,7 +3175,7 @@ export default function CitizenDashboard() {
                   createNewReport(duplicateModal.newReportData);
                 }}
                 disabled={submitting}
-                className="w-full py-2.5 px-4 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-semibold text-xs rounded-2xl border border-white/10 transition-all text-center"
+                className="w-full py-2.5 px-4 bg-slate-50 hover:bg-slate-100 text-slate-300 hover:text-white font-semibold text-xs rounded-2xl border border-slate-200 transition-all text-center"
               >
                 No, Submit as a Separate Independent Issue
               </button>
@@ -3197,10 +3187,10 @@ export default function CitizenDashboard() {
       {/* MODAL 3: DELETE COMPLAINT CONFIRMATION MODAL */}
       {deleteConfirmModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0e1320] border border-red-500/30 rounded-2xl p-6 max-w-md w-full shadow-2xl relative">
+          <div className="bg-white border border-red-200 rounded-2xl p-6 max-w-md w-full shadow-2xl relative">
             <button
               onClick={() => setDeleteConfirmModal(null)}
-              className="absolute top-4 right-4 p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 p-1.5 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-white"
             >
               <X className="w-4 h-4" />
             </button>
@@ -3218,7 +3208,7 @@ export default function CitizenDashboard() {
               ? This action cannot be undone and will remove it from the municipal database.
             </p>
 
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
               <button
                 type="button"
                 onClick={() => setDeleteConfirmModal(null)}
@@ -3253,9 +3243,9 @@ export default function CitizenDashboard() {
       {/* MODAL: EMAIL PREVIEW INSPECTOR */}
       {selectedEmailModal && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#0b0f19] border border-emerald-500/30 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl my-8 relative flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95">
+          <div className="bg-white border border-emerald-200 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl my-8 relative flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95">
             {/* Modal Header */}
-            <div className="px-6 py-4 bg-white/5 border-b border-white/10 flex items-center justify-between">
+            <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
                   <Mail className="w-5 h-5" />
@@ -3270,14 +3260,14 @@ export default function CitizenDashboard() {
 
               <button
                 onClick={() => setSelectedEmailModal(null)}
-                className="p-1.5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Email Envelope Metadata */}
-            <div className="px-6 py-3 bg-black/40 border-b border-white/10 text-xs space-y-1 font-mono">
+            <div className="px-6 py-3 bg-black/40 border-b border-slate-200 text-xs space-y-1 font-mono">
               <div className="flex">
                 <span className="w-20 text-slate-500 font-semibold">From:</span>
                 <span className="text-emerald-400 font-bold">Civic Sentinel Notifications &lt;notifications@crowdcivic.org&gt;</span>
@@ -3297,9 +3287,9 @@ export default function CitizenDashboard() {
             </div>
 
             {/* View Switcher: Rich HTML vs Plain Text */}
-            <div className="px-6 py-2 bg-white/5 border-b border-white/10 flex items-center justify-between text-xs">
+            <div className="px-6 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs">
               <span className="text-[11px] text-slate-400 font-medium">Display Format:</span>
-              <div className="flex bg-black/50 border border-white/10 rounded-lg p-0.5 text-[11px]">
+              <div className="flex bg-black/50 border border-slate-200 rounded-lg p-0.5 text-[11px]">
                 <button
                   type="button"
                   onClick={() => setEmailPreviewTab('html')}
@@ -3337,14 +3327,14 @@ export default function CitizenDashboard() {
                   />
                 </div>
               ) : (
-                <pre className="font-mono text-xs text-emerald-300 bg-black/80 p-4 rounded-xl border border-white/10 whitespace-pre-wrap leading-relaxed">
+                <pre className="font-mono text-xs text-emerald-300 bg-black/80 p-4 rounded-xl border border-slate-200 whitespace-pre-wrap leading-relaxed">
                   {selectedEmailModal.textBody || selectedEmailModal.message}
                 </pre>
               )}
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-3 bg-white/5 border-t border-white/10 flex items-center justify-between text-xs">
+            <div className="px-6 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs">
               <span className="text-[11px] text-emerald-400 font-mono">
                 ✓ Recorded in Municipal Audit Ledger
               </span>

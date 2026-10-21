@@ -874,9 +874,9 @@ export default function AuthorityDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white">
+      <div className="min-h-screen bg-[#f7f6f3] flex items-center justify-center text-slate-800">
         <div className="flex items-center gap-3">
-          <RefreshCw className="w-6 h-6 animate-spin text-blue-500" />
+          <RefreshCw className="w-6 h-6 animate-spin text-slate-500" />
           <span className="text-sm font-medium tracking-wide">Loading Authority Module...</span>
         </div>
       </div>
@@ -884,20 +884,20 @@ export default function AuthorityDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-slate-200 font-sans pb-16">
+    <div className="min-h-screen bg-[#f7f6f3] text-slate-800 font-sans pb-16">
       {/* Hidden Canvas for Video Snapshots */}
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Header */}
-      <header className="bg-[#0b0f19]/80 backdrop-blur-md border-b border-white/10 sticky top-0 z-30">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
               <Building2 className="w-4 h-4" />
             </div>
             <div>
-              <span className="text-white font-bold text-sm tracking-tight block">{t('authority_portal', 'Municipal Authority Portal')}</span>
-              <span className="text-[10px] text-emerald-400 font-mono tracking-wider uppercase block flex items-center gap-1">
+              <span className="text-slate-900 font-bold text-sm tracking-tight block">{t('authority_portal', 'Municipal Authority Portal')}</span>
+              <span className="text-[10px] text-slate-500 font-mono tracking-wider uppercase block flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3" /> {t('ai_verification_enabled', 'AI Verification Active')}
               </span>
             </div>
@@ -906,14 +906,14 @@ export default function AuthorityDashboard() {
           <div className="flex items-center gap-3">
             <LanguageSelector />
 
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span className="truncate max-w-[150px]">{user?.email}</span>
             </div>
 
             <button
               onClick={handleSignOut}
-              className="text-xs font-medium text-slate-400 hover:text-white flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5 transition-all"
+              className="text-xs font-medium text-slate-500 hover:text-slate-900 flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 transition-all"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>{t('signOut', 'Sign Out')}</span>
@@ -927,50 +927,50 @@ export default function AuthorityDashboard() {
         {/* Title Bar */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">{t('incidents_command', 'Incidents & Resolution Command')}</h1>
-            <p className="text-xs text-slate-400 mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">{t('incidents_command', 'Incidents & Resolution Command')}</h1>
+            <p className="text-xs text-slate-500 mt-1">
               {t('authority_subtitle', 'Inspect citizen reports and resolve issues with mandatory 30-second live camera video proof & AI spatial verification.')}
             </p>
           </div>
 
           <button
             onClick={fetchIssues}
-            className="px-3.5 py-2 bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-medium rounded-xl border border-white/10 flex items-center gap-2 transition-all self-start sm:self-auto"
+            className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-xl border border-slate-200 flex items-center gap-2 transition-all self-start sm:self-auto"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loadingIssues ? 'animate-spin text-blue-400' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loadingIssues ? 'animate-spin' : ''}`} />
             <span>{t('refresh_incidents', 'Refresh Incidents')}</span>
           </button>
         </div>
 
         {/* Real-time Email Notification Toast / Banner */}
         {notificationBanner && (
-          <div className="mb-8 p-4 rounded-2xl bg-gradient-to-r from-blue-950/90 to-emerald-950/90 border border-emerald-500/40 text-white flex items-start justify-between shadow-2xl animate-in fade-in duration-300">
+          <div className="mb-8 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-slate-800 flex items-start justify-between animate-in fade-in duration-300">
             <div className="flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0 mt-0.5">
+              <div className="p-2.5 rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-200 shrink-0 mt-0.5">
                 <Mail className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono">
+                  <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider font-mono">
                     Citizen Status Email Dispatched
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-white/10 text-white border border-white/20">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-100 text-slate-700 border border-slate-200">
                     Ticket #{notificationBanner.ticketId}
                   </span>
                 </div>
-                <p className="text-xs text-slate-200 mt-1 font-medium">{notificationBanner.message}</p>
-                <p className="text-[11px] text-slate-400 mt-1 flex flex-wrap items-center gap-2 font-mono">
+                <p className="text-xs text-slate-700 mt-1 font-medium">{notificationBanner.message}</p>
+                <p className="text-[11px] text-slate-500 mt-1 flex flex-wrap items-center gap-2 font-mono">
                   <span>Recipient:</span>
-                  <span className="text-emerald-300 underline font-semibold">{notificationBanner.recipientEmail}</span>
+                  <span className="text-emerald-700 underline font-semibold">{notificationBanner.recipientEmail}</span>
                   <span>•</span>
                   <span>New Status:</span>
-                  <span className="text-white font-bold px-1.5 py-0.5 bg-white/10 rounded">{notificationBanner.newStatus}</span>
+                  <span className="text-slate-900 font-bold px-1.5 py-0.5 bg-slate-100 rounded">{notificationBanner.newStatus}</span>
                 </p>
               </div>
             </div>
             <button
               onClick={() => setNotificationBanner(null)}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10"
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
             >
               <X className="w-4 h-4" />
             </button>
@@ -979,68 +979,67 @@ export default function AuthorityDashboard() {
 
         {/* Top Metric Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-          <div className="bg-[#0e1320] p-4 rounded-xl border border-white/10 flex flex-col justify-between">
-            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{t('total_reports', 'Total Reports')}</span>
+          <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col justify-between">
+            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t('total_reports', 'Total Reports')}</span>
             <div className="flex items-baseline justify-between mt-2">
-              <span className="text-2xl font-bold font-mono text-white">{totalCount}</span>
-              <Layers className="w-4 h-4 text-blue-400" />
+              <span className="text-2xl font-bold font-mono text-slate-900">{totalCount}</span>
+              <Layers className="w-4 h-4 text-slate-400" />
             </div>
           </div>
 
-          <div className="bg-[#0e1320] p-4 rounded-xl border border-amber-500/20 flex flex-col justify-between">
-            <span className="text-[11px] font-semibold text-amber-400 uppercase tracking-wider">{t('pending_review', 'Pending Review')}</span>
+          <div className="bg-white p-4 rounded-xl border border-amber-200 flex flex-col justify-between">
+            <span className="text-[11px] font-semibold text-amber-600 uppercase tracking-wider">{t('pending_review', 'Pending Review')}</span>
             <div className="flex items-baseline justify-between mt-2">
-              <span className="text-2xl font-bold font-mono text-amber-300">{pendingCount}</span>
-              <Clock className="w-4 h-4 text-amber-400" />
+              <span className="text-2xl font-bold font-mono text-amber-600">{pendingCount}</span>
+              <Clock className="w-4 h-4 text-amber-500" />
             </div>
           </div>
 
-          <div className="bg-[#0e1320] p-4 rounded-xl border border-blue-500/20 flex flex-col justify-between">
-            <span className="text-[11px] font-semibold text-blue-400 uppercase tracking-wider">{t('status_in_progress', 'In Progress')}</span>
+          <div className="bg-white p-4 rounded-xl border border-blue-200 flex flex-col justify-between">
+            <span className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider">{t('status_in_progress', 'In Progress')}</span>
             <div className="flex items-baseline justify-between mt-2">
-              <span className="text-2xl font-bold font-mono text-blue-300">{progressCount}</span>
-              <RefreshCw className="w-4 h-4 text-blue-400" />
+              <span className="text-2xl font-bold font-mono text-blue-600">{progressCount}</span>
+              <RefreshCw className="w-4 h-4 text-blue-500" />
             </div>
           </div>
 
-          <div className="bg-[#0e1320] p-4 rounded-xl border border-emerald-500/20 flex flex-col justify-between">
-            <span className="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider">{t('ai_resolved', 'AI Resolved')}</span>
+          <div className="bg-white p-4 rounded-xl border border-emerald-200 flex flex-col justify-between">
+            <span className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider">{t('ai_resolved', 'AI Resolved')}</span>
             <div className="flex items-baseline justify-between mt-2">
-              <span className="text-2xl font-bold font-mono text-emerald-300">{resolvedCount}</span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span className="text-2xl font-bold font-mono text-emerald-600">{resolvedCount}</span>
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
             </div>
           </div>
 
-          <div className="bg-[#0e1320] p-4 rounded-xl border border-red-500/20 flex flex-col justify-between col-span-2 md:col-span-1">
-            <span className="text-[11px] font-semibold text-red-400 uppercase tracking-wider">{t('audit_failed', 'Audit Failed')}</span>
+          <div className="bg-white p-4 rounded-xl border border-red-200 flex flex-col justify-between col-span-2 md:col-span-1">
+            <span className="text-[11px] font-semibold text-red-600 uppercase tracking-wider">{t('audit_failed', 'Audit Failed')}</span>
             <div className="flex items-baseline justify-between mt-2">
-              <span className="text-2xl font-bold font-mono text-red-300">{failedCount}</span>
-              <ShieldAlert className="w-4 h-4 text-red-400" />
+              <span className="text-2xl font-bold font-mono text-red-600">{failedCount}</span>
+              <ShieldAlert className="w-4 h-4 text-red-500" />
             </div>
           </div>
         </div>
 
         {/* Filter & Search Toolbar */}
-        <div className="bg-[#0e1320] p-4 rounded-2xl border border-white/10 mb-6 flex flex-col lg:flex-row gap-4 justify-between items-center">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 mb-6 flex flex-col lg:flex-row gap-4 justify-between items-center">
           {/* Search bar */}
           <div className="relative w-full lg:w-80">
-            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('search_authority_placeholder', 'Search Ticket ID, title, landmark...')}
-              className="w-full bg-[#07090e] border border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400"
             />
           </div>
 
           {/* Filters */}
           <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
-            {/* Status Dropdown */}
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-[#07090e] border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-blue-500"
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-slate-400"
             >
               <option value="All">Status: All ({issues.length})</option>
               <option value="Submitted">Submitted</option>
@@ -1049,11 +1048,10 @@ export default function AuthorityDashboard() {
               <option value="Resolution Failed">Resolution Failed</option>
             </select>
 
-            {/* Category Dropdown */}
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-[#07090e] border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-blue-500"
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-slate-400"
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
@@ -1062,11 +1060,10 @@ export default function AuthorityDashboard() {
               ))}
             </select>
 
-            {/* Severity Dropdown */}
             <select
               value={severityFilter}
               onChange={(e) => setSeverityFilter(e.target.value)}
-              className="bg-[#07090e] border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-blue-500"
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-slate-400"
             >
               <option value="All">Severity: All</option>
               <option value="Critical">Critical</option>
@@ -1079,40 +1076,40 @@ export default function AuthorityDashboard() {
 
         {/* Incident Cards Grid */}
         {filteredIssues.length === 0 ? (
-          <div className="bg-[#0e1320] border border-white/10 rounded-2xl p-12 text-center">
-            <AlertCircle className="w-10 h-10 text-slate-500 mx-auto mb-3" />
-            <h3 className="text-sm font-semibold text-white">No matching incidents found</h3>
-            <p className="text-xs text-slate-400 mt-1">Try adjusting your search terms or filters.</p>
+          <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center">
+            <AlertCircle className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+            <h3 className="text-sm font-semibold text-slate-900">No matching incidents found</h3>
+            <p className="text-xs text-slate-500 mt-1">Try adjusting your search terms or filters.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredIssues.map((issue) => (
               <div
                 key={issue.id}
-                className="bg-[#0e1320] rounded-2xl border border-white/10 overflow-hidden hover:border-blue-500/40 transition-all flex flex-col justify-between group"
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-slate-400 hover:shadow-sm transition-all flex flex-col justify-between group"
               >
                 <div>
                   {/* Card Image Header */}
-                  <div className="relative h-48 w-full bg-black">
+                  <div className="relative h-48 w-full bg-slate-100">
                     <img src={issue.imageUrl} alt={issue.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0e1320] via-transparent to-black/40"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
 
                     {/* Ticket ID Tag */}
-                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md border border-white/20 text-blue-400 font-mono text-[11px] font-bold">
+                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md border border-white/20 text-white font-mono text-[11px] font-bold">
                       {issue.ticketId}
                     </div>
 
                     {/* Status Badge */}
                     <div className="absolute top-3 right-3">
                       <span
-                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-md ${
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                           issue.status === 'Resolved'
-                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                            ? 'bg-emerald-100 text-emerald-700 border-emerald-300'
                             : issue.status === 'In Progress'
-                            ? 'bg-blue-500/20 text-blue-300 border-blue-500/40'
+                            ? 'bg-blue-100 text-blue-700 border-blue-300'
                             : issue.status === 'Resolution Failed'
-                            ? 'bg-red-500/20 text-red-300 border-red-500/40'
-                            : 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                            ? 'bg-red-100 text-red-700 border-red-300'
+                            : 'bg-amber-100 text-amber-700 border-amber-300'
                         }`}
                       >
                         {issue.status}
@@ -1121,7 +1118,7 @@ export default function AuthorityDashboard() {
 
                     {/* Category Overlay */}
                     <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs">
-                      <span className="px-2 py-0.5 rounded bg-blue-600/80 text-white font-medium text-[10px]">
+                      <span className="px-2 py-0.5 rounded bg-slate-900/80 text-white font-medium text-[10px]">
                         {issue.category}
                       </span>
                       <span
@@ -1129,8 +1126,8 @@ export default function AuthorityDashboard() {
                           issue.severity === 'Critical'
                             ? 'bg-red-600 text-white'
                             : issue.severity === 'High'
-                            ? 'bg-orange-600 text-white'
-                            : 'bg-slate-700 text-slate-200'
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-slate-600 text-white'
                         }`}
                       >
                         {issue.severity} Severity
@@ -1140,16 +1137,16 @@ export default function AuthorityDashboard() {
 
                   {/* Card Content */}
                   <div className="p-5 space-y-3">
-                    <h3 className="font-semibold text-white text-sm line-clamp-1 group-hover:text-blue-300 transition-colors">
+                    <h3 className="font-semibold text-slate-900 text-sm line-clamp-1 group-hover:text-slate-600 transition-colors">
                       {issue.title}
                     </h3>
-                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">{issue.description}</p>
+                    <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{issue.description}</p>
 
                     {/* Location Tag */}
-                    <div className="flex items-start gap-1.5 text-xs text-slate-300 bg-white/5 p-2.5 rounded-xl border border-white/5">
-                      <MapPin className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <div className="flex items-start gap-1.5 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                      <MapPin className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
                       <div className="min-w-0">
-                        <p className="font-medium truncate text-white">{issue.location?.address}</p>
+                        <p className="font-medium truncate text-slate-800">{issue.location?.address}</p>
                         {issue.location?.latitude && (
                           <p className="text-[10px] font-mono text-slate-400 mt-0.5">
                             GPS: {issue.location.latitude.toFixed(4)}°, {issue.location.longitude?.toFixed(4)}°
@@ -1159,11 +1156,11 @@ export default function AuthorityDashboard() {
                     </div>
 
                     {/* Department Tag */}
-                    <div className="flex items-center justify-between text-[11px] text-slate-400">
+                    <div className="flex items-center justify-between text-[11px] text-slate-500">
                       <span className="flex items-center gap-1">
-                        <Building2 className="w-3 h-3 text-amber-400" /> {issue.department}
+                        <Building2 className="w-3 h-3 text-amber-500" /> {issue.department}
                       </span>
-                      <span className="text-[10px] text-slate-500">
+                      <span className="text-[10px] text-slate-400">
                         {issue.createdAt?.seconds
                           ? new Date(issue.createdAt.seconds * 1000).toLocaleDateString()
                           : 'Recent'}
@@ -1173,31 +1170,31 @@ export default function AuthorityDashboard() {
                     {/* Community Resolution Verification Status */}
                     {issue.voteStats && (issue.voteStats.yes + issue.voteStats.no > 0) && (
                       <div className={`p-2.5 rounded-xl border text-xs space-y-1.5 ${
-                        issue.isDisputed 
-                          ? 'bg-red-950/40 border-red-500/40 text-red-300 animate-pulse'
-                          : 'bg-emerald-950/30 border-emerald-500/30 text-emerald-300'
+                        issue.isDisputed
+                          ? 'bg-red-50 border-red-200 text-red-700'
+                          : 'bg-emerald-50 border-emerald-200 text-emerald-700'
                       }`}>
                         <div className="flex items-center justify-between font-semibold">
                           <span className="flex items-center gap-1">
-                            <Users className="w-3.5 h-3.5 text-blue-400" />
+                            <Users className="w-3.5 h-3.5" />
                             <span>Citizen Verification</span>
                           </span>
                           {issue.isDisputed ? (
                             <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-mono font-bold">
-                              ⚠️ DISPUTED BY CITIZENS
+                              ⚠️ DISPUTED
                             </span>
                           ) : (
-                            <span className="text-[10px] bg-emerald-600/80 text-white px-2 py-0.5 rounded font-mono font-bold">
+                            <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-mono font-bold">
                               ✓ {Math.round((issue.voteStats.yes / (issue.voteStats.yes + issue.voteStats.no)) * 100)}% Approved
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center justify-between text-[11px] text-slate-300">
-                          <span className="flex items-center gap-1 text-emerald-400 font-semibold">
-                            <ThumbsUp className="w-3 h-3" /> {issue.voteStats.yes} Verified Fixed
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="flex items-center gap-1 text-emerald-700 font-semibold">
+                            <ThumbsUp className="w-3 h-3" /> {issue.voteStats.yes} Fixed
                           </span>
-                          <span className="flex items-center gap-1 text-red-400 font-semibold">
-                            <ThumbsDown className="w-3 h-3" /> {issue.voteStats.no} Reported Unresolved
+                          <span className="flex items-center gap-1 text-red-600 font-semibold">
+                            <ThumbsDown className="w-3 h-3" /> {issue.voteStats.no} Unresolved
                           </span>
                         </div>
                       </div>
@@ -1206,14 +1203,14 @@ export default function AuthorityDashboard() {
                 </div>
 
                 {/* Card Action Footer */}
-                <div className="p-4 bg-white/5 border-t border-white/5 space-y-2">
+                <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-2">
                   {issue.status === 'Resolved' ? (
-                    <div className="bg-emerald-500/10 border border-emerald-500/20 p-2.5 rounded-xl text-center">
-                      <div className="flex items-center justify-center gap-1.5 text-emerald-400 text-xs font-semibold">
+                    <div className="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-center">
+                      <div className="flex items-center justify-center gap-1.5 text-emerald-700 text-xs font-semibold">
                         <ShieldCheck className="w-4 h-4" />
                         <span>AI Resolution Audit Passed</span>
                       </div>
-                      <p className="text-[10px] text-slate-400 mt-1">
+                      <p className="text-[10px] text-slate-500 mt-1">
                         Resolved by {issue.resolvedBy || 'Authority'}
                       </p>
                     </div>
@@ -1221,7 +1218,7 @@ export default function AuthorityDashboard() {
                     <div className="flex flex-col gap-2">
                       <button
                         onClick={() => openResolutionStudio(issue)}
-                        className="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 transition-all"
+                        className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-all"
                       >
                         <Video className="w-4 h-4" />
                         <span>Resolve Issue (30s Live Video)</span>
@@ -1230,9 +1227,9 @@ export default function AuthorityDashboard() {
                       {issue.status === 'Submitted' && (
                         <button
                           onClick={() => markAsInProgress(issue)}
-                          className="w-full py-1.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 text-[11px] font-semibold rounded-lg border border-blue-500/30 transition-all flex items-center justify-center gap-1.5"
+                          className="w-full py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 text-[11px] font-semibold rounded-lg border border-blue-200 transition-all flex items-center justify-center gap-1.5"
                         >
-                          <Mail className="w-3 h-3 text-blue-400" />
+                          <Mail className="w-3 h-3" />
                           <span>Mark as "In Progress" & Notify Citizen</span>
                         </button>
                       )}
@@ -1252,9 +1249,9 @@ export default function AuthorityDashboard() {
                       );
                       setStatusNoteInput('');
                     }}
-                    className="w-full py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 text-[11px] font-medium rounded-lg border border-white/10 flex items-center justify-center gap-1.5 transition-all"
+                    className="w-full py-1.5 bg-white hover:bg-slate-100 text-slate-600 text-[11px] font-medium rounded-lg border border-slate-200 flex items-center justify-center gap-1.5 transition-all"
                   >
-                    <Mail className="w-3.5 h-3.5 text-emerald-400" />
+                    <Mail className="w-3.5 h-3.5 text-slate-500" />
                     <span>Change Status & Email Citizen</span>
                   </button>
                 </div>
@@ -1266,44 +1263,44 @@ export default function AuthorityDashboard() {
 
       {/* QUICK STATUS TRANSITION & NOTIFICATION MODAL */}
       {statusDialogIssue && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#0f172a] border border-emerald-500/30 w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-5 relative animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-6 shadow-xl space-y-5 relative animate-in fade-in zoom-in-95">
             <button
               onClick={() => setStatusDialogIssue(null)}
-              className="absolute top-5 right-5 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10"
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center text-emerald-400 shrink-0">
+              <div className="w-12 h-12 bg-slate-100 border border-slate-200 rounded-2xl flex items-center justify-center text-slate-700 shrink-0">
                 <Mail className="w-6 h-6" />
               </div>
               <div>
-                <span className="text-[10px] font-bold tracking-widest text-emerald-400 uppercase font-mono">
+                <span className="text-[10px] font-bold tracking-widest text-slate-500 uppercase font-mono">
                   Grievance Redressal Dispatch
                 </span>
-                <h3 className="text-base font-bold text-white">Update Status & Notify Citizen</h3>
+                <h3 className="text-base font-bold text-slate-900">Update Status & Notify Citizen</h3>
               </div>
             </div>
 
             {/* Target Issue summary */}
-            <div className="bg-slate-900/90 p-3.5 rounded-2xl border border-slate-800 space-y-1.5 text-xs">
+            <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1.5 text-xs">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-emerald-400 font-bold">Ticket #{statusDialogIssue.ticketId}</span>
-                <span className="px-2 py-0.5 rounded text-[10px] bg-white/10 text-white font-mono">
+                <span className="font-mono text-emerald-700 font-bold">Ticket #{statusDialogIssue.ticketId}</span>
+                <span className="px-2 py-0.5 rounded text-[10px] bg-slate-200 text-slate-700 font-mono">
                   Current: {statusDialogIssue.status}
                 </span>
               </div>
-              <p className="text-white font-semibold truncate">{statusDialogIssue.title}</p>
-              <p className="text-slate-400 text-[11px] truncate">
-                Citizen Recipient: <span className="text-emerald-300 font-mono">{statusDialogIssue.userEmail}</span>
+              <p className="text-slate-900 font-semibold truncate">{statusDialogIssue.title}</p>
+              <p className="text-slate-500 text-[11px] truncate">
+                Citizen Recipient: <span className="text-emerald-700 font-mono">{statusDialogIssue.userEmail}</span>
               </p>
             </div>
 
             {/* Target Status Select */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-300">
+              <label className="block text-xs font-semibold text-slate-700">
                 Transition Status To:
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -1319,12 +1316,12 @@ export default function AuthorityDashboard() {
                     onClick={() => setSelectedNewStatus(s.id)}
                     className={`p-3 rounded-xl border text-left transition-all ${
                       selectedNewStatus === s.id
-                        ? 'bg-emerald-500/20 border-emerald-500 text-white font-bold'
-                        : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white'
+                        ? 'bg-slate-900 border-slate-900 text-white font-bold'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-400'
                     }`}
                   >
                     <div className="text-xs font-bold">{s.label}</div>
-                    <div className="text-[10px] text-slate-400 mt-0.5">{s.desc}</div>
+                    <div className={`text-[10px] mt-0.5 ${selectedNewStatus === s.id ? 'text-slate-300' : 'text-slate-400'}`}>{s.desc}</div>
                   </button>
                 ))}
               </div>
@@ -1332,7 +1329,7 @@ export default function AuthorityDashboard() {
 
             {/* Custom Officer Note */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Officer Remarks / Instructions for Citizen (included in email):
               </label>
               <textarea
@@ -1340,12 +1337,12 @@ export default function AuthorityDashboard() {
                 onChange={(e) => setStatusNoteInput(e.target.value)}
                 placeholder="e.g. Work crew is currently filling asphalt pothole. Expected completion within 4 hours."
                 rows={3}
-                className="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 text-white text-xs p-3 rounded-xl outline-none placeholder:text-slate-600 resize-none"
+                className="w-full bg-white border border-slate-300 focus:border-slate-500 text-slate-900 text-xs p-3 rounded-xl outline-none placeholder:text-slate-400 resize-none"
               />
             </div>
 
-            <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[11px] text-blue-300 flex items-start gap-2">
-              <Send className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-[11px] text-blue-700 flex items-start gap-2">
+              <Send className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
               <span>
                 Submitting this action will immediately dispatch an authoritative municipal notification email to{' '}
                 <strong>{statusDialogIssue.userEmail}</strong> and record an immutable entry in the audit ledger.
@@ -1357,7 +1354,7 @@ export default function AuthorityDashboard() {
               <button
                 type="button"
                 onClick={() => setStatusDialogIssue(null)}
-                className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-all"
+                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-all"
               >
                 Cancel
               </button>
@@ -1371,7 +1368,7 @@ export default function AuthorityDashboard() {
                     statusNoteInput.trim() || undefined
                   )
                 }
-                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all"
+                className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all"
               >
                 <Mail className="w-4 h-4" />
                 <span>Authorize & Send Email</span>
@@ -1383,9 +1380,9 @@ export default function AuthorityDashboard() {
 
       {/* MODAL: 30-SECOND LIVE CAMERA RESOLUTION STUDIO */}
       {resolveModalOpen && targetIssue && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#0b0f19] border border-white/20 rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl relative my-8">
-            {/* Modal Header */}
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-[#0d0d0d] border border-white/20 rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl relative my-8">
+            {/* Modal Header — kept dark intentionally: live camera viewfinder UI */}
             <div className="px-6 py-4 bg-white/5 border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
@@ -1430,26 +1427,20 @@ export default function AuthorityDashboard() {
 
               {/* LIVE CAMERA VIEWFINDER WITH BURNT-IN OVERLAYS */}
               <div className="relative rounded-2xl overflow-hidden bg-black border-2 border-white/20 aspect-video flex items-center justify-center shadow-inner">
-                {/* Live Video Feed */}
                 <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
 
-                {/* CAMERA OVERLAY 1: Top Bar (Live Status & Timetag) */}
                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between text-xs pointer-events-none">
-                  {/* Recording status badge */}
                   <div className="flex items-center gap-2 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
                     <span className={`w-3 h-3 rounded-full ${recording ? 'bg-red-500 animate-ping' : 'bg-emerald-400'}`}></span>
                     <span className="font-mono font-bold text-white uppercase text-[11px]">
                       {recording ? `REC (${recordSecondsLeft}s Left)` : 'LIVE VIEW'}
                     </span>
                   </div>
-
-                  {/* Live Timestamp overlay */}
                   <div className="bg-black/80 backdrop-blur-md px-3 py-1 rounded-full border border-emerald-500/40 text-emerald-400 font-mono text-[11px] font-bold">
                     {liveTimestamp || 'TIMETAG ACTIVE'}
                   </div>
                 </div>
 
-                {/* CAMERA OVERLAY 2: Bottom GPS Geofence Tag */}
                 <div className="absolute bottom-3 left-3 right-3 bg-black/80 backdrop-blur-md p-3 rounded-xl border border-white/20 text-xs pointer-events-none">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
@@ -1463,7 +1454,6 @@ export default function AuthorityDashboard() {
                         </span>
                       </div>
                     </div>
-
                     <div className="text-right border-t sm:border-t-0 sm:border-l border-white/10 pt-1 sm:pt-0 sm:pl-3">
                       <span className="text-[10px] text-slate-400 block uppercase font-mono">Target Distance:</span>
                       <span className="text-emerald-400 font-mono text-[11px] font-bold">
@@ -1480,7 +1470,6 @@ export default function AuthorityDashboard() {
                   </div>
                 </div>
 
-                {/* RECORDING PROGRESS BAR OVERLAY */}
                 {recording && (
                   <div className="absolute top-0 left-0 right-0 h-1.5 bg-black/50">
                     <div
@@ -1499,7 +1488,6 @@ export default function AuthorityDashboard() {
                     Hold camera steadily showing resolved civic work. AI verifies visual fixes, live timetag, and spatial GPS match.
                   </p>
                 </div>
-
                 <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                   {!recording ? (
                     <button
@@ -1521,7 +1509,7 @@ export default function AuthorityDashboard() {
 
               {/* RECORDED PREVIEW & AI SUBMISSION */}
               {recordedFrames.length > 0 && !recording && (
-                <div className="bg-[#0e1320] p-5 rounded-2xl border border-emerald-500/30 space-y-4">
+                <div className="bg-white/5 p-5 rounded-2xl border border-white/10 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-5 h-5 text-emerald-400" />
@@ -1530,7 +1518,6 @@ export default function AuthorityDashboard() {
                         <p className="text-[10px] text-slate-400">Keyframes extracted with live timetag and location metadata</p>
                       </div>
                     </div>
-
                     <button
                       type="button"
                       onClick={start30SecRecording}
@@ -1540,7 +1527,6 @@ export default function AuthorityDashboard() {
                     </button>
                   </div>
 
-                  {/* Frame Thumbnails */}
                   <div className="grid grid-cols-5 gap-2">
                     {recordedFrames.map((frame, idx) => (
                       <div key={idx} className="relative rounded-lg overflow-hidden border border-white/20 aspect-video">
@@ -1552,7 +1538,6 @@ export default function AuthorityDashboard() {
                     ))}
                   </div>
 
-                  {/* AI AUDIT RESULT / ERROR DISPLAY */}
                   {aiAuditResult && (
                     <div
                       className={`p-4 rounded-xl border ${
@@ -1567,22 +1552,18 @@ export default function AuthorityDashboard() {
                         ) : (
                           <ShieldAlert className="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5" />
                         )}
-
                         <div className="space-y-1 text-xs">
                           <h5 className="font-bold text-white text-sm">
                             {aiAuditResult.isAuthentic && aiAuditResult.visualResolutionMatch
                               ? 'AI Verification Passed: Issue Resolved!'
                               : 'AI Verification Failed: Invalid Resolution Proof'}
                           </h5>
-
                           <p className="text-slate-300 leading-relaxed">{aiAuditResult.verificationSummary}</p>
-
                           {aiAuditResult.rejectionReason && (
                             <div className="mt-2 p-2.5 bg-red-950/60 rounded-lg border border-red-500/40 text-red-300 text-[11px] font-semibold">
                               ⚠️ Rejection Reason: {aiAuditResult.rejectionReason}
                             </div>
                           )}
-
                           {aiAuditResult.detectedFixes && aiAuditResult.detectedFixes.length > 0 && (
                             <div className="mt-2 pt-2 border-t border-white/10">
                               <span className="text-[10px] text-slate-400 font-semibold block uppercase">Detected Improvements:</span>
@@ -1605,7 +1586,6 @@ export default function AuthorityDashboard() {
                     </div>
                   )}
 
-                  {/* SUBMIT BUTTON */}
                   <div className="pt-2">
                     <button
                       type="button"
@@ -1635,53 +1615,53 @@ export default function AuthorityDashboard() {
 
       {/* MUNICIPAL SECURITY PIN 2FA VERIFICATION MODAL */}
       {showPinModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#0f172a] border border-blue-500/30 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-5 relative animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 w-full max-w-md rounded-2xl p-6 shadow-xl space-y-5 relative animate-in fade-in zoom-in-95">
             <button
               onClick={() => setShowPinModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/30 rounded-xl flex items-center justify-center text-blue-400 shrink-0">
+              <div className="w-12 h-12 bg-slate-100 border border-slate-200 rounded-xl flex items-center justify-center text-slate-700 shrink-0">
                 <KeyRound className="w-6 h-6" />
               </div>
               <div>
-                <span className="text-[10px] font-bold tracking-widest text-blue-400 uppercase">Government Security 2FA</span>
-                <h3 className="text-base font-bold text-white">Municipal Passkey Verification</h3>
+                <span className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">Government Security 2FA</span>
+                <h3 className="text-base font-bold text-slate-900">Municipal Passkey Verification</h3>
               </div>
             </div>
 
-            <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-xs text-slate-300">
-              <p className="font-medium text-white mb-1">Authorization Required:</p>
-              <p className="text-slate-400">{pinActionTitle}</p>
+            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-700">
+              <p className="font-medium text-slate-900 mb-1">Authorization Required:</p>
+              <p className="text-slate-500">{pinActionTitle}</p>
             </div>
 
             <form onSubmit={handleVerifyPinAndExecute} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center justify-between">
+                <label className="block text-xs font-medium text-slate-700 mb-1.5 flex items-center justify-between">
                   <span>Enter 6-Digit Municipal Passkey PIN</span>
-                  <span className="text-[10px] text-blue-400 font-mono">Demo PIN: {DEFAULT_PIN_AUTHORITY}</span>
+                  <span className="text-[10px] text-blue-700 font-mono">Demo PIN: {DEFAULT_PIN_AUTHORITY}</span>
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="password"
                     maxLength={6}
                     value={pinInput}
                     onChange={(e) => setPinInput(e.target.value)}
                     placeholder="••••••"
-                    className="w-full bg-slate-950 border border-slate-700 focus:border-blue-500 text-white pl-10 pr-4 py-3 rounded-xl text-lg font-mono tracking-widest outline-none transition-all placeholder:text-slate-600"
+                    className="w-full bg-white border border-slate-300 focus:border-slate-500 text-slate-900 pl-10 pr-4 py-3 rounded-xl text-lg font-mono tracking-widest outline-none transition-all placeholder:text-slate-300"
                     autoFocus
                   />
                 </div>
               </div>
 
               {pinError && (
-                <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-300 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
                   <span>{pinError}</span>
                 </div>
               )}
@@ -1690,13 +1670,13 @@ export default function AuthorityDashboard() {
                 <button
                   type="button"
                   onClick={() => setShowPinModal(false)}
-                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-all"
+                  className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 transition-all"
+                  className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   <span>Authorize Action</span>

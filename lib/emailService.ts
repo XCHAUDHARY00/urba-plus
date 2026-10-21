@@ -1,9 +1,7 @@
 import nodemailer from 'nodemailer';
-import { initializeApp, getApps, getApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import defaultConfig from '../firebase-applet-config.json';
 import { db } from './firebase';
 import { collection, addDoc } from 'firebase/firestore';
+import { getAdminDb } from './firebaseAdmin';
 
 export interface EmailNotificationPayload {
   ticketId: string;
@@ -26,17 +24,8 @@ export interface EmailDispatchResult {
   ticketId: string;
   subject: string;
   htmlBody: string;
-  previewUrl?: string | null;
   mode: 'smtp' | 'preview_simulation';
   error?: string;
-}
-
-function getAdminDb() {
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || defaultConfig.projectId;
-  const databaseId = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_ID || defaultConfig.firestoreDatabaseId;
-
-  const adminApp = !getApps().length ? initializeApp({ projectId }) : getApp();
-  return getFirestore(adminApp, databaseId);
 }
 
 // Generate the subject line based on status transition
@@ -410,7 +399,6 @@ export async function sendIssueStatusEmailNotification(
 
   let dispatchMode: 'smtp' | 'preview_simulation' = 'preview_simulation';
   let messageId: string = `msg_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-  let previewUrl: string | null = null;
   let deliveryError: string | undefined = undefined;
 
   // Check if SMTP environment variables are configured
@@ -426,11 +414,11 @@ export async function sendIssueStatusEmailNotification(
         host: smtpHost,
         port: smtpPort,
         secure: smtpPort === 465,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass,
-        },
+        auth: { user: smtpUser, pass: smtpPass },
       });
+
+      // Verify connection before sending
+      await transporter.verify();
 
       const info = await transporter.sendMail({
         from: smtpFrom,
@@ -444,14 +432,16 @@ export async function sendIssueStatusEmailNotification(
       dispatchMode = 'smtp';
       console.log(`[EmailService] Sent email to ${recipientEmail} via SMTP. MessageId: ${messageId}`);
     } catch (err: any) {
-      console.warn(`[EmailService] SMTP delivery failed, falling back to simulated local dispatch:`, err?.message || err);
       deliveryError = err?.message || 'SMTP delivery failed';
+      console.warn(`[EmailService] SMTP delivery failed for ticket #${ticketId}:`, deliveryError);
     }
   } else {
-    // Simulated safe delivery for AI Studio environment (logs details & persists notification)
-    console.log(`[EmailService] SMTP credentials not set; simulating notification email delivery to: ${recipientEmail} for ticket #${ticketId} (Status: ${previousStatus} -> ${newStatus})`);
+    console.log(
+      `[EmailService] SMTP not configured — simulation mode. Ticket #${ticketId} (${previousStatus} → ${newStatus}) to: ${recipientEmail}`
+    );
   }
 
+  // Persist to Firestore — status reflects actual delivery outcome
   const notificationRecord = {
     ticketId,
     issueId: payload.issueId || '',
@@ -459,7 +449,8 @@ export async function sendIssueStatusEmailNotification(
     subject,
     previousStatus: previousStatus || 'Submitted',
     newStatus,
-    status: 'delivered',
+    // 'delivered' only when SMTP succeeded; 'simulated' when no credentials; 'failed' on SMTP error
+    status: dispatchMode === 'smtp' ? 'delivered' : deliveryError ? 'failed' : 'simulated',
     message: payload.notes || `Issue status changed from ${previousStatus || 'Submitted'} to ${newStatus}`,
     htmlBody,
     textBody,
@@ -469,7 +460,6 @@ export async function sendIssueStatusEmailNotification(
     error: deliveryError || null,
   };
 
-  // Persist notification to Firestore for the Citizen Inbox & Audit trail
   try {
     await addDoc(collection(db, 'emailNotifications'), notificationRecord);
   } catch (clientDbErr) {
@@ -477,18 +467,18 @@ export async function sendIssueStatusEmailNotification(
       const adminDb = getAdminDb();
       await adminDb.collection('emailNotifications').add(notificationRecord);
     } catch (adminDbErr) {
-      console.warn('[EmailService] Notice: Could not persist notification to Firestore:', adminDbErr);
+      console.warn('[EmailService] Could not persist notification to Firestore:', adminDbErr);
     }
   }
 
   return {
-    success: true,
+    // success=false only when SMTP was configured but failed — simulation is still considered success
+    success: !deliveryError,
     messageId,
     recipientEmail,
     ticketId,
     subject,
     htmlBody,
-    previewUrl,
     mode: dispatchMode,
     error: deliveryError,
   };

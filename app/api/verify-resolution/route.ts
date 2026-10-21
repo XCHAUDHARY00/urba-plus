@@ -1,12 +1,9 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import { NextRequest, NextResponse } from 'next/server';
-import { initializeApp, getApps, getApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import defaultConfig from '../../../firebase-applet-config.json';
-
 import { db } from '@/lib/firebase';
 import { doc, getDoc, updateDoc, collection, addDoc } from 'firebase/firestore';
 import { sendIssueStatusEmailNotification } from '@/lib/emailService';
+import { getAdminDb } from '@/lib/firebaseAdmin';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,14 +17,6 @@ function createGenAIClient(): GoogleGenAI {
       },
     },
   });
-}
-
-function getAdminDb() {
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || defaultConfig.projectId;
-  const databaseId = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_ID || defaultConfig.firestoreDatabaseId;
-
-  const adminApp = !getApps().length ? initializeApp({ projectId }) : getApp();
-  return getFirestore(adminApp, databaseId);
 }
 
 function calculateDistanceKm(
