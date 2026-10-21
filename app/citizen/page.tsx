@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth, db } from '@/lib/firebase';
 import { signOut, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
@@ -176,15 +176,13 @@ export default function CitizenDashboard() {
   const { t } = useLanguage();
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'home' | 'report' | 'reports' | 'explore' | 'notifications' | 'leaderboard'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'report' | 'reports' | 'explore' | 'leaderboard'>('home');
 
-  // Email Notifications State
+  // In-App Notification Center State
   const [notifications, setNotifications] = useState<EmailNotificationItem[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
-  const [selectedEmailModal, setSelectedEmailModal] = useState<EmailNotificationItem | null>(null);
-  const [notificationFilterTicket, setNotificationFilterTicket] = useState<string | null>(null);
-  const [testSendingEmail, setTestSendingEmail] = useState(false);
-  const [emailPreviewTab, setEmailPreviewTab] = useState<'html' | 'text'>('html');
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [readNotificationIds, setReadNotificationIds] = useState<string[]>([]);
 
   // Issue Form State
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -843,7 +841,7 @@ export default function CitizenDashboard() {
     }
   };
 
-  // Fetch Dispatched Email Notifications
+  // Fetch Notifications
   const fetchNotifications = async () => {
     setLoadingNotifications(true);
     try {
@@ -854,40 +852,82 @@ export default function CitizenDashboard() {
       const list = await fetchCitizenEmailNotifications(email);
       setNotifications(list);
     } catch (err) {
-      console.warn('Error fetching email notifications:', err);
+      console.warn('Error fetching notifications:', err);
     } finally {
       setLoadingNotifications(false);
     }
   };
 
-  // Dispatch a live sample status update notification email for demonstration
-  const handleSendTestNotification = async (targetStatus: string = 'In Progress') => {
-    setTestSendingEmail(true);
+  // Load read notification IDs from local storage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('citizen_read_notifications');
+        if (stored) {
+          setReadNotificationIds(JSON.parse(stored));
+        }
+      } catch (e) {
+        console.warn('Error reading stored notifications:', e);
+      }
+    }
+  }, []);
+
+  // Real-time periodic notification check (every 12 seconds)
+  useEffect(() => {
+    if (!user) return;
+    fetchNotifications();
+    const interval = setInterval(() => {
+      fetchNotifications();
+      if (user?.uid) {
+        fetchUserReports(user.uid);
+      }
+    }, 12000);
+    return () => clearInterval(interval);
+  }, [user]);
+
+  const unreadCount = useMemo(() => {
+    return notifications.filter((n) => !readNotificationIds.includes(n.id)).length;
+  }, [notifications, readNotificationIds]);
+
+  const markAllAsRead = () => {
+    const allIds = notifications.map((n) => n.id);
+    setReadNotificationIds(allIds);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('citizen_read_notifications', JSON.stringify(allIds));
+      } catch (e) {
+        console.warn('Error writing read notifications:', e);
+      }
+    }
+  };
+
+  const markOneAsRead = (id: string) => {
+    setReadNotificationIds((prev) => {
+      if (prev.includes(id)) return prev;
+      const next = [...prev, id];
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('citizen_read_notifications', JSON.stringify(next));
+        } catch (e) {
+          console.warn('Error writing read notification:', e);
+        }
+      }
+      return next;
+    });
+  };
+
+  const formatNotificationTime = (isoString?: string) => {
+    if (!isoString) return 'Just now';
     try {
-      const citizenEmail =
-        user?.email ||
-        (typeof window !== 'undefined' ? localStorage.getItem('user_email') : '') ||
-        'citizen@crowdcivic.org';
-      const sampleTicketId = myReports[0]?.ticketId || `CIV-${Math.floor(10000 + Math.random() * 90000)}`;
-      const sampleTitle = myReports[0]?.title || 'Main Street Deep Pothole & Water Drain Clog';
-
-      await triggerStatusChangeEmail({
-        ticketId: sampleTicketId,
-        recipientEmail: citizenEmail,
-        previousStatus: targetStatus === 'In Progress' ? 'Submitted' : 'In Progress',
-        newStatus: targetStatus,
-        issueTitle: sampleTitle,
-        category: 'Roads & Infrastructure',
-        locationAddress: 'Ward 4, Civil Lines Road, Central District',
-        notes: `Simulated notification test: Status was transitioned to ${targetStatus} by Municipal Works Authority.`,
-        performedBy: 'Municipal Grievance Dispatch Bot',
-      });
-
-      await fetchNotifications();
-    } catch (err) {
-      console.error('Error sending test notification email:', err);
-    } finally {
-      setTestSendingEmail(false);
+      const date = new Date(isoString);
+      const now = new Date();
+      const diffSec = Math.floor((now.getTime() - date.getTime()) / 1000);
+      if (diffSec < 60) return 'Just now';
+      if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+      if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+      return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    } catch {
+      return 'Recently';
     }
   };
 
@@ -1119,6 +1159,24 @@ export default function CitizenDashboard() {
         resetForm();
         fetchUserReports(user.uid);
         fetchAllReports();
+
+        // Trigger confirmation notification email
+        if (user.email) {
+          triggerStatusChangeEmail({
+            ticketId: match.ticketId,
+            issueId: match.candidateId,
+            recipientEmail: user.email,
+            previousStatus: parentData.status || 'Submitted',
+            newStatus: parentData.status || 'Submitted',
+            issueTitle: parentData.title || 'Civic Infrastructure Defect',
+            category: parentData.category,
+            locationAddress: parentData.location?.address,
+            notes: `You joined and supported Ticket #${match.ticketId}. Your photo evidence was appended and complaint priority was escalated to ${newSeverity}.`,
+            performedBy: user.displayName || 'Citizen Supporter',
+          })
+            .then(() => fetchNotifications())
+            .catch(console.warn);
+        }
       }
     } catch (err: any) {
       console.error('Error joining complaint:', err);
@@ -1303,31 +1361,6 @@ export default function CitizenDashboard() {
 
               <button
                 onClick={() => {
-                  setActiveTab('notifications');
-                  setNotificationFilterTicket(null);
-                  fetchNotifications();
-                }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
-                  activeTab === 'notifications'
-                    ? 'bg-emerald-700 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-stone-100'
-                }`}
-              >
-                <Mail className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Email Alerts</span>
-                {notifications.length > 0 && (
-                  <span
-                    className={`px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full ${
-                      activeTab === 'notifications' ? 'bg-white/20 text-white' : 'bg-emerald-100 text-emerald-800'
-                    }`}
-                  >
-                    {notifications.length}
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => {
                   setActiveTab('leaderboard');
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
@@ -1358,6 +1391,154 @@ export default function CitizenDashboard() {
           {/* 3. Right Side: Controls - Compact, Well Maintained */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <LanguageSelector compact={true} />
+
+            {/* In-App Notification Bell with Yellowish-Orange Alert State */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setNotificationsOpen(!notificationsOpen)}
+                className={`relative p-2 rounded-xl transition-all cursor-pointer flex items-center justify-center border ${
+                  unreadCount > 0
+                    ? 'bg-amber-50 border-amber-300 text-amber-600 hover:bg-amber-100 shadow-xs'
+                    : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-stone-100'
+                }`}
+                title={unreadCount > 0 ? `${unreadCount} unread notification(s)` : 'Notifications'}
+              >
+                <Bell className={`w-4 h-4 ${unreadCount > 0 ? 'text-amber-500 fill-amber-400/40' : 'text-slate-600'}`} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] font-bold text-white shadow-xs animate-pulse ring-2 ring-white">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {notificationsOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40 bg-black/10 backdrop-blur-xs"
+                    onClick={() => setNotificationsOpen(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-stone-200 rounded-2xl shadow-2xl p-4 z-50 text-slate-800 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="flex items-center justify-between pb-3 border-b border-stone-200">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+                          <Bell className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-xs text-slate-900">Notifications</h4>
+                          <span className="text-[10px] text-slate-500">Live Grievance & Status Updates</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {unreadCount > 0 && (
+                          <button
+                            type="button"
+                            onClick={markAllAsRead}
+                            className="text-[11px] font-semibold text-blue-600 hover:text-blue-800 cursor-pointer"
+                          >
+                            Mark all read
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setNotificationsOpen(false)}
+                          className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-stone-100 cursor-pointer"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 max-h-80 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
+                      {loadingNotifications && notifications.length === 0 ? (
+                        <div className="py-8 text-center text-xs text-slate-500">
+                          <RefreshCw className="w-4 h-4 animate-spin text-slate-600 mx-auto mb-1.5" />
+                          <span>Checking status updates...</span>
+                        </div>
+                      ) : notifications.length === 0 ? (
+                        <div className="py-8 text-center text-xs text-slate-500 space-y-1">
+                          <Bell className="w-6 h-6 text-slate-300 mx-auto mb-1" />
+                          <p className="font-medium text-slate-700">No notifications yet</p>
+                          <p className="text-[11px] text-slate-400 max-w-[220px] mx-auto leading-relaxed">
+                            Updates on your filed tickets and resolution changes will appear here in real time.
+                          </p>
+                        </div>
+                      ) : (
+                        notifications.map((item) => {
+                          const isUnread = !readNotificationIds.includes(item.id);
+                          return (
+                            <div
+                              key={item.id}
+                              onClick={() => {
+                                markOneAsRead(item.id);
+                                setActiveTab('reports');
+                                setNotificationsOpen(false);
+                              }}
+                              className={`p-3 rounded-xl border transition-all cursor-pointer text-left relative ${
+                                isUnread
+                                  ? 'bg-amber-50/70 border-amber-200 hover:bg-amber-100/70'
+                                  : 'bg-stone-50/80 border-stone-200/70 hover:bg-stone-100'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between gap-2 mb-1">
+                                <div className="flex items-center gap-1.5">
+                                  {isUnread && (
+                                    <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                                  )}
+                                  <span className="font-mono text-[11px] font-bold text-slate-900">
+                                    #{item.ticketId}
+                                  </span>
+                                  <span
+                                    className={`px-1.5 py-0.2 rounded text-[9px] font-bold font-mono ${
+                                      item.newStatus === 'Resolved'
+                                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                        : item.newStatus === 'In Progress'
+                                        ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                                        : 'bg-amber-100 text-amber-800 border border-amber-200'
+                                    }`}
+                                  >
+                                    {item.newStatus}
+                                  </span>
+                                </div>
+                                <span className="text-[10px] text-slate-400 font-mono">
+                                  {formatNotificationTime(item.sentAt)}
+                                </span>
+                              </div>
+                              <p className="text-xs text-slate-800 font-medium line-clamp-2 leading-snug">
+                                {item.message || item.subject}
+                              </p>
+                              <div className="mt-1.5 flex items-center justify-between text-[10px] text-slate-500">
+                                <span className="flex items-center gap-1">
+                                  <Mail className="w-3 h-3 text-slate-400" /> Auto-email sent to {item.recipientEmail}
+                                </span>
+                                <span className="text-blue-600 font-semibold hover:underline">
+                                  View ticket &rarr;
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+
+                    <div className="mt-3 pt-2.5 border-t border-stone-200 flex items-center justify-between text-[10px] text-slate-500">
+                      <span className="flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Live status auto-sync
+                      </span>
+                      <button
+                        type="button"
+                        onClick={fetchNotifications}
+                        disabled={loadingNotifications}
+                        className="text-slate-600 hover:text-slate-900 font-semibold cursor-pointer"
+                      >
+                        Refresh
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
 
             <div
               className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-700 font-medium max-w-[130px]"
@@ -1406,24 +1587,6 @@ export default function CitizenDashboard() {
             }`}
           >
             {t('my_issues', 'My Reports')} ({myReports.length})
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('notifications');
-              setNotificationFilterTicket(null);
-              fetchNotifications();
-            }}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-all ${
-              activeTab === 'notifications' ? 'bg-emerald-600 text-white' : 'bg-white border border-slate-200 text-slate-700'
-            }`}
-          >
-            <Mail className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Email Alerts</span>
-            {notifications.length > 0 && (
-              <span className="px-1.5 py-0.2 text-[8px] bg-emerald-100 text-emerald-800 font-mono font-bold rounded-full">
-                {notifications.length}
-              </span>
-            )}
           </button>
           <button
             onClick={() => setActiveTab('leaderboard')}
@@ -2296,26 +2459,15 @@ export default function CitizenDashboard() {
                             </span>
                             <div className="flex items-center gap-3">
                               <button
-                                onClick={() => {
-                                  setActiveTab('notifications');
-                                  setNotificationFilterTicket(item.ticketId);
-                                  fetchNotifications();
-                                }}
-                                className="text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1"
-                                title="View status emails for this ticket"
-                              >
-                                <Mail className="w-3.5 h-3.5" /> Emails
-                              </button>
-                              <button
                                 onClick={() => setSelectedReportDetail(item)}
-                                className="text-slate-800 hover:text-black font-semibold flex items-center gap-0.5"
+                                className="text-slate-800 hover:text-black font-semibold flex items-center gap-0.5 cursor-pointer"
                               >
                                 <Eye className="w-3.5 h-3.5" /> Details
                               </button>
                               {item.id && (
                                 <button
                                   onClick={(e) => handleDeleteReport(e, item.id!, item.ticketId)}
-                                  className="text-rose-700 hover:text-rose-800 font-semibold flex items-center gap-0.5"
+                                  className="text-rose-700 hover:text-rose-800 font-semibold flex items-center gap-0.5 cursor-pointer"
                                   title="Delete Complaint"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" /> Delete
@@ -2480,192 +2632,6 @@ export default function CitizenDashboard() {
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* VIEW 5: EMAIL ALERTS & NOTIFICATIONS CENTER */}
-        {activeTab === 'notifications' && (
-          <div className="space-y-6">
-            {/* Header & Service Status Card */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
-                  <Mail className="w-6 h-6 text-emerald-600" />
-                  <span>Citizen Email Notification Service</span>
-                </h1>
-                <p className="text-xs text-slate-600 mt-1">
-                  Automated email alerts dispatched to your inbox whenever your reported grievances change status (e.g., from 'Submitted' to 'In Progress' or 'Resolved').
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  disabled={loadingNotifications}
-                  onClick={fetchNotifications}
-                  className="px-3.5 py-2 bg-white hover:bg-stone-50 border border-stone-300 text-slate-700 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 ${loadingNotifications ? 'animate-spin text-slate-700' : ''}`} />
-                  <span>Refresh Inbox</span>
-                </button>
-
-                <button
-                  type="button"
-                  disabled={testSendingEmail}
-                  onClick={() => handleSendTestNotification('In Progress')}
-                  className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-sm"
-                  title="Test the email notification trigger"
-                >
-                  <Send className={`w-3.5 h-3.5 ${testSendingEmail ? 'animate-pulse' : ''}`} />
-                  <span>{testSendingEmail ? 'Sending Test Alert...' : 'Simulate Status Email'}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Recipient Identity Banner */}
-            <div className="bg-white border border-stone-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-stone-100 border border-stone-200 text-stone-700 flex items-center justify-center shrink-0">
-                  <Inbox className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono block font-semibold">
-                    Citizen Notification Channel
-                  </span>
-                  <span className="text-sm font-bold text-slate-900 font-mono">
-                    {user?.email || 'citizen@crowdcivic.org'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 text-xs">
-                {notificationFilterTicket && (
-                  <div className="flex items-center gap-2 px-2.5 py-1 bg-stone-100 text-stone-800 border border-stone-300 rounded-lg text-xs font-mono">
-                    <span>Filtering: Ticket #{notificationFilterTicket}</span>
-                    <button
-                      onClick={() => setNotificationFilterTicket(null)}
-                      className="hover:text-black font-bold"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
-                <div className="px-3 py-1 bg-stone-50 border border-stone-200 rounded-lg text-slate-600 text-xs">
-                  Total Dispatched: <strong className="text-emerald-700 font-mono">{notifications.length}</strong>
-                </div>
-              </div>
-            </div>
-
-            {/* Notification List */}
-            {loadingNotifications ? (
-              <div className="text-center py-16">
-                <RefreshCw className="w-6 h-6 animate-spin text-slate-700 mx-auto mb-2" />
-                <p className="text-xs text-slate-600">Loading citizen email ledger...</p>
-              </div>
-            ) : notifications.filter((n) => !notificationFilterTicket || (n.ticketId || '').toLowerCase() === notificationFilterTicket.toLowerCase()).length === 0 ? (
-              <div className="bg-white rounded-2xl border border-stone-200 p-12 text-center space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-stone-50 border border-stone-200 text-slate-500 mx-auto flex items-center justify-center">
-                  <Mail className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 mb-1">No Status Change Emails Yet</h3>
-                  <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-                    Whenever an authority or admin updates your report (e.g. from <strong>Submitted</strong> to <strong>In Progress</strong>, or <strong>Resolved</strong>), an official email is triggered immediately and recorded here.
-                  </p>
-                </div>
-                <div className="pt-2 flex flex-wrap justify-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => handleSendTestNotification('In Progress')}
-                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-all shadow-sm"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Send Test Alert (In Progress)</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSendTestNotification('Resolved')}
-                    className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-all shadow-sm"
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Send Test Alert (Resolved)</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {notifications
-                  .filter((n) => !notificationFilterTicket || (n.ticketId || '').toLowerCase() === notificationFilterTicket.toLowerCase())
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className="bg-white border border-stone-200 hover:border-slate-400 rounded-2xl p-4 sm:p-5 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
-                    >
-                      <div className="space-y-2 flex-1 min-w-0">
-                        {/* Status change badges */}
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="px-2 py-0.5 rounded bg-stone-100 border border-stone-300 text-stone-800 font-mono text-[11px] font-bold">
-                            #{item.ticketId}
-                          </span>
-
-                          <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-stone-50 border border-stone-200">
-                            <span className="text-slate-400 line-through">{item.previousStatus || 'Submitted'}</span>
-                            <span className="text-slate-500">&rarr;</span>
-                            <span
-                              className={
-                                item.newStatus === 'Resolved'
-                                  ? 'text-emerald-700 font-extrabold'
-                                  : item.newStatus === 'In Progress'
-                                  ? 'text-blue-700 font-extrabold'
-                                  : 'text-amber-800 font-extrabold'
-                              }
-                            >
-                              {item.newStatus}
-                            </span>
-                          </div>
-
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono font-semibold">
-                            ✓ {item.dispatchMode === 'smtp' ? 'SMTP Delivered' : 'System Email Sent'}
-                          </span>
-                        </div>
-
-                        {/* Subject */}
-                        <h4 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
-                          {item.subject}
-                        </h4>
-
-                        {/* Notes preview */}
-                        {item.message && (
-                          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                            {item.message}
-                          </p>
-                        )}
-
-                        <div className="flex flex-wrap items-center gap-4 text-[10px] text-slate-600 font-mono pt-1">
-                          <span>To: <strong className="text-slate-900 font-semibold">{item.recipientEmail}</strong></span>
-                          <span>•</span>
-                          <span>Dispatched: <strong className="text-slate-900 font-semibold">{new Date(item.sentAt).toLocaleString()}</strong></span>
-                        </div>
-                      </div>
-
-                      {/* Action buttons */}
-                      <div className="flex items-center gap-2 self-start md:self-center shrink-0">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedEmailModal(item);
-                            setEmailPreviewTab('html');
-                          }}
-                          className="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 text-slate-800 border border-stone-300 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-sm"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span>Preview Full Email</span>
-                        </button>
                       </div>
                     </div>
                   ))}
@@ -3227,115 +3193,7 @@ export default function CitizenDashboard() {
         </div>
       )}
 
-      {/* MODAL: EMAIL PREVIEW INSPECTOR */}
-      {selectedEmailModal && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white border border-stone-200 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl my-8 relative flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95">
-            {/* Modal Header */}
-            <div className="px-6 py-4 bg-stone-50 border-b border-stone-200 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-300 flex items-center justify-center">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900">Dispatched Municipal Email Preview</h3>
-                  <p className="text-[10px] text-slate-600 font-mono">
-                    Ticket #{selectedEmailModal.ticketId} • Status: {selectedEmailModal.previousStatus} &rarr; {selectedEmailModal.newStatus}
-                  </p>
-                </div>
-              </div>
 
-              <button
-                onClick={() => setSelectedEmailModal(null)}
-                className="p-1.5 rounded-full hover:bg-stone-100 text-slate-700 hover:text-black transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Email Envelope Metadata */}
-            <div className="px-6 py-3 bg-stone-900 border-b border-stone-800 text-xs space-y-1 font-mono">
-              <div className="flex">
-                <span className="w-20 text-stone-400 font-semibold">From:</span>
-                <span className="text-emerald-400 font-bold">Civic Sentinel Notifications &lt;notifications@crowdcivic.org&gt;</span>
-              </div>
-              <div className="flex">
-                <span className="w-20 text-stone-400 font-semibold">To:</span>
-                <span className="text-white font-bold">{selectedEmailModal.recipientEmail}</span>
-              </div>
-              <div className="flex">
-                <span className="w-20 text-stone-400 font-semibold">Subject:</span>
-                <span className="text-stone-200">{selectedEmailModal.subject}</span>
-              </div>
-              <div className="flex">
-                <span className="w-20 text-stone-400 font-semibold">Date:</span>
-                <span className="text-stone-400">{new Date(selectedEmailModal.sentAt).toUTCString()}</span>
-              </div>
-            </div>
-
-            {/* View Switcher: Rich HTML vs Plain Text */}
-            <div className="px-6 py-2 bg-stone-50 border-b border-stone-200 flex items-center justify-between text-xs">
-              <span className="text-[11px] text-slate-600 font-medium">Display Format:</span>
-              <div className="flex bg-stone-200 border border-stone-300 rounded-lg p-0.5 text-[11px]">
-                <button
-                  type="button"
-                  onClick={() => setEmailPreviewTab('html')}
-                  className={`px-3 py-1 rounded font-semibold transition-all ${
-                    emailPreviewTab === 'html'
-                      ? 'bg-white text-slate-900 shadow'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Rich HTML Preview
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEmailPreviewTab('text')}
-                  className={`px-3 py-1 rounded font-semibold transition-all ${
-                    emailPreviewTab === 'text'
-                      ? 'bg-white text-slate-900 shadow'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Raw Plain Text
-                </button>
-              </div>
-            </div>
-
-            {/* Email Body Content Container */}
-            <div className="p-6 flex-1 overflow-y-auto bg-stone-100">
-              {emailPreviewTab === 'html' ? (
-                <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-stone-300">
-                  <iframe
-                    srcDoc={selectedEmailModal.htmlBody}
-                    title="Rendered Email"
-                    className="w-full h-[450px] border-none"
-                    sandbox="allow-same-origin"
-                  />
-                </div>
-              ) : (
-                <pre className="font-mono text-xs text-stone-900 bg-white p-4 rounded-xl border border-stone-300 whitespace-pre-wrap leading-relaxed">
-                  {selectedEmailModal.textBody || selectedEmailModal.message}
-                </pre>
-              )}
-            </div>
-
-            {/* Footer */}
-            <div className="px-6 py-3 bg-stone-50 border-t border-stone-200 flex items-center justify-between text-xs">
-              <span className="text-[11px] text-emerald-700 font-mono font-semibold">
-                ✓ Recorded in Municipal Audit Ledger
-              </span>
-              <button
-                type="button"
-                onClick={() => setSelectedEmailModal(null)}
-                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-xs"
-              >
-                Close Preview
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

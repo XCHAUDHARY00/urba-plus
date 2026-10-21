@@ -97,7 +97,15 @@ export default function AdminDashboard() {
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
 
   // Tab State
-  const [activeTab, setActiveTab] = useState<'audit' | 'users' | 'analytics' | 'config' | 'issues'>('audit');
+  const [activeTab, setActiveTab] = useState<'audit' | 'users' | 'analytics' | 'config' | 'issues' | 'emails'>('audit');
+
+  // Email Notifications State for Admin
+  const [emailLogs, setEmailLogs] = useState<any[]>([]);
+  const [loadingEmailLogs, setLoadingEmailLogs] = useState(false);
+  const [emailSearchQuery, setEmailSearchQuery] = useState('');
+  const [emailStatusFilter, setEmailStatusFilter] = useState<'all' | 'delivered' | 'simulated' | 'failed'>('all');
+  const [selectedAdminEmail, setSelectedAdminEmail] = useState<any | null>(null);
+  const [adminEmailPreviewTab, setAdminEmailPreviewTab] = useState<'html' | 'text'>('html');
 
   // SLA Config state (editable)
   const [slaConfig, setSlaConfig] = useState({
@@ -230,10 +238,27 @@ export default function AdminDashboard() {
       fetchAuditLogs();
       fetchUsers();
       fetchIssues();
+      fetchEmailLogs();
     });
 
     return () => unsubscribe();
   }, [router]);
+
+  // Fetch Citizen Email Dispatch Logs
+  const fetchEmailLogs = async () => {
+    setLoadingEmailLogs(true);
+    try {
+      const res = await fetch('/api/notifications/send-status-email?limit=100');
+      const data = await res.json();
+      if (data.notifications) {
+        setEmailLogs(data.notifications);
+      }
+    } catch (err) {
+      console.warn('Error fetching admin email logs:', err);
+    } finally {
+      setLoadingEmailLogs(false);
+    }
+  };
 
   // Fetch Community Issues & Verification Votes
   const fetchIssues = async () => {
@@ -668,6 +693,25 @@ export default function AdminDashboard() {
             {issuesList.filter((i) => i.isDisputed || i.adminFlagged).length > 0 && (
               <span className="px-1.5 py-0.5 text-[10px] bg-red-100 text-red-600 border border-red-200 rounded-full font-mono font-bold">
                 {issuesList.filter((i) => i.isDisputed || i.adminFlagged).length}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('emails')}
+            className={`w-full flex items-center justify-between px-3 py-2.5 text-xs rounded-xl font-medium transition-all cursor-pointer ${
+              activeTab === 'emails'
+                ? 'bg-slate-900 text-white font-bold'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <Mail className="w-4 h-4 text-emerald-600" />
+              <span>Citizen Email Alerts Log</span>
+            </div>
+            {emailLogs.length > 0 && (
+              <span className="px-1.5 py-0.5 text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-full font-mono font-bold">
+                {emailLogs.length}
               </span>
             )}
           </button>
@@ -1367,6 +1411,158 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {/* TAB 6: CITIZEN EMAIL DISPATCH LOGS */}
+          {activeTab === 'emails' && (
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                  <h2 className="font-semibold text-slate-900 text-base flex items-center gap-2">
+                    <Mail className="w-5 h-5 text-emerald-600" />
+                    <span>Citizen Email Dispatch Logs & Audit Ledger</span>
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Live delivery audit trail of automated status update emails sent to citizens upon report submission and authority status changes.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={fetchEmailLogs}
+                    disabled={loadingEmailLogs}
+                    className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${loadingEmailLogs ? 'animate-spin' : ''}`} />
+                    <span>Refresh Logs</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Filters */}
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <div className="relative flex-1 w-full">
+                  <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+                  <input
+                    type="text"
+                    value={emailSearchQuery}
+                    onChange={(e) => setEmailSearchQuery(e.target.value)}
+                    placeholder="Search by Ticket ID (e.g. CIV-12345) or citizen email..."
+                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-slate-500 text-slate-800"
+                  />
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <select
+                    value={emailStatusFilter}
+                    onChange={(e) => setEmailStatusFilter(e.target.value as any)}
+                    className="px-3 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-700 focus:outline-none"
+                  >
+                    <option value="all">All Delivery Modes</option>
+                    <option value="delivered">SMTP Delivered</option>
+                    <option value="simulated">System Simulation</option>
+                    <option value="failed">Failed Delivery</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Email Table */}
+              <div className="overflow-x-auto border border-slate-200 rounded-xl">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 text-slate-500 border-b border-slate-200 text-[11px] uppercase tracking-wider font-semibold">
+                    <tr>
+                      <th className="py-3 px-4">Ticket</th>
+                      <th className="py-3 px-4">Recipient</th>
+                      <th className="py-3 px-4">Status Change</th>
+                      <th className="py-3 px-4">Delivery Mode</th>
+                      <th className="py-3 px-4">Dispatched At</th>
+                      <th className="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {loadingEmailLogs ? (
+                      <tr>
+                        <td colSpan={6} className="py-12 text-center text-slate-400">
+                          <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-slate-500" />
+                          <span>Loading email dispatch ledger...</span>
+                        </td>
+                      </tr>
+                    ) : emailLogs.filter((item) => {
+                        const q = emailSearchQuery.toLowerCase().trim();
+                        if (q && !((item.ticketId || '').toLowerCase().includes(q) || (item.recipientEmail || '').toLowerCase().includes(q) || (item.subject || '').toLowerCase().includes(q))) {
+                          return false;
+                        }
+                        if (emailStatusFilter !== 'all') {
+                          if (emailStatusFilter === 'delivered' && item.dispatchMode !== 'smtp') return false;
+                          if (emailStatusFilter === 'simulated' && item.dispatchMode === 'smtp') return false;
+                          if (emailStatusFilter === 'failed' && item.status !== 'failed') return false;
+                        }
+                        return true;
+                      }).length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="py-12 text-center text-slate-500">
+                          <Mail className="w-6 h-6 text-slate-300 mx-auto mb-2" />
+                          <p className="font-semibold text-slate-700">No email records found</p>
+                          <p className="text-[11px] text-slate-400">Status emails triggered by authorities and report submissions will show up here.</p>
+                        </td>
+                      </tr>
+                    ) : (
+                      emailLogs
+                        .filter((item) => {
+                          const q = emailSearchQuery.toLowerCase().trim();
+                          if (q && !((item.ticketId || '').toLowerCase().includes(q) || (item.recipientEmail || '').toLowerCase().includes(q) || (item.subject || '').toLowerCase().includes(q))) {
+                            return false;
+                          }
+                          if (emailStatusFilter !== 'all') {
+                            if (emailStatusFilter === 'delivered' && item.dispatchMode !== 'smtp') return false;
+                            if (emailStatusFilter === 'simulated' && item.dispatchMode === 'smtp') return false;
+                            if (emailStatusFilter === 'failed' && item.status !== 'failed') return false;
+                          }
+                          return true;
+                        })
+                        .map((item) => (
+                          <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
+                            <td className="py-3 px-4 font-mono font-bold text-slate-900">
+                              #{item.ticketId}
+                            </td>
+                            <td className="py-3 px-4 font-mono text-slate-700">
+                              {item.recipientEmail}
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className="inline-flex items-center gap-1 font-mono text-[10px]">
+                                <span className="text-slate-400">{item.previousStatus || 'Submitted'}</span>
+                                <span className="text-slate-400">&rarr;</span>
+                                <span className="font-bold text-emerald-700">{item.newStatus}</span>
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${
+                                item.dispatchMode === 'smtp'
+                                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                  : 'bg-stone-50 text-stone-700 border-stone-200'
+                              }`}>
+                                {item.dispatchMode === 'smtp' ? '✓ SMTP Sent' : '✓ Simulated Cloud'}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-slate-500 font-mono text-[11px]">
+                              {new Date(item.sentAt).toLocaleString()}
+                            </td>
+                            <td className="py-3 px-4 text-right">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedAdminEmail(item)}
+                                className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold inline-flex items-center gap-1 cursor-pointer"
+                              >
+                                <Eye className="w-3 h-3" />
+                                <span>Preview</span>
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
@@ -1703,6 +1899,86 @@ export default function AdminDashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* ADMIN EMAIL PREVIEW INSPECTOR MODAL */}
+      {selectedAdminEmail && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-slate-200 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 my-8">
+            <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">Email Dispatch Inspector</h3>
+                  <p className="text-[10px] text-slate-500 font-mono">
+                    Ticket #{selectedAdminEmail.ticketId} • {selectedAdminEmail.previousStatus || 'Submitted'} &rarr; {selectedAdminEmail.newStatus}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedAdminEmail(null)}
+                className="p-1 rounded-lg hover:bg-slate-200 text-slate-500 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="px-6 py-3 bg-slate-900 text-xs font-mono space-y-1 text-slate-300">
+              <div className="flex"><span className="w-16 text-slate-500 font-semibold">To:</span><span className="text-white font-bold">{selectedAdminEmail.recipientEmail}</span></div>
+              <div className="flex"><span className="w-16 text-slate-500 font-semibold">Subject:</span><span>{selectedAdminEmail.subject}</span></div>
+              <div className="flex"><span className="w-16 text-slate-500 font-semibold">Sent:</span><span>{new Date(selectedAdminEmail.sentAt).toUTCString()}</span></div>
+            </div>
+
+            <div className="px-6 py-2 bg-slate-100 border-b border-slate-200 flex items-center justify-between text-xs">
+              <span className="text-[11px] text-slate-600 font-medium">Format:</span>
+              <div className="flex bg-slate-200 rounded-lg p-0.5 text-[11px]">
+                <button
+                  type="button"
+                  onClick={() => setAdminEmailPreviewTab('html')}
+                  className={`px-3 py-1 rounded font-semibold transition-all ${adminEmailPreviewTab === 'html' ? 'bg-white text-slate-900 shadow' : 'text-slate-600'}`}
+                >
+                  HTML Preview
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAdminEmailPreviewTab('text')}
+                  className={`px-3 py-1 rounded font-semibold transition-all ${adminEmailPreviewTab === 'text' ? 'bg-white text-slate-900 shadow' : 'text-slate-600'}`}
+                >
+                  Plain Text
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4 flex-1 overflow-y-auto bg-slate-50">
+              {adminEmailPreviewTab === 'html' ? (
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                  <iframe
+                    srcDoc={selectedAdminEmail.htmlBody}
+                    title="Rendered Email"
+                    className="w-full h-[380px] border-none"
+                    sandbox="allow-same-origin"
+                  />
+                </div>
+              ) : (
+                <pre className="font-mono text-xs text-slate-800 bg-white p-4 rounded-xl border border-slate-200 whitespace-pre-wrap leading-relaxed">
+                  {selectedAdminEmail.textBody || selectedAdminEmail.message}
+                </pre>
+              )}
+            </div>
+
+            <div className="px-6 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs">
+              <span className="text-[11px] text-emerald-700 font-mono font-semibold">✓ Audited Citizen Delivery</span>
+              <button
+                type="button"
+                onClick={() => setSelectedAdminEmail(null)}
+                className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-xs cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

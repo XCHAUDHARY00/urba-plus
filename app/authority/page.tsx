@@ -56,6 +56,7 @@ import {
   Fingerprint,
   Mail,
   Send,
+  Inbox,
 } from 'lucide-react';
 import { triggerStatusChangeEmail } from '@/lib/notifications';
 
@@ -126,6 +127,21 @@ interface IssueReport {
     no: number;
   };
   isDisputed?: boolean;
+}
+
+interface StatusNotificationLog {
+  id: string;
+  ticketId: string;
+  recipientEmail: string;
+  citizenName?: string;
+  issueTitle?: string;
+  previousStatus?: string;
+  newStatus: string;
+  note?: string;
+  sentAt: string;
+  deliveryMode: 'smtp' | 'simulated';
+  previewHtml?: string;
+  previewText?: string;
 }
 
 const CATEGORIES = [
@@ -200,6 +216,28 @@ export default function AuthorityDashboard() {
   const [selectedNewStatus, setSelectedNewStatus] = useState<string>('In Progress');
   const [statusNoteInput, setStatusNoteInput] = useState<string>('');
   const [updatingStatus, setUpdatingStatus] = useState<boolean>(false);
+
+  // Authority Citizen Email Alert Logs State
+  const [emailLogsModalOpen, setEmailLogsModalOpen] = useState(false);
+  const [emailLogs, setEmailLogs] = useState<StatusNotificationLog[]>([]);
+  const [loadingEmailLogs, setLoadingEmailLogs] = useState(false);
+  const [selectedAuthorityEmail, setSelectedAuthorityEmail] = useState<StatusNotificationLog | null>(null);
+  const [emailSearch, setEmailSearch] = useState('');
+
+  const fetchAuthorityEmailLogs = async () => {
+    setLoadingEmailLogs(true);
+    try {
+      const res = await fetch('/api/notifications/send-status-email');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.logs)) {
+        setEmailLogs(data.logs);
+      }
+    } catch (e) {
+      console.error('Failed to load email logs in authority portal:', e);
+    } finally {
+      setLoadingEmailLogs(false);
+    }
+  };
 
   // Government Security PIN Verification State
   const [showPinModal, setShowPinModal] = useState(false);
@@ -933,13 +971,32 @@ export default function AuthorityDashboard() {
             </p>
           </div>
 
-          <button
-            onClick={fetchIssues}
-            className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-xl border border-slate-200 flex items-center gap-2 transition-all self-start sm:self-auto"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loadingIssues ? 'animate-spin' : ''}`} />
-            <span>{t('refresh_incidents', 'Refresh Incidents')}</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+            <button
+              onClick={() => {
+                setEmailLogsModalOpen(true);
+                fetchAuthorityEmailLogs();
+              }}
+              className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 flex items-center gap-2 transition-all shadow-sm"
+              title="Inspect Citizen Status Emails and Dispatch Logs"
+            >
+              <Mail className="w-3.5 h-3.5 text-blue-600" />
+              <span>{t('email_alerts_log', 'Citizen Email Alerts Log')}</span>
+              {emailLogs.length > 0 && (
+                <span className="px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 font-mono text-[10px]">
+                  {emailLogs.length}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={fetchIssues}
+              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-xl border border-slate-200 flex items-center gap-2 transition-all"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingIssues ? 'animate-spin' : ''}`} />
+              <span>{t('refresh_incidents', 'Refresh Incidents')}</span>
+            </button>
+          </div>
         </div>
 
         {/* Real-time Email Notification Toast / Banner */}
@@ -1683,6 +1740,190 @@ export default function AuthorityDashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Municipal Authority Citizen Email Logs Modal */}
+      {emailLogsModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+            {/* Modal Header */}
+            <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-blue-100 text-blue-700 border border-blue-200">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900">
+                    Municipal Citizen Email Alerts Ledger
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Real-time verification of automatic status update emails dispatched to citizens
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={fetchAuthorityEmailLogs}
+                  className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded-xl transition-all"
+                  title="Reload Email Ledger"
+                >
+                  <RefreshCw className={`w-4 h-4 ${loadingEmailLogs ? 'animate-spin' : ''}`} />
+                </button>
+                <button
+                  onClick={() => setEmailLogsModalOpen(false)}
+                  className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-xl transition-all"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Filter toolbar */}
+            <div className="p-4 bg-white border-b border-slate-100 flex items-center justify-between gap-4">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <input
+                  type="text"
+                  value={emailSearch}
+                  onChange={(e) => setEmailSearch(e.target.value)}
+                  placeholder="Filter by Ticket ID, Citizen Email or Status..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                />
+              </div>
+              <span className="text-xs text-slate-500 font-mono">
+                {emailLogs.length} total logs
+              </span>
+            </div>
+
+            {/* Logs List */}
+            <div className="p-4 overflow-y-auto flex-1 divide-y divide-slate-100">
+              {loadingEmailLogs ? (
+                <div className="py-16 text-center">
+                  <RefreshCw className="w-8 h-8 text-blue-500 animate-spin mx-auto mb-2" />
+                  <p className="text-xs text-slate-500">Loading citizen email dispatches...</p>
+                </div>
+              ) : emailLogs.length === 0 ? (
+                <div className="py-16 text-center text-slate-400">
+                  <Inbox className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+                  <p className="text-xs font-medium">No email notifications dispatched yet.</p>
+                </div>
+              ) : (
+                emailLogs
+                  .filter((log) => {
+                    const q = emailSearch.toLowerCase();
+                    return (
+                      !q ||
+                      log.ticketId?.toLowerCase().includes(q) ||
+                      log.recipientEmail?.toLowerCase().includes(q) ||
+                      log.newStatus?.toLowerCase().includes(q)
+                    );
+                  })
+                  .map((log) => (
+                    <div
+                      key={log.id}
+                      onClick={() => setSelectedAuthorityEmail(log)}
+                      className="py-3 px-3 rounded-xl hover:bg-slate-50 transition-all cursor-pointer flex items-center justify-between gap-4"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-xs font-bold text-slate-900">
+                              #{log.ticketId}
+                            </span>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-50 text-blue-700 border border-blue-200">
+                              {log.newStatus}
+                            </span>
+                            <span className="text-[10px] font-mono text-slate-400">
+                              {log.deliveryMode.toUpperCase()}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-600 truncate mt-0.5">
+                            To: <span className="text-slate-900 font-medium">{log.recipientEmail}</span>
+                            {log.note && <span className="text-slate-400"> — {log.note}</span>}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className="text-[11px] font-mono text-slate-400">
+                          {new Date(log.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                      </div>
+                    </div>
+                  ))
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+              <span className="text-xs text-slate-500">
+                Authorized Municipal Officers only. Citizen access disabled.
+              </span>
+              <button
+                onClick={() => setEmailLogsModalOpen(false)}
+                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all"
+              >
+                Close Ledger
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Selected Authority Email Preview Modal */}
+      {selectedAuthorityEmail && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+            <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs font-bold text-slate-900">
+                  Ticket #{selectedAuthorityEmail.ticketId}
+                </span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700">
+                  {selectedAuthorityEmail.newStatus}
+                </span>
+              </div>
+              <button
+                onClick={() => setSelectedAuthorityEmail(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-4 border-b border-slate-100 text-xs space-y-1">
+              <div><span className="text-slate-400 font-mono">Recipient:</span> <span className="font-semibold text-slate-800">{selectedAuthorityEmail.recipientEmail}</span></div>
+              <div><span className="text-slate-400 font-mono">Dispatched:</span> <span className="text-slate-600 font-mono">{new Date(selectedAuthorityEmail.sentAt).toLocaleString()}</span></div>
+              {selectedAuthorityEmail.note && (
+                <div><span className="text-slate-400 font-mono">Official Note:</span> <span className="text-slate-700 italic">{selectedAuthorityEmail.note}</span></div>
+              )}
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 bg-slate-50">
+              {selectedAuthorityEmail.previewHtml ? (
+                <div
+                  className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm"
+                  dangerouslySetInnerHTML={{ __html: selectedAuthorityEmail.previewHtml }}
+                />
+              ) : (
+                <pre className="text-xs font-mono text-slate-700 whitespace-pre-wrap bg-white p-4 rounded-xl border border-slate-200">
+                  {selectedAuthorityEmail.previewText || 'No email preview text available.'}
+                </pre>
+              )}
+            </div>
+
+            <div className="p-3 border-t border-slate-200 bg-white flex justify-end">
+              <button
+                onClick={() => setSelectedAuthorityEmail(null)}
+                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl"
+              >
+                Close Preview
+              </button>
+            </div>
           </div>
         </div>
       )}

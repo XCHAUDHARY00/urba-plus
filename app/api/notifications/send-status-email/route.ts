@@ -124,30 +124,40 @@ export async function GET(req: NextRequest) {
         );
       }
     } catch (clientErr) {
-      // Firestore index not yet built or offline — fall back to admin SDK with same filters
-      console.warn('[Notifications GET] Client SDK query failed, trying admin SDK:', (clientErr as any)?.message);
+      console.warn('[Notifications GET] Client SDK indexed query failed, trying unindexed with in-memory sort:', (clientErr as any)?.message);
       try {
-        const adminDb = getAdminDb();
-        let adminQ = adminDb.collection('emailNotifications') as any;
-
+        const ref = collection(db, 'emailNotifications');
+        const constraints: any[] = [];
         if (recipientEmail) {
-          adminQ = adminQ.where('recipientEmail', '==', recipientEmail.toLowerCase().trim());
+          constraints.push(where('recipientEmail', '==', recipientEmail.toLowerCase().trim()));
         } else if (ticketId) {
-          adminQ = adminQ.where('ticketId', '==', ticketId.trim());
+          constraints.push(where('ticketId', '==', ticketId.trim()));
         }
-
-        adminQ = adminQ.orderBy('sentAt', 'desc').limit(limitCount);
-        const snap = await adminQ.get();
-        notifications = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
-
-        if (recipientEmail && ticketId) {
-          const tidLower = ticketId.trim().toLowerCase();
-          notifications = notifications.filter(
-            (n) => (n.ticketId || '').toLowerCase() === tidLower
+        const snapshot = await getDocs(query(ref, ...constraints));
+        notifications = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+        notifications.sort(
+          (a: any, b: any) => new Date(b.sentAt || 0).getTime() - new Date(a.sentAt || 0).getTime()
+        );
+        notifications = notifications.slice(0, limitCount);
+      } catch (fallbackErr) {
+        // Fall back to admin SDK
+        try {
+          const adminDb = getAdminDb();
+          let adminQ = adminDb.collection('emailNotifications') as any;
+          if (recipientEmail) {
+            adminQ = adminQ.where('recipientEmail', '==', recipientEmail.toLowerCase().trim());
+          } else if (ticketId) {
+            adminQ = adminQ.where('ticketId', '==', ticketId.trim());
+          }
+          const snap = await adminQ.get();
+          notifications = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
+          notifications.sort(
+            (a: any, b: any) => new Date(b.sentAt || 0).getTime() - new Date(a.sentAt || 0).getTime()
           );
+          notifications = notifications.slice(0, limitCount);
+        } catch (adminErr) {
+          console.error('[Notifications GET] Admin SDK fallback error:', adminErr);
         }
-      } catch (adminErr) {
-        console.error('[Notifications GET] Admin SDK also failed:', adminErr);
       }
     }
 
