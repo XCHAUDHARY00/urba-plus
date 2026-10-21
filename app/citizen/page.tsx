@@ -2181,9 +2181,9 @@ export default function CitizenDashboard() {
                                   ? 'bg-slate-900 text-white shadow'
                                   : 'text-slate-600 hover:text-slate-900'
                               }`}
-                              title="Speak in Hindi / हिन्दी में बोलें"
+                              title="Select Hindi speech recognition"
                             >
-                              हिन्दी (Hindi)
+                              Hindi
                             </button>
                             <button
                               type="button"
@@ -2193,7 +2193,7 @@ export default function CitizenDashboard() {
                                   ? 'bg-slate-900 text-white shadow'
                                   : 'text-slate-600 hover:text-slate-900'
                               }`}
-                              title="Speak in English"
+                              title="Select English speech recognition"
                             >
                               English
                             </button>
@@ -2217,7 +2217,7 @@ export default function CitizenDashboard() {
                             ) : (
                               <>
                                 <Mic className="w-3.5 h-3.5 text-slate-700" />
-                                <span>Voice Input / बोलकर लिखें</span>
+                                <span>Voice Input</span>
                               </>
                             )}
                           </button>
@@ -2232,7 +2232,7 @@ export default function CitizenDashboard() {
                             <span className="font-bold text-red-900">
                               Listening... ({voiceLang === 'hi-IN' ? 'Hindi' : 'English'})
                             </span>
-                            <span className="text-red-700 hidden sm:inline">Speak into your mic to fill description</span>
+                            <span className="text-red-700 hidden sm:inline">Speak into your mic to transcribe description</span>
                           </div>
                           <button
                             type="button"
@@ -2251,8 +2251,8 @@ export default function CitizenDashboard() {
                           onChange={(e) => setDescription(e.target.value)}
                           placeholder={
                             isListening
-                              ? "Aap bolna shuru kijiye, yaha text type ho jayega..."
-                              : "Provide details of the issue. You can click 'Voice Input / बोलकर लिखें' to speak in Hindi/English, edit manually, or use auto-filled details."
+                              ? "Listening... Start speaking to transcribe description into text."
+                              : "Provide details of the issue, landmark landmarks, or specific notes..."
                           }
                           required
                           className={`w-full bg-white border text-xs text-slate-900 placeholder-slate-400 focus:outline-none leading-relaxed rounded-xl p-3.5 transition-all ${

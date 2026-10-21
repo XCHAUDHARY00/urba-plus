@@ -123,7 +123,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     ai_verification_enabled: 'Municipal Verification Active',
   },
   hi: {
-    app_title: 'अर्बाप्लस',
+    app_title: 'UrbaPlus',
     app_subtitle: 'नागरिक बुनियादी ढांचा एवं नगर निगम समाधान प्रणाली',
     citizen_portal: 'नागरिक पोर्टल',
     authority_portal: 'नगर निगम प्राधिकरण पोर्टल',
@@ -224,7 +224,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     ai_verification_enabled: 'नगर निगम सत्यापन सक्रिय',
   },
   mr: {
-    app_title: 'अर्बाप्लस',
+    app_title: 'UrbaPlus',
     app_subtitle: 'नागरी पायाभूत सुविधा आणि महानगरपालिका निवारण प्रणाली',
     citizen_portal: 'नागरिक पोर्टल',
     authority_portal: 'महानगरपालिका अधिकारी पोर्टल',
