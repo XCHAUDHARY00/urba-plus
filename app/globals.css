@@ -2,15 +2,15 @@
 
 @layer base {
   :root {
-    --bg-page: #f8f9fb;
+    --bg-page: #faf8f5;
     --bg-card: #ffffff;
-    --border-subtle: #e2e5ea;
-    --border-light: #eef0f3;
-    --text-primary: #1a1d23;
-    --text-secondary: #4b5263;
-    --text-muted: #6b7280;
-    --accent: #2563eb;
-    --accent-hover: #1d4ed8;
+    --border-subtle: #e8e3d9;
+    --border-light: #f3efe6;
+    --text-primary: #191c21;
+    --text-secondary: #424955;
+    --text-muted: #5e6774;
+    --accent: #27529b;
+    --accent-hover: #1e3f77;
   }
 
   body {
@@ -79,7 +79,7 @@ textarea.bg-\[\#0e1320\] {
 /* Civic utility classes */
 .civic-grid-bg {
   background-color: var(--bg-page);
-  background-image: radial-gradient(#d1d5db 0.8px, transparent 0.8px);
+  background-image: radial-gradient(#ded7cb 0.8px, transparent 0.8px);
   background-size: 20px 20px;
 }
 
