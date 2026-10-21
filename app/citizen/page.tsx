@@ -1267,8 +1267,8 @@ export default function CitizenDashboard() {
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'home'
-                    ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-900/5'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
+                    ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-900/10'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-stone-100'
                 }`}
               >
                 {t('citizen_portal', 'Dashboard')}
@@ -1281,8 +1281,8 @@ export default function CitizenDashboard() {
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'report'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-stone-100'
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5 text-blue-400" />
@@ -1295,8 +1295,8 @@ export default function CitizenDashboard() {
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'reports'
-                    ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-900/5'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
+                    ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-900/10'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-stone-100'
                 }`}
               >
                 <span>{t('my_issues', 'My Reports')}</span>
@@ -1311,8 +1311,8 @@ export default function CitizenDashboard() {
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'notifications'
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
+                    ? 'bg-emerald-700 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-stone-100'
                 }`}
               >
                 <Mail className="w-3.5 h-3.5 text-emerald-500" />
@@ -1334,11 +1334,11 @@ export default function CitizenDashboard() {
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'leaderboard'
-                    ? 'bg-amber-500 text-slate-950 shadow-xs shadow-amber-500/20'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-stone-100'
                 }`}
               >
-                <Trophy className="w-3.5 h-3.5 text-amber-600" />
+                <Trophy className="w-3.5 h-3.5 text-amber-500" />
                 <span>Leaderboard</span>
               </button>
 
@@ -1348,8 +1348,8 @@ export default function CitizenDashboard() {
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'explore'
-                    ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-900/5'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-1000'
+                    ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-900/10'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-stone-100'
                 }`}
               >
                 {t('public_feed', 'Explore Map')}
@@ -1470,17 +1470,17 @@ export default function CitizenDashboard() {
               </button>
             </div>
 
-            {/* Quick Action Banner */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 border border-blue-500/20 p-6 sm:p-8 mb-8 text-white shadow-xl">
+            {/* Quick Action Banner — Warm Beach Off-white Palette */}
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#f5f1ea] via-[#ece5d8] to-[#f4eee4] border border-[#dad0bf] p-6 sm:p-8 mb-8 text-slate-900 shadow-sm">
               <div className="relative z-10 max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[11px] font-medium mb-3">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-200/90 border border-stone-300 text-stone-800 text-[11px] font-semibold mb-3">
+                  <Sparkles className="w-3.5 h-3.5 text-stone-700" />
                   <span>{t('ai_agent', 'AI-Powered Automated Inspection')}</span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">
                   {t('authority_subtitle', 'Snap a picture, geotag automatically, and let AI categorize it.')}
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-6">
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed mb-6 font-normal">
                   {t('app_subtitle', 'Our system verifies location tags, runs multimodal AI image analysis to auto-describe the issue, assigns severity, and routes to the right municipal department.')}
                 </p>
                 <div className="flex flex-wrap gap-3">
@@ -1489,30 +1489,30 @@ export default function CitizenDashboard() {
                       setActiveTab('report');
                       resetForm();
                     }}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-md transition-all cursor-pointer"
+                    className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-sm transition-all cursor-pointer"
                   >
-                    <Camera className="w-4 h-4" />
+                    <Camera className="w-4 h-4 text-stone-200" />
                     <span>{t('report_issue', 'Upload or Capture Issue')}</span>
                   </button>
                   <button
                     onClick={() => setActiveTab('leaderboard')}
-                    className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-xl flex items-center gap-2 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+                    className="px-5 py-2.5 bg-white hover:bg-stone-50 text-slate-800 text-xs font-bold rounded-xl flex items-center gap-2 border border-stone-300 shadow-xs transition-all cursor-pointer"
                   >
-                    <Trophy className="w-4 h-4 text-slate-950" />
+                    <Trophy className="w-4 h-4 text-amber-600" />
                     <span>Citizen Leaderboard</span>
                   </button>
                   <button
                     onClick={() => setActiveTab('explore')}
-                    className="px-5 py-2.5 bg-slate-100 hover:bg-white/15 text-white text-xs font-bold rounded-xl flex items-center gap-2 border border-slate-300 transition-all cursor-pointer"
+                    className="px-5 py-2.5 bg-white hover:bg-stone-50 text-slate-800 text-xs font-bold rounded-xl flex items-center gap-2 border border-stone-300 shadow-xs transition-all cursor-pointer"
                   >
-                    <MapPin className="w-4 h-4 text-blue-300" />
+                    <MapPin className="w-4 h-4 text-slate-600" />
                     <span>{t('public_feed', 'View Map Feed')}</span>
                   </button>
                   <button
                     onClick={() => router.push('/presentation')}
-                    className="px-5 py-2.5 bg-indigo-600/70 hover:bg-indigo-600 text-white text-xs font-bold rounded-xl flex items-center gap-2 border border-indigo-400/40 transition-all cursor-pointer shadow-md"
+                    className="px-5 py-2.5 bg-white hover:bg-stone-50 text-slate-800 text-xs font-bold rounded-xl flex items-center gap-2 border border-stone-300 shadow-xs transition-all cursor-pointer"
                   >
-                    <Sparkles className="w-4 h-4 text-amber-300" />
+                    <Sparkles className="w-4 h-4 text-indigo-600" />
                     <span>Hackathon Deck (PPT)</span>
                   </button>
                 </div>
@@ -1693,33 +1693,33 @@ export default function CitizenDashboard() {
                 <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/40">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-1">Issue Reported Successfully!</h2>
-                <p className="text-xs text-slate-400 mb-6">
+                <h2 className="text-2xl font-bold text-slate-900 mb-1">Issue Reported Successfully!</h2>
+                <p className="text-xs text-slate-600 mb-6">
                   Your civic incident report has been submitted, geotagged, and logged into the system.
                 </p>
 
-                <div className="max-w-md mx-auto bg-slate-50 p-4 rounded-xl border border-slate-200 text-left mb-6 space-y-3">
-                  <div className="flex justify-between items-center text-xs border-b border-slate-200 pb-2">
-                    <span className="text-slate-400">Ticket Reference ID:</span>
-                    <span className="font-mono font-bold text-blue-400 text-sm">{submittedTicket.ticketId}</span>
+                <div className="max-w-md mx-auto bg-stone-50 p-4 rounded-xl border border-stone-200 text-left mb-6 space-y-3">
+                  <div className="flex justify-between items-center text-xs border-b border-stone-200 pb-2">
+                    <span className="text-slate-500 font-medium">Ticket Reference ID:</span>
+                    <span className="font-mono font-bold text-blue-700 text-sm">{submittedTicket.ticketId}</span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-400">Issue Type:</span>
-                    <span className="font-medium text-white">{submittedTicket.issueType}</span>
+                    <span className="text-slate-500 font-medium">Issue Type:</span>
+                    <span className="font-bold text-slate-900">{submittedTicket.issueType}</span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-400">Assigned Category:</span>
-                    <span className="font-medium text-slate-200">{submittedTicket.category}</span>
+                    <span className="text-slate-500 font-medium">Assigned Category:</span>
+                    <span className="font-semibold text-slate-800">{submittedTicket.category}</span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-400">Routed Department:</span>
-                    <span className="font-medium text-amber-300">{submittedTicket.department}</span>
+                    <span className="text-slate-500 font-medium">Routed Department:</span>
+                    <span className="font-semibold text-slate-800">{submittedTicket.department}</span>
                   </div>
-                  <div className="flex justify-between items-start text-xs pt-1 border-t border-slate-200">
-                    <span className="text-slate-400 flex items-center gap-1">
-                      <MapPin className="w-3 h-3 text-red-400" /> Location:
+                  <div className="flex justify-between items-start text-xs pt-1 border-t border-stone-200">
+                    <span className="text-slate-500 font-medium flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-red-500" /> Location:
                     </span>
-                    <span className="text-right text-slate-300 max-w-[220px] truncate">{submittedTicket.location.address}</span>
+                    <span className="text-right text-slate-800 font-medium max-w-[220px] truncate">{submittedTicket.location.address}</span>
                   </div>
                 </div>
 
@@ -1728,7 +1728,7 @@ export default function CitizenDashboard() {
                     onClick={() => {
                       resetForm();
                     }}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl flex items-center gap-2"
+                    className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl flex items-center gap-2"
                   >
                     <Camera className="w-4 h-4" />
                     <span>Report Another Issue</span>
@@ -1737,7 +1737,7 @@ export default function CitizenDashboard() {
                     onClick={() => {
                       setActiveTab('reports');
                     }}
-                    className="px-5 py-2.5 bg-slate-100 hover:bg-white/15 text-slate-200 text-xs font-semibold rounded-xl border border-slate-200"
+                    className="px-5 py-2.5 bg-white hover:bg-stone-50 text-slate-800 text-xs font-semibold rounded-xl border border-stone-300"
                   >
                     Track in "My Reports"
                   </button>
@@ -1747,25 +1747,25 @@ export default function CitizenDashboard() {
               /* REPORT FORM */
               <form onSubmit={handleSubmitReport} className="space-y-6">
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8">
-                  <h1 className="text-xl sm:text-2xl font-bold text-white mb-1">File a Civic Incident Report</h1>
-                  <p className="text-xs text-slate-400 mb-6">
+                  <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1">File a Civic Incident Report</h1>
+                  <p className="text-xs text-slate-600 mb-6">
                     Upload or snap an image of the issue. Location tag is captured automatically, and Gemini AI will analyze and populate details.
                   </p>
 
                   {/* SECTION 1: PHOTO UPLOAD / CAMERA CAPTURE */}
                   <div className="mb-8">
-                    <label className="block text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2">
-                      1. Upload or Snap Image of Issue <span className="text-red-400">*</span>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
+                      1. Upload or Snap Image of Issue <span className="text-red-500">*</span>
                     </label>
 
                     {!selectedImage ? (
-                      <div className="border-2 border-dashed border-slate-300 hover:border-blue-500/50 bg-slate-50 rounded-2xl p-8 text-center transition-all">
+                      <div className="border-2 border-dashed border-stone-300 hover:border-slate-400 bg-stone-50/50 rounded-2xl p-8 text-center transition-all">
                         <div className="flex flex-col items-center justify-center">
-                          <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-3">
+                          <div className="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center mb-3">
                             <Upload className="w-7 h-7" />
                           </div>
-                          <p className="text-sm font-semibold text-white mb-1">Drag and drop or select an image file</p>
-                          <p className="text-xs text-slate-400 mb-4">Supports PNG, JPG, JPEG, WEBP up to 10MB</p>
+                          <p className="text-sm font-bold text-slate-900 mb-1">Drag and drop or select an image file</p>
+                          <p className="text-xs text-slate-500 mb-4">Supports PNG, JPG, JPEG, WEBP up to 10MB</p>
 
                           <div className="flex flex-wrap items-center justify-center gap-3">
                             <label className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl cursor-pointer transition-all flex items-center gap-2 shadow-sm">
@@ -1786,9 +1786,9 @@ export default function CitizenDashboard() {
                             <button
                               type="button"
                               onClick={startCamera}
-                              className="px-4 py-2.5 bg-slate-100 hover:bg-white/15 text-slate-200 text-xs font-semibold rounded-xl border border-slate-200 transition-all flex items-center gap-2"
+                              className="px-4 py-2.5 bg-white hover:bg-stone-50 text-slate-700 text-xs font-semibold rounded-xl border border-stone-300 transition-all flex items-center gap-2"
                             >
-                              <Camera className="w-4 h-4 text-emerald-400" />
+                              <Camera className="w-4 h-4 text-emerald-600" />
                               <span>Use Live Camera</span>
                             </button>
                           </div>
@@ -1796,7 +1796,7 @@ export default function CitizenDashboard() {
                       </div>
                     ) : (
                       /* Image Preview Box */
-                      <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-black/40 group">
+                      <div className="relative rounded-2xl overflow-hidden border border-stone-200 bg-stone-900 group">
                         <img src={selectedImage} alt="Reported Issue Preview" className="w-full h-72 sm:h-80 object-cover" />
 
                         {/* Remove Image Button */}
@@ -1806,7 +1806,7 @@ export default function CitizenDashboard() {
                             setSelectedImage(null);
                             setAiResult(null);
                           }}
-                          className="absolute top-3 right-3 p-2 rounded-full bg-black/70 hover:bg-red-600 text-white transition-colors border border-slate-300"
+                          className="absolute top-3 right-3 p-2 rounded-full bg-black/70 hover:bg-red-600 text-white transition-colors border border-stone-300"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -1819,7 +1819,7 @@ export default function CitizenDashboard() {
                               <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
                             </div>
                             <p className="text-sm font-bold tracking-wide text-white">Custom Vision AI & Gemini Analyzing...</p>
-                            <div className="text-xs text-slate-300 mt-2 space-y-1 max-w-sm text-left bg-slate-50 border border-slate-200 p-3 rounded-xl">
+                            <div className="text-xs text-slate-200 mt-2 space-y-1 max-w-sm text-left bg-stone-900/90 border border-stone-700 p-3 rounded-xl">
                               <p className="flex items-center gap-1.5 text-emerald-300 font-medium">
                                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                                 <span>Step 1: Custom Vision AI checking: Water Logging, Pothole, or Garbage</span>
@@ -1829,7 +1829,7 @@ export default function CitizenDashboard() {
                                 <span>Step 2: Gemini AI autofilling issue details & categorization</span>
                               </p>
                             </div>
-                            <div className="w-56 h-1.5 bg-slate-100 rounded-full overflow-hidden mt-4">
+                            <div className="w-56 h-1.5 bg-slate-700 rounded-full overflow-hidden mt-4">
                               <div className="h-full bg-gradient-to-r from-emerald-400 via-blue-500 to-indigo-500 animate-pulse w-3/4"></div>
                             </div>
                           </div>
@@ -1850,29 +1850,29 @@ export default function CitizenDashboard() {
                               </div>
                             </div>
                           ) : (
-                            <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md p-3 rounded-xl border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-xl">
+                            <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md p-3 rounded-xl border border-stone-300 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-xl">
                               <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30">
+                                <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-300">
                                   <Check className="w-4 h-4" />
                                 </div>
                                 <div>
                                   <div className="flex items-center gap-1.5 flex-wrap">
-                                    <span className="font-bold text-white block">
+                                    <span className="font-bold text-slate-900 block">
                                       Custom Vision AI: {aiResult.customVisionDetectedLabel || (
                                         aiResult.category === 'Water & Drainage' ? 'Water Logging' :
                                         aiResult.category === 'Roads & Infrastructure' ? 'Road Pothole' : 'Garbage & Solid Waste'
                                       )}
                                     </span>
-                                    <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-mono border border-emerald-500/30">
+                                    <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[9px] font-mono border border-emerald-300 font-bold">
                                       Gemini AI Verified
                                     </span>
                                   </div>
-                                  <span className="text-[10px] text-slate-300">
+                                  <span className="text-[10px] text-slate-600">
                                     Confidence: {aiResult.confidenceScore}% • Details Autofilled by Gemini AI
                                   </span>
                                 </div>
                               </div>
-                              <span className="self-start sm:self-auto px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 font-semibold text-[11px] border border-blue-500/30">
+                              <span className="self-start sm:self-auto px-2.5 py-1 rounded-full bg-stone-100 text-stone-800 font-semibold text-[11px] border border-stone-300">
                                 {aiResult.category}
                               </span>
                             </div>
@@ -1883,10 +1883,10 @@ export default function CitizenDashboard() {
                   </div>
 
                   {/* SECTION 2: AUTOMATIC GEOLOCATION TAGGING */}
-                  <div className="mb-8 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="mb-8 p-4 rounded-xl bg-stone-50 border border-stone-200">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-slate-200 uppercase tracking-wider">
-                        <MapPin className="w-4 h-4 text-red-400" />
+                      <div className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase tracking-wider">
+                        <MapPin className="w-4 h-4 text-red-500" />
                         <span>2. Automatic Geolocation Tagging</span>
                       </div>
                       <button
@@ -1938,12 +1938,12 @@ export default function CitizenDashboard() {
                   {/* SECTION 3: ISSUE DETAILS (AUTO-FILLED BY AI & EDITABLE) */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <label className="block text-xs font-semibold text-slate-200 uppercase tracking-wider">
+                      <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider">
                         3. Issue Details & Categorization
                       </label>
                       {aiResult && (
-                        <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                          <Sparkles className="w-3 h-3" /> Pre-filled by Gemini AI (You can edit)
+                        <span className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-emerald-600" /> Pre-filled by Gemini AI (You can edit)
                         </span>
                       )}
                     </div>
@@ -1951,8 +1951,8 @@ export default function CitizenDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* Issue Type / Short Title */}
                       <div>
-                        <label className="block text-[11px] font-medium text-slate-400 mb-1">
-                          Issue Name / Type <span className="text-red-400">*</span>
+                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                          Issue Name / Type <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -1963,19 +1963,19 @@ export default function CitizenDashboard() {
                           }}
                           placeholder="e.g. Deep Pothole, Overflowing Garbage Bin"
                           required
-                          className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400"
+                          className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-500"
                         />
                       </div>
 
                       {/* Category Dropdown */}
                       <div>
-                        <label className="block text-[11px] font-medium text-slate-400 mb-1">
-                          Category <span className="text-red-400">*</span>
+                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                          Category <span className="text-red-500">*</span>
                         </label>
                         <select
                           value={category}
                           onChange={(e) => setCategory(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-slate-500"
                         >
                           {CATEGORIES.map((cat) => (
                             <option key={cat} value={cat}>
@@ -1987,11 +1987,11 @@ export default function CitizenDashboard() {
 
                       {/* Severity Level */}
                       <div>
-                        <label className="block text-[11px] font-medium text-slate-400 mb-1">Severity Assessment</label>
+                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">Severity Assessment</label>
                         <select
                           value={severity}
                           onChange={(e) => setSeverity(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-slate-500"
                         >
                           {SEVERITY_LEVELS.map((sev) => (
                             <option key={sev} value={sev}>
@@ -2003,13 +2003,13 @@ export default function CitizenDashboard() {
 
                       {/* Department Routing */}
                       <div>
-                        <label className="block text-[11px] font-medium text-slate-400 mb-1">Assigned Department</label>
+                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">Assigned Department</label>
                         <input
                           type="text"
                           value={department}
                           onChange={(e) => setDepartment(e.target.value)}
                           placeholder="Department responsible"
-                          className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-slate-500"
                         />
                       </div>
                     </div>
@@ -2017,22 +2017,22 @@ export default function CitizenDashboard() {
                     {/* Auto-generated & Manual Description with Voice Input Speech-to-Text */}
                     <div>
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                        <label className="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+                        <label className="text-[11px] font-semibold text-slate-700 flex items-center gap-1.5">
                           <span>Detailed Description</span>
-                          <span className="text-red-400">*</span>
+                          <span className="text-red-500">*</span>
                         </label>
 
                         {/* Voice Input Controls */}
                         <div className="flex items-center gap-2">
                           {/* Language selector toggle */}
-                          <div className="flex bg-black/40 border border-slate-200 rounded-lg p-0.5 text-[10px]">
+                          <div className="flex bg-stone-100 border border-stone-300 rounded-lg p-0.5 text-[10px]">
                             <button
                               type="button"
                               onClick={() => setVoiceLang('hi-IN')}
                               className={`px-2 py-0.5 rounded font-semibold transition-all ${
                                 voiceLang === 'hi-IN'
-                                  ? 'bg-blue-600 text-white shadow'
-                                  : 'text-slate-400 hover:text-white'
+                                  ? 'bg-slate-900 text-white shadow'
+                                  : 'text-slate-600 hover:text-slate-900'
                               }`}
                               title="Speak in Hindi / हिन्दी में बोलें"
                             >
@@ -2043,8 +2043,8 @@ export default function CitizenDashboard() {
                               onClick={() => setVoiceLang('en-IN')}
                               className={`px-2 py-0.5 rounded font-semibold transition-all ${
                                 voiceLang === 'en-IN'
-                                  ? 'bg-blue-600 text-white shadow'
-                                  : 'text-slate-400 hover:text-white'
+                                  ? 'bg-slate-900 text-white shadow'
+                                  : 'text-slate-600 hover:text-slate-900'
                               }`}
                               title="Speak in English"
                             >
@@ -2058,8 +2058,8 @@ export default function CitizenDashboard() {
                             onClick={toggleVoiceInput}
                             className={`px-3 py-1 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${
                               isListening
-                                ? 'bg-red-500 text-white animate-pulse border border-red-400 shadow-red-500/50'
-                                : 'bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/30 text-blue-300'
+                                ? 'bg-red-600 text-white animate-pulse border border-red-500 shadow-red-500/50'
+                                : 'bg-stone-100 hover:bg-stone-200 border border-stone-300 text-slate-800'
                             }`}
                           >
                             {isListening ? (
@@ -2069,7 +2069,7 @@ export default function CitizenDashboard() {
                               </>
                             ) : (
                               <>
-                                <Mic className="w-3.5 h-3.5 text-blue-400" />
+                                <Mic className="w-3.5 h-3.5 text-slate-700" />
                                 <span>Voice Input / बोलकर लिखें</span>
                               </>
                             )}
@@ -2079,18 +2079,18 @@ export default function CitizenDashboard() {
 
                       {/* Active Listening Indicator Banner */}
                       {isListening && (
-                        <div className="mb-2 p-2.5 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-300 flex items-center justify-between animate-in fade-in">
+                        <div className="mb-2 p-2.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800 flex items-center justify-between animate-in fade-in">
                           <div className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-                            <span className="font-semibold text-white">
+                            <span className="w-2.5 h-2.5 bg-red-600 rounded-full animate-ping"></span>
+                            <span className="font-bold text-red-900">
                               Listening... ({voiceLang === 'hi-IN' ? 'Hindi' : 'English'})
                             </span>
-                            <span className="text-slate-300 hidden sm:inline">Speak into your mic to fill description</span>
+                            <span className="text-red-700 hidden sm:inline">Speak into your mic to fill description</span>
                           </div>
                           <button
                             type="button"
                             onClick={toggleVoiceInput}
-                            className="text-[10px] bg-red-500/20 hover:bg-red-500/40 text-red-200 px-2 py-0.5 rounded font-mono"
+                            className="text-[10px] bg-red-100 hover:bg-red-200 text-red-800 px-2 py-0.5 rounded font-mono font-bold"
                           >
                             Stop
                           </button>
@@ -2108,10 +2108,10 @@ export default function CitizenDashboard() {
                               : "Provide details of the issue. You can click 'Voice Input / बोलकर लिखें' to speak in Hindi/English, edit manually, or let Gemini AI pre-fill it."
                           }
                           required
-                          className={`w-full bg-slate-50 border text-xs text-white placeholder-slate-500 focus:outline-none leading-relaxed rounded-xl p-3.5 transition-all ${
+                          className={`w-full bg-white border text-xs text-slate-900 placeholder-slate-400 focus:outline-none leading-relaxed rounded-xl p-3.5 transition-all ${
                             isListening
                               ? 'border-red-500 ring-2 ring-red-500/20 shadow-lg shadow-red-500/10'
-                              : 'border-slate-200 focus:border-blue-500'
+                              : 'border-stone-300 focus:border-slate-500'
                           }`}
                         />
                       </div>
@@ -2119,14 +2119,14 @@ export default function CitizenDashboard() {
 
                     {/* Key Observations from AI */}
                     {aiResult?.keyObservations && aiResult.keyObservations.length > 0 && (
-                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-3.5 space-y-2">
+                      <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-[11px] font-semibold text-blue-300 flex items-center gap-1.5">
-                            <Info className="w-3.5 h-3.5 text-blue-400" />
+                          <span className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
+                            <Info className="w-3.5 h-3.5 text-slate-600" />
                             <span>AI Vision & Inspection Observations:</span>
                           </span>
                         </div>
-                        <ul className="list-disc list-inside space-y-1 text-[11px] text-slate-300">
+                        <ul className="list-disc list-inside space-y-1 text-[11px] text-slate-700">
                           {aiResult.keyObservations.map((obs, idx) => (
                             <li key={idx} className="leading-relaxed">
                               {obs}
@@ -2158,7 +2158,7 @@ export default function CitizenDashboard() {
                         setActiveTab('home');
                         resetForm();
                       }}
-                      className="px-5 py-2.5 text-xs text-slate-400 hover:text-white transition-colors"
+                      className="px-5 py-2.5 text-xs text-slate-600 hover:text-slate-900 transition-colors"
                     >
                       Cancel
                     </button>
@@ -2168,7 +2168,7 @@ export default function CitizenDashboard() {
                       className={`px-6 py-2.5 text-xs font-semibold rounded-xl shadow-lg transition-all flex items-center gap-2 ${
                         aiResult?.isCivicIssue === false || aiResult?.confidenceScore === 0
                           ? 'bg-red-900/40 border border-red-500/40 text-red-300 cursor-not-allowed opacity-90'
-                          : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-blue-500/20 disabled:opacity-50'
+                          : 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm disabled:opacity-50'
                       }`}
                     >
                       {submitting ? (
@@ -2183,7 +2183,7 @@ export default function CitizenDashboard() {
                         </>
                       ) : (
                         <>
-                          <CheckCircle2 className="w-4 h-4 text-blue-200" />
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                           <span>Submit Verified Report</span>
                         </>
                       )}
@@ -2200,18 +2200,18 @@ export default function CitizenDashboard() {
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-white tracking-tight">My Incident Reports</h1>
-                <p className="text-xs text-slate-400 mt-1">
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">My Incident Reports</h1>
+                <p className="text-xs text-slate-600 mt-1">
                   Track resolution progress and municipal department responses for issues you filed.
                 </p>
               </div>
 
               <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-slate-400" />
+                <Filter className="w-4 h-4 text-slate-500" />
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none"
+                  className="bg-white border border-stone-300 rounded-xl px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-slate-500"
                 >
                   <option value="All">All Statuses</option>
                   <option value="Submitted">Submitted</option>
@@ -2223,7 +2223,7 @@ export default function CitizenDashboard() {
                   onClick={() => {
                     if (user) fetchUserReports(user.uid);
                   }}
-                  className="p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-300"
+                  className="p-2 rounded-xl bg-white hover:bg-stone-50 border border-stone-300 text-slate-700"
                   title="Refresh Reports"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${loadingReports ? 'animate-spin' : ''}`} />
@@ -2233,20 +2233,20 @@ export default function CitizenDashboard() {
 
             {loadingReports ? (
               <div className="text-center py-16">
-                <RefreshCw className="w-6 h-6 animate-spin text-blue-500 mx-auto mb-2" />
-                <p className="text-xs text-slate-400">Loading your reported tickets...</p>
+                <RefreshCw className="w-6 h-6 animate-spin text-slate-700 mx-auto mb-2" />
+                <p className="text-xs text-slate-600">Loading your reported tickets...</p>
               </div>
             ) : myReports.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-                <FileText className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                <h3 className="text-base font-semibold text-white mb-1">No Reports Found</h3>
-                <p className="text-xs text-slate-400 mb-6">You haven't reported any civic issues yet.</p>
+              <div className="bg-white rounded-2xl border border-stone-200 p-12 text-center">
+                <FileText className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                <h3 className="text-base font-bold text-slate-900 mb-1">No Reports Found</h3>
+                <p className="text-xs text-slate-600 mb-6">You haven't reported any civic issues yet.</p>
                 <button
                   onClick={() => {
                     setActiveTab('report');
                     resetForm();
                   }}
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl"
+                  className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl"
                 >
                   Report an Issue Now
                 </button>
@@ -2258,23 +2258,23 @@ export default function CitizenDashboard() {
                   .map((item) => (
                     <div
                       key={item.id || item.ticketId}
-                      className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-blue-500/40 transition-all flex flex-col group"
+                      className="bg-white rounded-2xl border border-stone-200 overflow-hidden hover:border-slate-400 hover:shadow-md transition-all flex flex-col group"
                     >
                       {/* Image header */}
-                      <div className="relative h-44 overflow-hidden bg-black/50">
+                      <div className="relative h-44 overflow-hidden bg-stone-900">
                         <img
                           src={item.imageUrl}
                           alt={item.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-mono font-bold text-blue-400 border border-slate-300">
+                        <div className="absolute top-3 left-3 bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-mono font-bold text-white border border-white/20">
                           {item.ticketId}
                         </div>
                         <div
-                          className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-semibold ${
+                          className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold ${
                             item.status === 'Resolved'
-                              ? 'bg-emerald-500/80 text-white'
-                              : 'bg-amber-500/80 text-white'
+                              ? 'bg-emerald-600 text-white'
+                              : 'bg-amber-600 text-white'
                           }`}
                         >
                           {item.status}
@@ -2285,27 +2285,27 @@ export default function CitizenDashboard() {
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                         <div>
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200 text-[10px] text-slate-300">
+                            <span className="px-2 py-0.5 rounded bg-stone-100 border border-stone-200 text-[10px] text-stone-700 font-semibold">
                               {item.category}
                             </span>
-                            <span className="px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-medium">
+                            <span className="px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200 text-[10px] font-semibold">
                               {item.severity} Severity
                             </span>
                           </div>
 
-                          <h3 className="font-semibold text-white text-sm mb-1">{item.title}</h3>
-                          <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">{item.description}</p>
+                          <h3 className="font-bold text-slate-900 text-sm mb-1">{item.title}</h3>
+                          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">{item.description}</p>
                         </div>
 
-                        <div className="pt-3 border-t border-slate-200 space-y-2">
-                          <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                            <MapPin className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />
+                        <div className="pt-3 border-t border-stone-200 space-y-2">
+                          <div className="flex items-center gap-1.5 text-[11px] text-slate-600">
+                            <MapPin className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
                             <span className="truncate">{item.location?.address}</span>
                           </div>
 
-                          <div className="flex items-center justify-between text-[11px] text-slate-500">
+                          <div className="flex items-center justify-between text-[11px] text-slate-700 font-medium">
                             <span className="flex items-center gap-1">
-                              <Building2 className="w-3 h-3 text-amber-400" /> {item.department}
+                              <Building2 className="w-3.5 h-3.5 text-stone-600" /> {item.department}
                             </span>
                             <div className="flex items-center gap-3">
                               <button
@@ -2314,21 +2314,21 @@ export default function CitizenDashboard() {
                                   setNotificationFilterTicket(item.ticketId);
                                   fetchNotifications();
                                 }}
-                                className="text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1"
+                                className="text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1"
                                 title="View status emails for this ticket"
                               >
                                 <Mail className="w-3.5 h-3.5" /> Emails
                               </button>
                               <button
                                 onClick={() => setSelectedReportDetail(item)}
-                                className="text-blue-400 hover:text-blue-300 font-medium flex items-center gap-0.5"
+                                className="text-slate-800 hover:text-black font-semibold flex items-center gap-0.5"
                               >
                                 <Eye className="w-3.5 h-3.5" /> Details
                               </button>
                               {item.id && (
                                 <button
                                   onClick={(e) => handleDeleteReport(e, item.id!, item.ticketId)}
-                                  className="text-red-400 hover:text-red-300 font-medium flex items-center gap-0.5"
+                                  className="text-rose-700 hover:text-rose-800 font-semibold flex items-center gap-0.5"
                                   title="Delete Complaint"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" /> Delete
@@ -2350,8 +2350,8 @@ export default function CitizenDashboard() {
           <div>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-white tracking-tight">Community Incident Feed</h1>
-                <p className="text-xs text-slate-400 mt-1">
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Community Incident Feed</h1>
+                <p className="text-xs text-slate-600 mt-1">
                   Explore verified civic reports and active municipal resolutions across your area.
                 </p>
               </div>
@@ -2364,12 +2364,12 @@ export default function CitizenDashboard() {
                     value={exploreSearch}
                     onChange={(e) => setExploreSearch(e.target.value)}
                     placeholder="Search category or location..."
-                    className="bg-white border border-slate-200 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 w-56 sm:w-64"
+                    className="bg-white border border-stone-300 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-500 w-56 sm:w-64"
                   />
                 </div>
                 <button
                   onClick={fetchAllReports}
-                  className="p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-300"
+                  className="p-2 rounded-xl bg-white hover:bg-stone-50 border border-stone-300 text-slate-700"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${loadingExplore ? 'animate-spin' : ''}`} />
                 </button>
@@ -2378,20 +2378,20 @@ export default function CitizenDashboard() {
 
             {loadingExplore ? (
               <div className="text-center py-16">
-                <RefreshCw className="w-6 h-6 animate-spin text-blue-500 mx-auto mb-2" />
-                <p className="text-xs text-slate-400">Loading community issues...</p>
+                <RefreshCw className="w-6 h-6 animate-spin text-slate-700 mx-auto mb-2" />
+                <p className="text-xs text-slate-600">Loading community issues...</p>
               </div>
             ) : allReports.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-                <Compass className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                <h3 className="text-base font-semibold text-white mb-1">No Civic Issues Logged Yet</h3>
-                <p className="text-xs text-slate-400 mb-6">Be the first citizen to file an issue in this region.</p>
+              <div className="bg-white rounded-2xl border border-stone-200 p-12 text-center">
+                <Compass className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                <h3 className="text-base font-bold text-slate-900 mb-1">No Civic Issues Logged Yet</h3>
+                <p className="text-xs text-slate-600 mb-6">Be the first citizen to file an issue in this region.</p>
                 <button
                   onClick={() => {
                     setActiveTab('report');
                     resetForm();
                   }}
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl"
+                  className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl"
                 >
                   Report First Issue
                 </button>
@@ -2410,14 +2410,14 @@ export default function CitizenDashboard() {
                   .map((item) => (
                     <div
                       key={item.id || item.ticketId}
-                      className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-blue-500/30 transition-all flex flex-col"
+                      className="bg-white rounded-2xl border border-stone-200 overflow-hidden hover:border-slate-400 hover:shadow-md transition-all flex flex-col"
                     >
-                      <div className="relative h-44 bg-black/50">
+                      <div className="relative h-44 bg-stone-900">
                         <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
-                        <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-mono font-bold text-blue-400 border border-slate-300">
+                        <div className="absolute top-3 left-3 bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-mono font-bold text-white border border-white/20">
                           {item.ticketId}
                         </div>
-                        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-blue-600 text-white">
+                        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-900 text-white">
                           {item.category}
                         </div>
                       </div>
@@ -2425,38 +2425,38 @@ export default function CitizenDashboard() {
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                         <div>
                           <div className="flex items-center justify-between gap-2 mb-1.5">
-                            <h3 className="font-semibold text-white text-sm truncate">{item.title}</h3>
+                            <h3 className="font-bold text-slate-900 text-sm truncate">{item.title}</h3>
                             <span
                               className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
                                 item.severity === 'Critical'
-                                  ? 'bg-red-500/20 text-red-400 border border-red-500/40 animate-pulse'
+                                  ? 'bg-rose-100 text-rose-800 border border-rose-300'
                                   : item.severity === 'High'
-                                  ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
-                                  : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                                  ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                                  : 'bg-stone-100 text-stone-800 border border-stone-300'
                               }`}
                             >
                               {item.severity} Priority
                             </span>
                           </div>
-                          <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">{item.description}</p>
+                          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">{item.description}</p>
                         </div>
 
                         {/* Supporters & Duplicates Badge */}
-                        <div className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-xl border border-slate-100 text-[11px]">
-                          <div className="flex items-center gap-1.5 text-amber-400 font-bold">
-                            <Users className="w-3.5 h-3.5 text-amber-400" />
+                        <div className="flex items-center justify-between bg-stone-50 px-3 py-2 rounded-xl border border-stone-200 text-[11px]">
+                          <div className="flex items-center gap-1.5 text-amber-900 font-bold">
+                            <Users className="w-3.5 h-3.5 text-amber-700" />
                             <span>{item.supportersCount || item.upvotes || 1} Citizens Reported</span>
                           </div>
                           {item.duplicateCount && item.duplicateCount > 0 ? (
-                            <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-mono font-bold">
+                            <span className="text-[10px] bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full font-mono font-bold">
                               🔗 {item.duplicateCount} Merged
                             </span>
                           ) : null}
                         </div>
 
-                        <div className="pt-3 border-t border-slate-200 space-y-2">
-                          <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                            <MapPin className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />
+                        <div className="pt-3 border-t border-stone-200 space-y-2">
+                          <div className="flex items-center gap-1.5 text-[11px] text-slate-600">
+                            <MapPin className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
                             <span className="truncate">{item.location?.address}</span>
                           </div>
 
@@ -2466,25 +2466,25 @@ export default function CitizenDashboard() {
                               onClick={() => item.id && handleUpvoteIssue(item.id)}
                               className={`px-2.5 py-1 rounded-lg border text-[11px] font-bold flex items-center gap-1 transition-all ${
                                 user && item.supporters?.includes(user.uid)
-                                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                                  : 'bg-slate-50 hover:bg-slate-100 text-slate-300 border-slate-200'
+                                  ? 'bg-amber-100 text-amber-900 border-amber-300'
+                                  : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border-stone-300'
                               }`}
                             >
-                              <ThumbsUp className="w-3 h-3 text-amber-400" />
+                              <ThumbsUp className="w-3 h-3 text-amber-700" />
                               <span>{user && item.supporters?.includes(user.uid) ? 'Supported' : 'Support (+1)'}</span>
                             </button>
 
                             <div className="flex items-center gap-3">
                               <button
                                 onClick={() => setSelectedReportDetail(item)}
-                                className="text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1"
+                                className="text-slate-800 hover:text-black font-semibold flex items-center gap-1"
                               >
                                 <Eye className="w-3.5 h-3.5" /> View
                               </button>
                               {item.id && (
                                 <button
                                   onClick={(e) => handleDeleteReport(e, item.id!, item.ticketId)}
-                                  className="text-red-400 hover:text-red-300 font-medium flex items-center gap-0.5"
+                                  className="text-rose-700 hover:text-rose-800 font-semibold flex items-center gap-0.5"
                                   title="Delete Complaint"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
@@ -2507,11 +2507,11 @@ export default function CitizenDashboard() {
             {/* Header & Service Status Card */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-                  <Mail className="w-6 h-6 text-emerald-400" />
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+                  <Mail className="w-6 h-6 text-emerald-600" />
                   <span>Citizen Email Notification Service</span>
                 </h1>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-600 mt-1">
                   Automated email alerts dispatched to your inbox whenever your reported grievances change status (e.g., from 'Submitted' to 'In Progress' or 'Resolved').
                 </p>
               </div>
@@ -2521,9 +2521,9 @@ export default function CitizenDashboard() {
                   type="button"
                   disabled={loadingNotifications}
                   onClick={fetchNotifications}
-                  className="px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-300 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all"
+                  className="px-3.5 py-2 bg-white hover:bg-stone-50 border border-stone-300 text-slate-700 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all"
                 >
-                  <RefreshCw className={`w-3.5 h-3.5 ${loadingNotifications ? 'animate-spin text-blue-400' : ''}`} />
+                  <RefreshCw className={`w-3.5 h-3.5 ${loadingNotifications ? 'animate-spin text-slate-700' : ''}`} />
                   <span>Refresh Inbox</span>
                 </button>
 
@@ -2531,7 +2531,7 @@ export default function CitizenDashboard() {
                   type="button"
                   disabled={testSendingEmail}
                   onClick={() => handleSendTestNotification('In Progress')}
-                  className="px-3.5 py-2 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-sm"
+                  className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-sm"
                   title="Test the email notification trigger"
                 >
                   <Send className={`w-3.5 h-3.5 ${testSendingEmail ? 'animate-pulse' : ''}`} />
@@ -2541,16 +2541,16 @@ export default function CitizenDashboard() {
             </div>
 
             {/* Recipient Identity Banner */}
-            <div className="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="bg-white border border-stone-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-stone-100 border border-stone-200 text-stone-700 flex items-center justify-center shrink-0">
                   <Inbox className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-widest font-mono block">
+                  <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono block font-semibold">
                     Citizen Notification Channel
                   </span>
-                  <span className="text-sm font-bold text-white font-mono">
+                  <span className="text-sm font-bold text-slate-900 font-mono">
                     {user?.email || 'citizen@crowdcivic.org'}
                   </span>
                 </div>
@@ -2558,18 +2558,18 @@ export default function CitizenDashboard() {
 
               <div className="flex items-center gap-2 text-xs">
                 {notificationFilterTicket && (
-                  <div className="flex items-center gap-2 px-2.5 py-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-lg text-xs font-mono">
+                  <div className="flex items-center gap-2 px-2.5 py-1 bg-stone-100 text-stone-800 border border-stone-300 rounded-lg text-xs font-mono">
                     <span>Filtering: Ticket #{notificationFilterTicket}</span>
                     <button
                       onClick={() => setNotificationFilterTicket(null)}
-                      className="hover:text-white"
+                      className="hover:text-black font-bold"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 )}
-                <div className="px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-slate-400 text-xs">
-                  Total Dispatched: <strong className="text-emerald-400 font-mono">{notifications.length}</strong>
+                <div className="px-3 py-1 bg-stone-50 border border-stone-200 rounded-lg text-slate-600 text-xs">
+                  Total Dispatched: <strong className="text-emerald-700 font-mono">{notifications.length}</strong>
                 </div>
               </div>
             </div>
@@ -2577,17 +2577,17 @@ export default function CitizenDashboard() {
             {/* Notification List */}
             {loadingNotifications ? (
               <div className="text-center py-16">
-                <RefreshCw className="w-6 h-6 animate-spin text-emerald-400 mx-auto mb-2" />
-                <p className="text-xs text-slate-400">Loading citizen email ledger...</p>
+                <RefreshCw className="w-6 h-6 animate-spin text-slate-700 mx-auto mb-2" />
+                <p className="text-xs text-slate-600">Loading citizen email ledger...</p>
               </div>
             ) : notifications.filter((n) => !notificationFilterTicket || (n.ticketId || '').toLowerCase() === notificationFilterTicket.toLowerCase()).length === 0 ? (
-              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 text-slate-400 mx-auto flex items-center justify-center">
+              <div className="bg-white rounded-2xl border border-stone-200 p-12 text-center space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-stone-50 border border-stone-200 text-slate-500 mx-auto flex items-center justify-center">
                   <Mail className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white mb-1">No Status Change Emails Yet</h3>
-                  <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                  <h3 className="text-base font-bold text-slate-900 mb-1">No Status Change Emails Yet</h3>
+                  <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
                     Whenever an authority or admin updates your report (e.g. from <strong>Submitted</strong> to <strong>In Progress</strong>, or <strong>Resolved</strong>), an official email is triggered immediately and recorded here.
                   </p>
                 </div>
@@ -2595,7 +2595,7 @@ export default function CitizenDashboard() {
                   <button
                     type="button"
                     onClick={() => handleSendTestNotification('In Progress')}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-all shadow-md shadow-blue-600/20"
+                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-all shadow-sm"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Send Test Alert (In Progress)</span>
@@ -2603,7 +2603,7 @@ export default function CitizenDashboard() {
                   <button
                     type="button"
                     onClick={() => handleSendTestNotification('Resolved')}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-all shadow-md shadow-emerald-600/20"
+                    className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-all shadow-sm"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>Send Test Alert (Resolved)</span>
@@ -2617,52 +2617,52 @@ export default function CitizenDashboard() {
                   .map((item) => (
                     <div
                       key={item.id}
-                      className="bg-white border border-slate-200 hover:border-emerald-500/40 rounded-2xl p-4 sm:p-5 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                      className="bg-white border border-stone-200 hover:border-slate-400 rounded-2xl p-4 sm:p-5 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
                     >
                       <div className="space-y-2 flex-1 min-w-0">
                         {/* Status change badges */}
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="px-2 py-0.5 rounded bg-black/60 border border-slate-300 text-emerald-400 font-mono text-[11px] font-bold">
+                          <span className="px-2 py-0.5 rounded bg-stone-100 border border-stone-300 text-stone-800 font-mono text-[11px] font-bold">
                             #{item.ticketId}
                           </span>
 
-                          <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-slate-50 border border-slate-200">
+                          <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-stone-50 border border-stone-200">
                             <span className="text-slate-400 line-through">{item.previousStatus || 'Submitted'}</span>
                             <span className="text-slate-500">&rarr;</span>
                             <span
                               className={
                                 item.newStatus === 'Resolved'
-                                  ? 'text-emerald-400 font-extrabold'
+                                  ? 'text-emerald-700 font-extrabold'
                                   : item.newStatus === 'In Progress'
-                                  ? 'text-blue-400 font-extrabold'
-                                  : 'text-amber-400 font-extrabold'
+                                  ? 'text-blue-700 font-extrabold'
+                                  : 'text-amber-800 font-extrabold'
                               }
                             >
                               {item.newStatus}
                             </span>
                           </div>
 
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 font-mono">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono font-semibold">
                             ✓ {item.dispatchMode === 'smtp' ? 'SMTP Delivered' : 'System Email Sent'}
                           </span>
                         </div>
 
                         {/* Subject */}
-                        <h4 className="text-sm font-semibold text-white group-hover:text-emerald-300 transition-colors">
+                        <h4 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
                           {item.subject}
                         </h4>
 
                         {/* Notes preview */}
                         {item.message && (
-                          <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                             {item.message}
                           </p>
                         )}
 
-                        <div className="flex flex-wrap items-center gap-4 text-[10px] text-slate-500 font-mono pt-1">
-                          <span>To: <strong className="text-slate-300">{item.recipientEmail}</strong></span>
+                        <div className="flex flex-wrap items-center gap-4 text-[10px] text-slate-600 font-mono pt-1">
+                          <span>To: <strong className="text-slate-900 font-semibold">{item.recipientEmail}</strong></span>
                           <span>•</span>
-                          <span>Dispatched: <strong className="text-slate-300">{new Date(item.sentAt).toLocaleString()}</strong></span>
+                          <span>Dispatched: <strong className="text-slate-900 font-semibold">{new Date(item.sentAt).toLocaleString()}</strong></span>
                         </div>
                       </div>
 
@@ -2674,7 +2674,7 @@ export default function CitizenDashboard() {
                             setSelectedEmailModal(item);
                             setEmailPreviewTab('html');
                           }}
-                          className="px-3.5 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-sm"
+                          className="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 text-slate-800 border border-stone-300 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-sm"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>Preview Full Email</span>
@@ -2704,21 +2704,21 @@ export default function CitizenDashboard() {
       {/* MODAL 1: CAMERA STREAM MODAL */}
       {showCamera && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-lg w-full text-center relative">
+          <div className="bg-white border border-stone-200 rounded-2xl p-6 max-w-lg w-full text-center relative">
             <button
               onClick={stopCamera}
-              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 hover:bg-white/20 text-white"
+              className="absolute top-4 right-4 p-2 rounded-full bg-stone-100 hover:bg-stone-200 text-slate-700"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <h3 className="text-lg font-bold text-white mb-2 flex items-center justify-center gap-2">
-              <Camera className="w-5 h-5 text-emerald-400" />
+            <h3 className="text-lg font-bold text-slate-900 mb-2 flex items-center justify-center gap-2">
+              <Camera className="w-5 h-5 text-emerald-600" />
               <span>Capture Live Issue Photo</span>
             </h3>
-            <p className="text-xs text-slate-400 mb-4">Position the civic defect clearly in frame</p>
+            <p className="text-xs text-slate-600 mb-4">Position the civic defect clearly in frame</p>
 
-            <div className="relative rounded-xl overflow-hidden bg-black border border-slate-200 mb-4 h-64 flex items-center justify-center">
+            <div className="relative rounded-xl overflow-hidden bg-black border border-stone-200 mb-4 h-64 flex items-center justify-center">
               <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
               <canvas ref={canvasRef} className="hidden" />
             </div>
@@ -2726,13 +2726,13 @@ export default function CitizenDashboard() {
             <div className="flex justify-center gap-3">
               <button
                 onClick={stopCamera}
-                className="px-4 py-2 bg-slate-100 text-slate-300 text-xs font-medium rounded-xl"
+                className="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-slate-700 text-xs font-medium rounded-xl"
               >
                 Cancel
               </button>
               <button
                 onClick={captureCameraPhoto}
-                className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl flex items-center gap-2"
+                className="px-6 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl flex items-center gap-2"
               >
                 <Camera className="w-4 h-4" />
                 <span>Snap Photo</span>
@@ -2745,24 +2745,24 @@ export default function CitizenDashboard() {
       {/* MODAL 2: TICKET DETAILS MODAL */}
       {selectedReportDetail && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+          <div className="bg-white border border-stone-200 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
             <button
               onClick={() => setSelectedReportDetail(null)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 hover:bg-white/20 text-white"
+              className="absolute top-4 right-4 p-2 rounded-full bg-stone-100 hover:bg-stone-200 text-slate-700"
             >
               <X className="w-4 h-4" />
             </button>
 
             <div className="flex items-center justify-between mb-4 mr-8">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded border border-blue-500/20">
+                <span className="font-mono text-xs font-bold text-slate-800 bg-stone-100 px-2.5 py-1 rounded border border-stone-300">
                   {selectedReportDetail.ticketId}
                 </span>
                 <span
-                  className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                  className={`text-xs font-bold px-2.5 py-1 rounded-full ${
                     selectedReportDetail.status === 'Resolved'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                      : 'bg-amber-100 text-amber-900 border border-amber-300'
                   }`}
                 >
                   {selectedReportDetail.status}
@@ -2772,7 +2772,7 @@ export default function CitizenDashboard() {
               {selectedReportDetail.id && (
                 <button
                   onClick={(e) => handleDeleteReport(e, selectedReportDetail.id!, selectedReportDetail.ticketId)}
-                  className="px-2.5 py-1 bg-red-600/80 hover:bg-red-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition-all"
+                  className="px-2.5 py-1 bg-rose-700 hover:bg-rose-800 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition-all"
                   title="Delete this complaint"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -2781,57 +2781,57 @@ export default function CitizenDashboard() {
               )}
             </div>
 
-            <h2 className="text-xl font-bold text-white mb-2">{selectedReportDetail.title}</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-2">{selectedReportDetail.title}</h2>
 
-            <div className="rounded-xl overflow-hidden mb-4 border border-slate-200 max-h-72">
+            <div className="rounded-xl overflow-hidden mb-4 border border-stone-200 max-h-72">
               <img src={selectedReportDetail.imageUrl} alt={selectedReportDetail.title} className="w-full object-cover" />
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4 text-xs">
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+              <div className="bg-stone-50 p-3 rounded-xl border border-stone-200">
                 <span className="text-slate-500 block mb-1">Category</span>
-                <span className="font-medium text-slate-200">{selectedReportDetail.category}</span>
+                <span className="font-bold text-slate-900">{selectedReportDetail.category}</span>
               </div>
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+              <div className="bg-stone-50 p-3 rounded-xl border border-stone-200">
                 <span className="text-slate-500 block mb-1">Severity</span>
-                <span className="font-medium text-red-400">{selectedReportDetail.severity}</span>
+                <span className="font-bold text-rose-800">{selectedReportDetail.severity}</span>
               </div>
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+              <div className="bg-stone-50 p-3 rounded-xl border border-stone-200">
                 <span className="text-slate-500 block mb-1">Department</span>
-                <span className="font-medium text-amber-300">{selectedReportDetail.department}</span>
+                <span className="font-bold text-amber-900">{selectedReportDetail.department}</span>
               </div>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-4">
-              <span className="text-xs font-semibold text-slate-300 block mb-1">Description:</span>
-              <p className="text-xs text-slate-300 leading-relaxed">{selectedReportDetail.description}</p>
+            <div className="bg-stone-50 p-4 rounded-xl border border-stone-200 mb-4">
+              <span className="text-xs font-bold text-slate-900 block mb-1">Description:</span>
+              <p className="text-xs text-slate-700 leading-relaxed">{selectedReportDetail.description}</p>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center gap-2 text-xs text-slate-300 mb-4">
-              <MapPin className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <div className="bg-stone-50 p-4 rounded-xl border border-stone-200 flex items-center gap-2 text-xs text-slate-700 mb-4">
+              <MapPin className="w-4 h-4 text-red-500 flex-shrink-0" />
               <div>
-                <span className="font-semibold block">Location:</span>
+                <span className="font-bold text-slate-900 block">Location:</span>
                 <span>{selectedReportDetail.location.address}</span>
               </div>
             </div>
 
             {/* COMMUNITY RESOLUTION VERIFICATION SECTION */}
-            <div className="mt-6 border-t border-slate-200 pt-5">
+            <div className="mt-6 border-t border-stone-200 pt-5">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700">
                     <Users className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                       <span>Community Verification</span>
                       {selectedReportDetail.isDisputed && (
-                        <span className="text-[10px] bg-red-500/20 text-red-300 border border-red-500/30 px-2 py-0.5 rounded-full font-mono">
+                        <span className="text-[10px] bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded-full font-mono font-bold">
                           ⚠️ Disputed
                         </span>
                       )}
                     </h3>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[11px] text-slate-600">
                       Nearby citizens vote and verify whether this issue is actually resolved.
                     </p>
                   </div>
@@ -2840,7 +2840,7 @@ export default function CitizenDashboard() {
                 {/* Score badge */}
                 {selectedReportDetail.voteStats && (
                   <div className="text-right">
-                    <span className="text-xs font-bold text-emerald-400">
+                    <span className="text-xs font-bold text-emerald-700">
                       {Math.round(
                         (selectedReportDetail.voteStats.yes /
                           Math.max(1, selectedReportDetail.voteStats.yes + selectedReportDetail.voteStats.no)) *
@@ -2848,7 +2848,7 @@ export default function CitizenDashboard() {
                       )}
                       % Verified
                     </span>
-                    <span className="text-[10px] text-slate-500 block">
+                    <span className="text-[10px] text-slate-600 block">
                       ({selectedReportDetail.voteStats.yes} Fixed / {selectedReportDetail.voteStats.no} Unresolved)
                     </span>
                   </div>
@@ -2858,9 +2858,9 @@ export default function CitizenDashboard() {
               {/* Progress Bar for Community Approval */}
               {selectedReportDetail.voteStats && (selectedReportDetail.voteStats.yes + selectedReportDetail.voteStats.no > 0) && (
                 <div className="mb-4">
-                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden flex">
+                  <div className="w-full bg-stone-200 rounded-full h-2 overflow-hidden flex">
                     <div
-                      className="bg-emerald-500 h-full transition-all"
+                      className="bg-emerald-600 h-full transition-all"
                       style={{
                         width: `${
                           (selectedReportDetail.voteStats.yes /
@@ -2870,7 +2870,7 @@ export default function CitizenDashboard() {
                       }}
                     />
                     <div
-                      className="bg-red-500 h-full transition-all"
+                      className="bg-rose-600 h-full transition-all"
                       style={{
                         width: `${
                           (selectedReportDetail.voteStats.no /
@@ -2885,17 +2885,17 @@ export default function CitizenDashboard() {
 
               {/* Authority Resolution Proof Photo if available */}
               {selectedReportDetail.resolutionProofUrl && (
-                <div className="mb-4 p-3 bg-emerald-950/30 border border-emerald-500/30 rounded-xl">
-                  <span className="text-xs font-semibold text-emerald-300 block mb-2 flex items-center gap-1.5">
+                <div className="mb-4 p-3 bg-emerald-50 border border-emerald-300 rounded-xl">
+                  <span className="text-xs font-bold text-emerald-800 block mb-2 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Authority Live Proof Photo:
                   </span>
                   <img
                     src={selectedReportDetail.resolutionProofUrl}
                     alt="Resolution Proof"
-                    className="w-full h-40 object-cover rounded-lg border border-emerald-500/20"
+                    className="w-full h-40 object-cover rounded-lg border border-emerald-200"
                   />
                   {selectedReportDetail.resolutionNotes && (
-                    <p className="text-xs text-slate-300 mt-2 italic">
+                    <p className="text-xs text-slate-700 mt-2 italic">
                       "{selectedReportDetail.resolutionNotes}"
                     </p>
                   )}
@@ -2904,30 +2904,30 @@ export default function CitizenDashboard() {
 
               {/* Success Message Banner */}
               {voteSuccessMessage && (
-                <div className="mb-4 p-3 bg-emerald-500/20 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center gap-2">
-                  <Award className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <div className="mb-4 p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-xs text-emerald-800 font-semibold flex items-center gap-2">
+                  <Award className="w-4 h-4 text-amber-600 flex-shrink-0" />
                   <span>{voteSuccessMessage}</span>
                 </div>
               )}
 
               {/* Voting Form or Voted Status */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-4">
+              <div className="bg-white border border-stone-200 rounded-2xl p-4">
                 {selectedReportDetail.communityVotes?.some((v) => v.userId === user?.uid) ? (
                   <div>
                     <div className="flex items-center justify-between text-xs mb-2">
-                      <span className="text-slate-400 font-medium">Your Verification Vote:</span>
+                      <span className="text-slate-600 font-medium">Your Verification Vote:</span>
                       {selectedReportDetail.communityVotes?.find((v) => v.userId === user?.uid)?.vote === 'yes' ? (
-                        <span className="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full font-semibold flex items-center gap-1">
+                        <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-full font-bold flex items-center gap-1">
                           <ThumbsUp className="w-3 h-3" /> Verified Fixed
                         </span>
                       ) : (
-                        <span className="px-2.5 py-1 bg-red-500/20 text-red-300 border border-red-500/30 rounded-full font-semibold flex items-center gap-1">
+                        <span className="px-2.5 py-1 bg-rose-100 text-rose-800 border border-rose-300 rounded-full font-bold flex items-center gap-1">
                           <ThumbsDown className="w-3 h-3" /> Reported Still Unresolved
                         </span>
                       )}
                     </div>
                     {selectedReportDetail.communityVotes?.find((v) => v.userId === user?.uid)?.comment && (
-                      <p className="text-xs text-slate-300 bg-slate-50 p-2.5 rounded-xl border border-slate-100 italic">
+                      <p className="text-xs text-slate-700 bg-stone-50 p-2.5 rounded-xl border border-stone-200 italic">
                         "{selectedReportDetail.communityVotes?.find((v) => v.userId === user?.uid)?.comment}"
                       </p>
                     )}
@@ -2935,11 +2935,11 @@ export default function CitizenDashboard() {
                 ) : (
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-semibold text-white flex items-center gap-1.5">
-                        <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
+                      <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                        <MessageSquare className="w-3.5 h-3.5 text-blue-600" />
                         <span>Is this issue actually resolved on ground?</span>
                       </span>
-                      <span className="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full font-semibold">
+                      <span className="text-[10px] bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full font-bold">
                         +15 Karma Points
                       </span>
                     </div>
@@ -2948,26 +2948,26 @@ export default function CitizenDashboard() {
                       <button
                         type="button"
                         onClick={() => setVoteOption('yes')}
-                        className={`p-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+                        className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
                           voteOption === 'yes'
-                            ? 'bg-emerald-600 text-white border-emerald-400 shadow-lg shadow-emerald-600/20 ring-2 ring-emerald-500/30'
-                            : 'bg-slate-50 hover:bg-slate-100 text-slate-300 border-slate-200'
+                            ? 'bg-emerald-700 text-white border-emerald-600 shadow-sm'
+                            : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border-stone-300'
                         }`}
                       >
-                        <ThumbsUp className="w-4 h-4 text-emerald-400" />
+                        <ThumbsUp className="w-4 h-4 text-emerald-600" />
                         <span>Yes, Fixed!</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setVoteOption('no')}
-                        className={`p-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+                        className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
                           voteOption === 'no'
-                            ? 'bg-red-600 text-white border-red-400 shadow-lg shadow-red-600/20 ring-2 ring-red-500/30'
-                            : 'bg-slate-50 hover:bg-slate-100 text-slate-300 border-slate-200'
+                            ? 'bg-rose-700 text-white border-rose-600 shadow-sm'
+                            : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border-stone-300'
                         }`}
                       >
-                        <ThumbsDown className="w-4 h-4 text-red-400" />
+                        <ThumbsDown className="w-4 h-4 text-rose-600" />
                         <span>No, Still Unresolved</span>
                       </button>
                     </div>
@@ -2979,14 +2979,14 @@ export default function CitizenDashboard() {
                           value={voteComment}
                           onChange={(e) => setVoteComment(e.target.value)}
                           placeholder="Add your ground observations or feedback (e.g. 'I passed by today, pothole is filled properly' or 'Water is still leaking')..."
-                          className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400"
+                          className="w-full bg-white border border-stone-300 rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-500"
                         />
 
                         <button
                           type="button"
                           onClick={handleCommunityVote}
                           disabled={submittingVote}
-                          className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                          className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                         >
                           {submittingVote ? (
                             <>
@@ -2995,7 +2995,7 @@ export default function CitizenDashboard() {
                             </>
                           ) : (
                             <>
-                              <Award className="w-4 h-4 text-amber-300" />
+                              <Award className="w-4 h-4 text-amber-400" />
                               <span>Submit Verification Vote (+15 Karma)</span>
                             </>
                           )}
@@ -3007,33 +3007,33 @@ export default function CitizenDashboard() {
 
                 {/* List of recent community verification comments */}
                 {selectedReportDetail.communityVotes && selectedReportDetail.communityVotes.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-slate-200">
-                    <span className="text-[11px] font-semibold text-slate-400 block mb-2">
+                  <div className="mt-4 pt-4 border-t border-stone-200">
+                    <span className="text-[11px] font-bold text-slate-700 block mb-2">
                       Recent Citizen Verifications ({selectedReportDetail.communityVotes.length}):
                     </span>
                     <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                       {selectedReportDetail.communityVotes.map((v, idx) => (
-                        <div key={idx} className="p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-[11px]">
-                          <div className="flex items-center justify-between text-slate-400 mb-1">
-                            <span className="font-mono text-slate-300 truncate max-w-[180px]">{v.userEmail}</span>
+                        <div key={idx} className="p-2.5 bg-stone-50 rounded-xl border border-stone-200 text-[11px]">
+                          <div className="flex items-center justify-between text-slate-600 mb-1">
+                            <span className="font-mono text-slate-800 font-bold truncate max-w-[180px]">{v.userEmail}</span>
                             <div className="flex items-center gap-2">
                               {v.distanceKm !== undefined && (
-                                <span className="text-[9px] bg-blue-500/10 text-blue-300 px-1.5 py-0.5 rounded">
+                                <span className="text-[9px] bg-stone-200 text-stone-800 px-1.5 py-0.5 rounded font-mono font-medium">
                                   📍 {v.distanceKm} km away
                                 </span>
                               )}
                               {v.vote === 'yes' ? (
-                                <span className="text-emerald-400 font-semibold flex items-center gap-0.5">
+                                <span className="text-emerald-700 font-bold flex items-center gap-0.5">
                                   <ThumbsUp className="w-3 h-3" /> Fixed
                                 </span>
                               ) : (
-                                <span className="text-red-400 font-semibold flex items-center gap-0.5">
+                                <span className="text-rose-700 font-bold flex items-center gap-0.5">
                                   <ThumbsDown className="w-3 h-3" /> Unresolved
                                 </span>
                               )}
                             </div>
                           </div>
-                          {v.comment && <p className="text-slate-200">{v.comment}</p>}
+                          {v.comment && <p className="text-slate-800">{v.comment}</p>}
                         </div>
                       ))}
                     </div>
@@ -3048,56 +3048,56 @@ export default function CitizenDashboard() {
       {/* MODAL: AI DUPLICATE COMPLAINT DETECTION MODAL */}
       {duplicateModal && duplicateModal.isOpen && duplicateModal.match && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white border border-amber-200 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl relative animate-in zoom-in-95 my-8">
+          <div className="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl relative animate-in zoom-in-95 my-8">
             <button
               onClick={() => setDuplicateModal(null)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 p-2 rounded-full bg-stone-100 hover:bg-stone-200 text-slate-700"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Header Badge */}
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 shrink-0">
                 <Layers className="w-6 h-6 animate-pulse" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full text-[11px] font-bold tracking-wider uppercase">
+                  <span className="px-2.5 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded-full text-[11px] font-bold tracking-wider uppercase">
                     AI Duplicate Match Detected ({duplicateModal.match.overallScore}%)
                   </span>
                 </div>
-                <h3 className="text-lg font-extrabold text-white tracking-tight mt-0.5">
+                <h3 className="text-lg font-bold text-slate-900 tracking-tight mt-0.5">
                   An Active Complaint Already Exists
                 </h3>
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed mb-5">
+            <p className="text-xs text-slate-600 leading-relaxed mb-5">
               Gemini AI detected an existing report for this exact same location ({duplicateModal.match.distanceMeters}m away) with matching visual features.
             </p>
 
             {/* Comparison Box */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4 mb-6">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200 text-xs">
+            <div className="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-4 mb-6">
+              <div className="flex items-center justify-between pb-3 border-b border-stone-200 text-xs">
                 <div>
-                  <span className="text-slate-400 font-mono text-[11px]">Existing Complaint Ticket</span>
-                  <span className="block font-bold font-mono text-blue-400 text-sm">
+                  <span className="text-slate-500 font-mono text-[11px]">Existing Complaint Ticket</span>
+                  <span className="block font-bold font-mono text-slate-900 text-sm">
                     #{duplicateModal.match.ticketId}
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-slate-400 text-[11px]">Supporters / Citizens</span>
-                  <span className="block font-bold text-amber-400 text-sm flex items-center justify-end gap-1">
-                    <Users className="w-3.5 h-3.5" /> {duplicateModal.match.supportersCount || 1} Citizens
+                  <span className="text-slate-500 text-[11px]">Supporters / Citizens</span>
+                  <span className="block font-bold text-amber-900 text-sm flex items-center justify-end gap-1">
+                    <Users className="w-3.5 h-3.5 text-amber-700" /> {duplicateModal.match.supportersCount || 1} Citizens
                   </span>
                 </div>
               </div>
 
               {/* Title & Description */}
               <div>
-                <h4 className="text-xs font-bold text-white mb-1">{duplicateModal.match.title}</h4>
-                <p className="text-[11px] text-slate-300 line-clamp-2 bg-slate-50 p-2 rounded-xl border border-slate-100">
+                <h4 className="text-xs font-bold text-slate-900 mb-1">{duplicateModal.match.title}</h4>
+                <p className="text-[11px] text-slate-700 line-clamp-2 bg-stone-100 p-2 rounded-xl border border-stone-200">
                   "{duplicateModal.match.description}"
                 </p>
               </div>
@@ -3105,10 +3105,10 @@ export default function CitizenDashboard() {
               {/* Images Comparison */}
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <div>
-                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-1">
+                  <span className="text-[10px] uppercase tracking-wider text-slate-600 font-bold block mb-1">
                     Uploaded Photo
                   </span>
-                  <div className="relative h-28 rounded-xl overflow-hidden border border-slate-200 bg-slate-900">
+                  <div className="relative h-28 rounded-xl overflow-hidden border border-stone-200 bg-stone-900">
                     <img
                       src={duplicateModal.compressedImage}
                       alt="Uploaded"
@@ -3117,10 +3117,10 @@ export default function CitizenDashboard() {
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-1">
+                  <span className="text-[10px] uppercase tracking-wider text-slate-600 font-bold block mb-1">
                     Existing Report Photo
                   </span>
-                  <div className="relative h-28 rounded-xl overflow-hidden border border-amber-500/30 bg-slate-900">
+                  <div className="relative h-28 rounded-xl overflow-hidden border border-stone-200 bg-stone-900">
                     <img
                       src={duplicateModal.match.imageUrl}
                       alt="Existing"
@@ -3131,18 +3131,18 @@ export default function CitizenDashboard() {
               </div>
 
               {/* AI Breakdown Scores */}
-              <div className="pt-2 border-t border-slate-200 grid grid-cols-3 gap-2 text-center text-[10px]">
-                <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
-                  <span className="text-slate-400 block">Distance</span>
-                  <span className="font-bold text-blue-300">{duplicateModal.match.distanceMeters}m</span>
+              <div className="pt-2 border-t border-stone-200 grid grid-cols-3 gap-2 text-center text-[10px]">
+                <div className="bg-white p-2 rounded-xl border border-stone-200">
+                  <span className="text-slate-500 block">Distance</span>
+                  <span className="font-bold text-slate-900">{duplicateModal.match.distanceMeters}m</span>
                 </div>
-                <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
-                  <span className="text-slate-400 block">Photo Similarity</span>
-                  <span className="font-bold text-amber-300">{duplicateModal.match.imageScore}%</span>
+                <div className="bg-white p-2 rounded-xl border border-stone-200">
+                  <span className="text-slate-500 block">Photo Similarity</span>
+                  <span className="font-bold text-amber-900">{duplicateModal.match.imageScore}%</span>
                 </div>
-                <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
-                  <span className="text-slate-400 block">Text Similarity</span>
-                  <span className="font-bold text-emerald-300">{duplicateModal.match.textScore}%</span>
+                <div className="bg-white p-2 rounded-xl border border-stone-200">
+                  <span className="text-slate-500 block">Text Similarity</span>
+                  <span className="font-bold text-emerald-800">{duplicateModal.match.textScore}%</span>
                 </div>
               </div>
             </div>
@@ -3153,7 +3153,7 @@ export default function CitizenDashboard() {
                 type="button"
                 onClick={handleJoinExistingComplaint}
                 disabled={submitting}
-                className="w-full py-3.5 px-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-extrabold text-xs rounded-2xl shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 transition-all"
+                className="w-full py-3.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-2xl shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer"
               >
                 {submitting ? (
                   <>
@@ -3175,7 +3175,7 @@ export default function CitizenDashboard() {
                   createNewReport(duplicateModal.newReportData);
                 }}
                 disabled={submitting}
-                className="w-full py-2.5 px-4 bg-slate-50 hover:bg-slate-100 text-slate-300 hover:text-white font-semibold text-xs rounded-2xl border border-slate-200 transition-all text-center"
+                className="w-full py-2.5 px-4 bg-stone-100 hover:bg-stone-200 text-slate-700 font-semibold text-xs rounded-2xl border border-stone-300 transition-all text-center cursor-pointer"
               >
                 No, Submit as a Separate Independent Issue
               </button>
@@ -3187,32 +3187,32 @@ export default function CitizenDashboard() {
       {/* MODAL 3: DELETE COMPLAINT CONFIRMATION MODAL */}
       {deleteConfirmModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-red-200 rounded-2xl p-6 max-w-md w-full shadow-2xl relative">
+          <div className="bg-white border border-stone-200 rounded-2xl p-6 max-w-md w-full shadow-2xl relative">
             <button
               onClick={() => setDeleteConfirmModal(null)}
-              className="absolute top-4 right-4 p-1.5 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 p-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-slate-700"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <div className="w-12 h-12 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 mb-4 mx-auto">
+            <div className="w-12 h-12 rounded-full bg-red-100 border border-red-300 flex items-center justify-center text-red-600 mb-4 mx-auto">
               <Trash2 className="w-6 h-6" />
             </div>
 
-            <h3 className="text-lg font-bold text-white text-center mb-2">Delete Complaint Ticket?</h3>
-            <p className="text-xs text-slate-300 text-center leading-relaxed mb-6">
+            <h3 className="text-lg font-bold text-slate-900 text-center mb-2">Delete Complaint Ticket?</h3>
+            <p className="text-xs text-slate-600 text-center leading-relaxed mb-6">
               Are you sure you want to permanently delete complaint ticket{' '}
-              <span className="font-mono font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">
+              <span className="font-mono font-bold text-rose-800 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">
                 #{deleteConfirmModal.ticketId}
               </span>
               ? This action cannot be undone and will remove it from the municipal database.
             </p>
 
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-stone-200">
               <button
                 type="button"
                 onClick={() => setDeleteConfirmModal(null)}
-                className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
                 disabled={deleting}
               >
                 Cancel
@@ -3221,7 +3221,7 @@ export default function CitizenDashboard() {
                 type="button"
                 onClick={executeDeleteReport}
                 disabled={deleting}
-                className="px-5 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-semibold rounded-xl flex items-center gap-2 shadow-lg shadow-red-600/30 transition-all disabled:opacity-50"
+                className="px-5 py-2 bg-rose-700 hover:bg-rose-800 text-white text-xs font-semibold rounded-xl flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
               >
                 {deleting ? (
                   <>
@@ -3243,16 +3243,16 @@ export default function CitizenDashboard() {
       {/* MODAL: EMAIL PREVIEW INSPECTOR */}
       {selectedEmailModal && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white border border-emerald-200 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl my-8 relative flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95">
+          <div className="bg-white border border-stone-200 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl my-8 relative flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95">
             {/* Modal Header */}
-            <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+            <div className="px-6 py-4 bg-stone-50 border-b border-stone-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-300 flex items-center justify-center">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">Dispatched Municipal Email Preview</h3>
-                  <p className="text-[10px] text-slate-400 font-mono">
+                  <h3 className="text-sm font-bold text-slate-900">Dispatched Municipal Email Preview</h3>
+                  <p className="text-[10px] text-slate-600 font-mono">
                     Ticket #{selectedEmailModal.ticketId} • Status: {selectedEmailModal.previousStatus} &rarr; {selectedEmailModal.newStatus}
                   </p>
                 </div>
@@ -3260,43 +3260,43 @@ export default function CitizenDashboard() {
 
               <button
                 onClick={() => setSelectedEmailModal(null)}
-                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-white transition-colors"
+                className="p-1.5 rounded-full hover:bg-stone-100 text-slate-700 hover:text-black transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Email Envelope Metadata */}
-            <div className="px-6 py-3 bg-black/40 border-b border-slate-200 text-xs space-y-1 font-mono">
+            <div className="px-6 py-3 bg-stone-900 border-b border-stone-800 text-xs space-y-1 font-mono">
               <div className="flex">
-                <span className="w-20 text-slate-500 font-semibold">From:</span>
+                <span className="w-20 text-stone-400 font-semibold">From:</span>
                 <span className="text-emerald-400 font-bold">Civic Sentinel Notifications &lt;notifications@crowdcivic.org&gt;</span>
               </div>
               <div className="flex">
-                <span className="w-20 text-slate-500 font-semibold">To:</span>
+                <span className="w-20 text-stone-400 font-semibold">To:</span>
                 <span className="text-white font-bold">{selectedEmailModal.recipientEmail}</span>
               </div>
               <div className="flex">
-                <span className="w-20 text-slate-500 font-semibold">Subject:</span>
-                <span className="text-slate-200">{selectedEmailModal.subject}</span>
+                <span className="w-20 text-stone-400 font-semibold">Subject:</span>
+                <span className="text-stone-200">{selectedEmailModal.subject}</span>
               </div>
               <div className="flex">
-                <span className="w-20 text-slate-500 font-semibold">Date:</span>
-                <span className="text-slate-400">{new Date(selectedEmailModal.sentAt).toUTCString()}</span>
+                <span className="w-20 text-stone-400 font-semibold">Date:</span>
+                <span className="text-stone-400">{new Date(selectedEmailModal.sentAt).toUTCString()}</span>
               </div>
             </div>
 
             {/* View Switcher: Rich HTML vs Plain Text */}
-            <div className="px-6 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs">
-              <span className="text-[11px] text-slate-400 font-medium">Display Format:</span>
-              <div className="flex bg-black/50 border border-slate-200 rounded-lg p-0.5 text-[11px]">
+            <div className="px-6 py-2 bg-stone-50 border-b border-stone-200 flex items-center justify-between text-xs">
+              <span className="text-[11px] text-slate-600 font-medium">Display Format:</span>
+              <div className="flex bg-stone-200 border border-stone-300 rounded-lg p-0.5 text-[11px]">
                 <button
                   type="button"
                   onClick={() => setEmailPreviewTab('html')}
                   className={`px-3 py-1 rounded font-semibold transition-all ${
                     emailPreviewTab === 'html'
-                      ? 'bg-emerald-500 text-black shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-white text-slate-900 shadow'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Rich HTML Preview
@@ -3306,8 +3306,8 @@ export default function CitizenDashboard() {
                   onClick={() => setEmailPreviewTab('text')}
                   className={`px-3 py-1 rounded font-semibold transition-all ${
                     emailPreviewTab === 'text'
-                      ? 'bg-emerald-500 text-black shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-white text-slate-900 shadow'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Raw Plain Text
@@ -3316,9 +3316,9 @@ export default function CitizenDashboard() {
             </div>
 
             {/* Email Body Content Container */}
-            <div className="p-6 flex-1 overflow-y-auto bg-slate-950/60">
+            <div className="p-6 flex-1 overflow-y-auto bg-stone-100">
               {emailPreviewTab === 'html' ? (
-                <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-300">
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-stone-300">
                   <iframe
                     srcDoc={selectedEmailModal.htmlBody}
                     title="Rendered Email"
@@ -3327,21 +3327,21 @@ export default function CitizenDashboard() {
                   />
                 </div>
               ) : (
-                <pre className="font-mono text-xs text-emerald-300 bg-black/80 p-4 rounded-xl border border-slate-200 whitespace-pre-wrap leading-relaxed">
+                <pre className="font-mono text-xs text-stone-900 bg-white p-4 rounded-xl border border-stone-300 whitespace-pre-wrap leading-relaxed">
                   {selectedEmailModal.textBody || selectedEmailModal.message}
                 </pre>
               )}
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs">
-              <span className="text-[11px] text-emerald-400 font-mono">
+            <div className="px-6 py-3 bg-stone-50 border-t border-stone-200 flex items-center justify-between text-xs">
+              <span className="text-[11px] text-emerald-700 font-mono font-semibold">
                 ✓ Recorded in Municipal Audit Ledger
               </span>
               <button
                 type="button"
                 onClick={() => setSelectedEmailModal(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl text-xs"
+                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-xs"
               >
                 Close Preview
               </button>
