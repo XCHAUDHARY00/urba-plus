@@ -57,6 +57,13 @@ import {
   Mail,
   Send,
   Inbox,
+  Flame,
+  Zap,
+  Siren,
+  AlertOctagon,
+  Radio,
+  PhoneCall,
+  ExternalLink,
 } from 'lucide-react';
 import { triggerStatusChangeEmail } from '@/lib/notifications';
 
@@ -100,6 +107,13 @@ interface IssueReport {
   supporters?: string[];
   evidencePhotos?: string[];
   duplicateMatchInfo?: any;
+
+  // High-Risk Emergency Hazard fields
+  isEmergency?: boolean;
+  emergencyType?: 'fire' | 'power_grid' | 'gas_leak' | 'structural_collapse' | string;
+  emergencyResponseStatus?: 'PENDING_DISPATCH' | 'CREW_DISPATCHED' | 'ISOLATED' | 'STANDBY' | string;
+  emergencyDispatchedAt?: string;
+  emergencyNotes?: string;
 
   // Resolution proof fields
   resolvedAt?: string;
@@ -146,6 +160,7 @@ interface StatusNotificationLog {
 
 const CATEGORIES = [
   'All Categories',
+  'Fire & Hazard Emergency',
   'Roads & Infrastructure',
   'Waste & Sanitation',
   'Water & Drainage',
@@ -171,6 +186,7 @@ export default function AuthorityDashboard() {
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [categoryFilter, setCategoryFilter] = useState<string>('All Categories');
   const [severityFilter, setSeverityFilter] = useState<string>('All');
+  const [emergencyOnlyFilter, setEmergencyOnlyFilter] = useState<boolean>(false);
 
   // Selected Issue for inspection
   const [selectedIssue, setSelectedIssue] = useState<IssueReport | null>(null);
@@ -877,6 +893,96 @@ export default function AuthorityDashboard() {
     });
   };
 
+  // Direct Emergency Hazard Response Dispatch
+  const handleEmergencyDispatch = async (issue: IssueReport) => {
+    try {
+      const issueRef = doc(db, 'issues', issue.id);
+      const nowIso = new Date().toISOString();
+      await updateDoc(issueRef, {
+        status: 'In Progress',
+        emergencyResponseStatus: 'CREW_DISPATCHED',
+        emergencyDispatchedAt: nowIso,
+        emergencyNotes: `First responder crew dispatched by ${user?.email || 'Authority Ops'} at ${new Date().toLocaleTimeString()}`,
+        updatedAt: nowIso,
+      });
+
+      await logSecurityEvent({
+        userId: user?.uid || 'authority_official',
+        email: user?.email || 'authority@crowdcivic.org',
+        role: 'authority',
+        action: 'EMERGENCY_CREW_DISPATCHED',
+        portal: 'authority',
+        status: 'SUCCESS',
+        details: `Emergency Response Crew dispatched for high-alert incident #${issue.ticketId} (${issue.title}).`,
+      });
+
+      if (issue.userEmail) {
+        await triggerStatusChangeEmail({
+          ticketId: issue.ticketId,
+          issueId: issue.id,
+          recipientEmail: issue.userEmail,
+          previousStatus: issue.status || 'Submitted',
+          newStatus: 'In Progress',
+          issueTitle: `[HIGH-ALERT EMERGENCY] ${issue.title}`,
+          category: issue.category,
+          locationAddress: issue.location?.address,
+          notes: `URGENT NOTICE: An emergency first-response crew has been dispatched to your reported hazard site (${issue.location?.address || 'Site'}). Please maintain a safe perimeter and follow local safety advisories.`,
+          performedBy: user?.email || 'Emergency Dispatch Operations',
+        });
+
+        setNotificationBanner({
+          message: `🚨 Emergency crew dispatched for Ticket #${issue.ticketId}! Priority alert email dispatched to ${issue.userEmail}.`,
+          recipientEmail: issue.userEmail,
+          ticketId: issue.ticketId,
+          newStatus: 'In Progress (Crew Dispatched)',
+        });
+      }
+
+      fetchIssues();
+    } catch (err) {
+      console.error('Error dispatching emergency crew:', err);
+    }
+  };
+
+  // Cordon / Isolate Site
+  const handleEmergencyCordon = async (issue: IssueReport) => {
+    try {
+      const issueRef = doc(db, 'issues', issue.id);
+      const nowIso = new Date().toISOString();
+      await updateDoc(issueRef, {
+        status: 'In Progress',
+        emergencyResponseStatus: 'ISOLATED',
+        emergencyNotes: `Hazard site cordoned off and safety perimeter secured at ${new Date().toLocaleTimeString()} by ${user?.email || 'Control Center'}`,
+        updatedAt: nowIso,
+      });
+
+      if (issue.userEmail) {
+        await triggerStatusChangeEmail({
+          ticketId: issue.ticketId,
+          issueId: issue.id,
+          recipientEmail: issue.userEmail,
+          previousStatus: issue.status || 'In Progress',
+          newStatus: 'In Progress',
+          issueTitle: `[HAZARD CORDONED] ${issue.title}`,
+          category: issue.category,
+          locationAddress: issue.location?.address,
+          notes: `SAFETY UPDATE: Hazard area at ${issue.location?.address || 'Site'} has been cordoned off and safety perimeter secured. Ongoing containment in progress.`,
+          performedBy: user?.email || 'Emergency Operations Control',
+        });
+      }
+
+      fetchIssues();
+    } catch (err) {
+      console.error('Error isolating hazard:', err);
+    }
+  };
+
+  // Emergency incidents calculation
+  const emergencyIssues = issues.filter(
+    (issue) => (issue.isEmergency || issue.category === 'Fire & Hazard Emergency' || issue.severity === 'Critical') && issue.status !== 'Resolved'
+  );
+  const emergencyCount = emergencyIssues.length;
+
   // Filtered issues calculation
   const filteredIssues = issues.filter((issue) => {
     const q = (searchQuery || '').trim().toLowerCase();
@@ -889,8 +995,9 @@ export default function AuthorityDashboard() {
     const matchesStatus = statusFilter === 'All' || issue.status === statusFilter;
     const matchesCategory = categoryFilter === 'All Categories' || issue.category === categoryFilter;
     const matchesSeverity = severityFilter === 'All' || issue.severity === severityFilter;
+    const matchesEmergency = !emergencyOnlyFilter || (issue.isEmergency || issue.category === 'Fire & Hazard Emergency' || issue.severity === 'Critical');
 
-    return matchesSearch && matchesStatus && matchesCategory && matchesSeverity;
+    return matchesSearch && matchesStatus && matchesCategory && matchesSeverity && matchesEmergency;
   });
 
   // Calculate stats
@@ -999,6 +1106,56 @@ export default function AuthorityDashboard() {
           </div>
         </div>
 
+        {/* Floating High-Alert Emergency Command Siren Banner */}
+        {emergencyCount > 0 && (
+          <div className="mb-8 p-4 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white shadow-xl shadow-red-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4 border-2 border-red-400">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/30 text-white shadow-inner">
+                <Siren className="w-7 h-7 text-white animate-bounce" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-full bg-white text-red-700 font-mono text-[10px] font-black uppercase tracking-widest">
+                    HIGH-ALERT HAZARD QUEUE
+                  </span>
+                  <span className="text-xs font-semibold text-white/90">
+                    Emergency Priority Routing Active
+                  </span>
+                </div>
+                <h2 className="text-base sm:text-lg font-black tracking-tight mt-0.5">
+                  {emergencyCount} Critical Hazard{emergencyCount > 1 ? 's' : ''} Require Immediate Authority Crew Dispatch!
+                </h2>
+                <p className="text-xs text-white/80 mt-0.5">
+                  Live fires, electrical line breakages, or structural hazards reported by citizens with real-time GPS coordinates.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => setEmergencyOnlyFilter((prev) => !prev)}
+                className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 shadow-sm ${
+                  emergencyOnlyFilter
+                    ? 'bg-white text-red-700 hover:bg-slate-100 ring-2 ring-white'
+                    : 'bg-black/40 hover:bg-black/60 text-white border border-white/30'
+                }`}
+              >
+                <AlertOctagon className="w-4 h-4 text-amber-300" />
+                <span>{emergencyOnlyFilter ? 'Showing High-Alert Only (Active)' : 'View Only High-Alert (SOS)'}</span>
+              </button>
+
+              <a
+                href="tel:112"
+                className="px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/30 flex items-center gap-1.5 transition-all"
+                title="Dial Central Disaster / Police Liaison"
+              >
+                <PhoneCall className="w-3.5 h-3.5" />
+                <span>Call 112 Liaison</span>
+              </a>
+            </div>
+          </div>
+        )}
+
         {/* Real-time Email Notification Toast / Banner */}
         {notificationBanner && (
           <div className="mb-8 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-slate-800 flex items-start justify-between animate-in fade-in duration-300">
@@ -1035,7 +1192,31 @@ export default function AuthorityDashboard() {
         )}
 
         {/* Top Metric Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-8">
+          <div
+            onClick={() => setEmergencyOnlyFilter((prev) => !prev)}
+            className={`p-4 rounded-xl border flex flex-col justify-between cursor-pointer transition-all ${
+              emergencyCount > 0
+                ? emergencyOnlyFilter
+                  ? 'bg-red-600 text-white border-red-700 ring-2 ring-red-400 shadow-md'
+                  : 'bg-red-50 hover:bg-red-100/80 text-red-700 border-red-300 shadow-sm'
+                : 'bg-white text-slate-700 border-slate-200'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${emergencyOnlyFilter ? 'text-white' : 'text-red-700'}`}>
+                🚨 High Alert
+              </span>
+              {emergencyCount > 0 && <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>}
+            </div>
+            <div className="flex items-baseline justify-between mt-2">
+              <span className={`text-2xl font-black font-mono ${emergencyOnlyFilter ? 'text-white' : 'text-red-700'}`}>
+                {emergencyCount}
+              </span>
+              <Siren className={`w-4 h-4 ${emergencyOnlyFilter ? 'text-white' : 'text-red-500'}`} />
+            </div>
+          </div>
+
           <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col justify-between">
             <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t('total_reports', 'Total Reports')}</span>
             <div className="flex items-baseline justify-between mt-2">
@@ -1091,8 +1272,22 @@ export default function AuthorityDashboard() {
             />
           </div>
 
-          {/* Filters */}
+          {/* Filters & Emergency Quick Toggle */}
           <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+            <button
+              onClick={() => setEmergencyOnlyFilter((prev) => !prev)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${
+                emergencyOnlyFilter
+                  ? 'bg-red-600 text-white border-red-700 shadow-sm'
+                  : emergencyCount > 0
+                  ? 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
+                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+              }`}
+            >
+              <Siren className={`w-3.5 h-3.5 ${emergencyCount > 0 ? 'text-red-600 animate-pulse' : 'text-slate-400'}`} />
+              <span>High Alert Queue {emergencyCount > 0 ? `(${emergencyCount})` : ''}</span>
+            </button>
+
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -1140,180 +1335,264 @@ export default function AuthorityDashboard() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredIssues.map((issue) => (
-              <div
-                key={issue.id}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-slate-400 hover:shadow-sm transition-all flex flex-col justify-between group"
-              >
-                <div>
-                  {/* Card Image Header */}
-                  <div className="relative h-48 w-full bg-slate-100">
-                    <img src={issue.imageUrl} alt={issue.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
+            {filteredIssues.map((issue) => {
+              const isHazardEmergency = (issue.isEmergency || issue.category === 'Fire & Hazard Emergency' || issue.severity === 'Critical') && issue.status !== 'Resolved';
 
-                    {/* Ticket ID Tag */}
-                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md border border-white/20 text-white font-mono text-[11px] font-bold">
-                      {issue.ticketId}
-                    </div>
+              return (
+                <div
+                  key={issue.id}
+                  className={`bg-white rounded-2xl overflow-hidden transition-all flex flex-col justify-between group ${
+                    isHazardEmergency
+                      ? 'border-2 border-red-500 shadow-lg shadow-red-500/10 ring-2 ring-red-400/20'
+                      : 'border border-slate-200 hover:border-slate-400 hover:shadow-sm'
+                  }`}
+                >
+                  <div>
+                    {/* Card Image Header */}
+                    <div className="relative h-48 w-full bg-slate-100">
+                      <img src={issue.imageUrl} alt={issue.title} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
 
-                    {/* Status Badge */}
-                    <div className="absolute top-3 right-3">
-                      <span
-                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                          issue.status === 'Resolved'
-                            ? 'bg-emerald-100 text-emerald-700 border-emerald-300'
-                            : issue.status === 'In Progress'
-                            ? 'bg-blue-100 text-blue-700 border-blue-300'
-                            : issue.status === 'Resolution Failed'
-                            ? 'bg-red-100 text-red-700 border-red-300'
-                            : 'bg-amber-100 text-amber-700 border-amber-300'
-                        }`}
-                      >
-                        {issue.status}
-                      </span>
-                    </div>
+                      {/* Ticket ID Tag */}
+                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md border border-white/20 text-white font-mono text-[11px] font-bold">
+                        {issue.ticketId}
+                      </div>
 
-                    {/* Category Overlay */}
-                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs">
-                      <span className="px-2 py-0.5 rounded bg-slate-900/80 text-white font-medium text-[10px]">
-                        {issue.category}
-                      </span>
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                          issue.severity === 'Critical'
-                            ? 'bg-red-600 text-white'
-                            : issue.severity === 'High'
-                            ? 'bg-orange-500 text-white'
-                            : 'bg-slate-600 text-white'
-                        }`}
-                      >
-                        {issue.severity} Severity
-                      </span>
-                    </div>
-                  </div>
+                      {/* Emergency Badge */}
+                      {isHazardEmergency && (
+                        <div className="absolute top-10 left-3 px-2.5 py-1 rounded-md bg-red-600 text-white font-mono text-[9px] font-black uppercase tracking-wider flex items-center gap-1 backdrop-blur-sm shadow-md animate-pulse">
+                          <Siren className="w-3 h-3 text-amber-300" />
+                          <span>HIGH ALERT: {issue.emergencyType ? issue.emergencyType.replace('_', ' ').toUpperCase() : 'CRITICAL HAZARD'}</span>
+                        </div>
+                      )}
 
-                  {/* Card Content */}
-                  <div className="p-5 space-y-3">
-                    <h3 className="font-semibold text-slate-900 text-sm line-clamp-1 group-hover:text-slate-600 transition-colors">
-                      {issue.title}
-                    </h3>
-                    <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{issue.description}</p>
+                      {/* Status Badge */}
+                      <div className="absolute top-3 right-3">
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                            issue.status === 'Resolved'
+                              ? 'bg-emerald-100 text-emerald-700 border-emerald-300'
+                              : issue.status === 'In Progress'
+                              ? 'bg-blue-100 text-blue-700 border-blue-300'
+                              : issue.status === 'Resolution Failed'
+                              ? 'bg-red-100 text-red-700 border-red-300'
+                              : 'bg-amber-100 text-amber-700 border-amber-300'
+                          }`}
+                        >
+                          {issue.status}
+                        </span>
+                      </div>
 
-                    {/* Location Tag */}
-                    <div className="flex items-start gap-1.5 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                      <MapPin className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
-                      <div className="min-w-0">
-                        <p className="font-medium truncate text-slate-800">{issue.location?.address}</p>
-                        {issue.location?.latitude && (
-                          <p className="text-[10px] font-mono text-slate-400 mt-0.5">
-                            GPS: {issue.location.latitude.toFixed(4)}°, {issue.location.longitude?.toFixed(4)}°
-                          </p>
-                        )}
+                      {/* Category Overlay */}
+                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs">
+                        <span className="px-2 py-0.5 rounded bg-slate-900/80 text-white font-medium text-[10px]">
+                          {issue.category}
+                        </span>
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                            issue.severity === 'Critical' || issue.isEmergency
+                              ? 'bg-red-600 text-white'
+                              : issue.severity === 'High'
+                              ? 'bg-orange-500 text-white'
+                              : 'bg-slate-600 text-white'
+                          }`}
+                        >
+                          {issue.severity} Severity
+                        </span>
                       </div>
                     </div>
 
-                    {/* Department Tag */}
-                    <div className="flex items-center justify-between text-[11px] text-slate-500">
-                      <span className="flex items-center gap-1">
-                        <Building2 className="w-3 h-3 text-amber-500" /> {issue.department}
-                      </span>
-                      <span className="text-[10px] text-slate-400">
-                        {issue.createdAt?.seconds
-                          ? new Date(issue.createdAt.seconds * 1000).toLocaleDateString()
-                          : 'Recent'}
-                      </span>
-                    </div>
+                    {/* Card Content */}
+                    <div className="p-5 space-y-3">
+                      <h3 className="font-semibold text-slate-900 text-sm line-clamp-1 group-hover:text-slate-600 transition-colors">
+                        {issue.title}
+                      </h3>
+                      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{issue.description}</p>
 
-                    {/* Community Resolution Verification Status */}
-                    {issue.voteStats && (issue.voteStats.yes + issue.voteStats.no > 0) && (
-                      <div className={`p-2.5 rounded-xl border text-xs space-y-1.5 ${
-                        issue.isDisputed
-                          ? 'bg-red-50 border-red-200 text-red-700'
-                          : 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                      }`}>
-                        <div className="flex items-center justify-between font-semibold">
-                          <span className="flex items-center gap-1">
-                            <Users className="w-3.5 h-3.5" />
-                            <span>Citizen Verification</span>
-                          </span>
-                          {issue.isDisputed ? (
-                            <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-mono font-bold">
-                              ⚠️ DISPUTED
+                      {/* High-Alert Emergency Hazard Status Banner */}
+                      {isHazardEmergency && (
+                        <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs space-y-1.5">
+                          <div className="flex items-center justify-between font-bold text-red-900">
+                            <span className="flex items-center gap-1.5">
+                              <Flame className="w-4 h-4 text-red-600 animate-bounce" />
+                              <span>SOS Incident Status:</span>
                             </span>
-                          ) : (
-                            <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-mono font-bold">
-                              ✓ {Math.round((issue.voteStats.yes / (issue.voteStats.yes + issue.voteStats.no)) * 100)}% Approved
+                            <span className={`px-2 py-0.5 rounded font-mono text-[10px] font-black uppercase ${
+                              issue.emergencyResponseStatus === 'CREW_DISPATCHED'
+                                ? 'bg-amber-600 text-white'
+                                : issue.emergencyResponseStatus === 'ISOLATED'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-red-600 text-white animate-pulse'
+                            }`}>
+                              {issue.emergencyResponseStatus === 'CREW_DISPATCHED'
+                                ? '🚒 Crew Dispatched'
+                                : issue.emergencyResponseStatus === 'ISOLATED'
+                                ? '🚧 Site Isolated'
+                                : '🚨 Pending Dispatch'}
                             </span>
+                          </div>
+                          {issue.emergencyNotes && (
+                            <p className="text-[11px] text-red-800 font-medium">{issue.emergencyNotes}</p>
+                          )}
+                          {issue.location?.latitude && (
+                            <div className="pt-1 flex items-center justify-between text-[11px]">
+                              <a
+                                href={`https://www.google.com/maps?q=${issue.location.latitude},${issue.location.longitude}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-red-700 font-bold hover:underline flex items-center gap-1"
+                              >
+                                <MapPin className="w-3.5 h-3.5 text-red-600" />
+                                <span>Open Live GPS in Google Maps</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            </div>
                           )}
                         </div>
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="flex items-center gap-1 text-emerald-700 font-semibold">
-                            <ThumbsUp className="w-3 h-3" /> {issue.voteStats.yes} Fixed
-                          </span>
-                          <span className="flex items-center gap-1 text-red-600 font-semibold">
-                            <ThumbsDown className="w-3 h-3" /> {issue.voteStats.no} Unresolved
-                          </span>
+                      )}
+
+                      {/* Location Tag */}
+                      <div className="flex items-start gap-1.5 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                        <MapPin className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                        <div className="min-w-0">
+                          <p className="font-medium truncate text-slate-800">{issue.location?.address}</p>
+                          {issue.location?.latitude && (
+                            <p className="text-[10px] font-mono text-slate-400 mt-0.5">
+                              GPS: {issue.location.latitude.toFixed(4)}°, {issue.location.longitude?.toFixed(4)}°
+                            </p>
+                          )}
                         </div>
                       </div>
-                    )}
-                  </div>
-                </div>
 
-                {/* Card Action Footer */}
-                <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-2">
-                  {issue.status === 'Resolved' ? (
-                    <div className="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-center">
-                      <div className="flex items-center justify-center gap-1.5 text-emerald-700 text-xs font-semibold">
-                        <ShieldCheck className="w-4 h-4" />
-                        <span>Resolution Audit Verified</span>
+                      {/* Department Tag */}
+                      <div className="flex items-center justify-between text-[11px] text-slate-500">
+                        <span className="flex items-center gap-1">
+                          <Building2 className="w-3 h-3 text-amber-500" /> {issue.department}
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          {issue.createdAt?.seconds
+                            ? new Date(issue.createdAt.seconds * 1000).toLocaleDateString()
+                            : 'Recent'}
+                        </span>
                       </div>
-                      <p className="text-[10px] text-slate-500 mt-1">
-                        Resolved by {issue.resolvedBy || 'Authority'}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-2">
-                      <button
-                        onClick={() => openResolutionStudio(issue)}
-                        className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-all"
-                      >
-                        <Video className="w-4 h-4" />
-                        <span>Resolve Issue (30s Live Video)</span>
-                      </button>
 
-                      {issue.status === 'Submitted' && (
-                        <button
-                          onClick={() => markAsInProgress(issue)}
-                          className="w-full py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 text-[11px] font-semibold rounded-lg border border-blue-200 transition-all flex items-center justify-center gap-1.5"
-                        >
-                          <Mail className="w-3 h-3" />
-                          <span>Mark as "In Progress" & Notify Citizen</span>
-                        </button>
+                      {/* Community Resolution Verification Status */}
+                      {issue.voteStats && (issue.voteStats.yes + issue.voteStats.no > 0) && (
+                        <div className={`p-2.5 rounded-xl border text-xs space-y-1.5 ${
+                          issue.isDisputed
+                            ? 'bg-red-50 border-red-200 text-red-700'
+                            : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                        }`}>
+                          <div className="flex items-center justify-between font-semibold">
+                            <span className="flex items-center gap-1">
+                              <Users className="w-3.5 h-3.5" />
+                              <span>Citizen Verification</span>
+                            </span>
+                            {issue.isDisputed ? (
+                              <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-mono font-bold">
+                                ⚠️ DISPUTED
+                              </span>
+                            ) : (
+                              <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-mono font-bold">
+                                ✓ {Math.round((issue.voteStats.yes / (issue.voteStats.yes + issue.voteStats.no)) * 100)}% Approved
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="flex items-center gap-1 text-emerald-700 font-semibold">
+                              <ThumbsUp className="w-3 h-3" /> {issue.voteStats.yes} Fixed
+                            </span>
+                            <span className="flex items-center gap-1 text-red-600 font-semibold">
+                              <ThumbsDown className="w-3 h-3" /> {issue.voteStats.no} Unresolved
+                            </span>
+                          </div>
+                        </div>
                       )}
                     </div>
-                  )}
+                  </div>
 
-                  {/* Manual Status Transition & Citizen Email Dispatch Trigger */}
-                  <button
-                    onClick={() => {
-                      setStatusDialogIssue(issue);
-                      setSelectedNewStatus(
-                        issue.status === 'Submitted'
-                          ? 'In Progress'
-                          : issue.status === 'In Progress'
-                          ? 'Resolved'
-                          : 'In Progress'
-                      );
-                      setStatusNoteInput('');
-                    }}
-                    className="w-full py-1.5 bg-white hover:bg-slate-100 text-slate-600 text-[11px] font-medium rounded-lg border border-slate-200 flex items-center justify-center gap-1.5 transition-all"
-                  >
-                    <Mail className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Change Status & Email Citizen</span>
-                  </button>
+                  {/* Card Action Footer */}
+                  <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-2">
+                    {/* High-Alert Emergency Fast Actions */}
+                    {isHazardEmergency && issue.emergencyResponseStatus !== 'CREW_DISPATCHED' && (
+                      <button
+                        onClick={() => handleEmergencyDispatch(issue)}
+                        className="w-full py-2.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-black rounded-xl flex items-center justify-center gap-2 shadow-md shadow-red-600/30 transition-all cursor-pointer"
+                      >
+                        <Radio className="w-4 h-4 text-amber-300 animate-pulse" />
+                        <span>🚨 Dispatch Emergency Response Crew</span>
+                      </button>
+                    )}
+
+                    {isHazardEmergency && issue.emergencyResponseStatus === 'CREW_DISPATCHED' && (
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex-1 px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-bold flex items-center gap-1.5">
+                          <Radio className="w-3.5 h-3.5 text-amber-600" />
+                          <span>Crew En Route / On-Site</span>
+                        </div>
+                        <button
+                          onClick={() => handleEmergencyCordon(issue)}
+                          className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold transition-all"
+                        >
+                          Cordon Site
+                        </button>
+                      </div>
+                    )}
+
+                    {issue.status === 'Resolved' ? (
+                      <div className="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-center">
+                        <div className="flex items-center justify-center gap-1.5 text-emerald-700 text-xs font-semibold">
+                          <ShieldCheck className="w-4 h-4" />
+                          <span>Resolution Audit Verified</span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 mt-1">
+                          Resolved by {issue.resolvedBy || 'Authority'}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        <button
+                          onClick={() => openResolutionStudio(issue)}
+                          className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-all"
+                        >
+                          <Video className="w-4 h-4" />
+                          <span>Resolve Issue (30s Live Video)</span>
+                        </button>
+
+                        {issue.status === 'Submitted' && !isHazardEmergency && (
+                          <button
+                            onClick={() => markAsInProgress(issue)}
+                            className="w-full py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 text-[11px] font-semibold rounded-lg border border-blue-200 transition-all flex items-center justify-center gap-1.5"
+                          >
+                            <Mail className="w-3 h-3" />
+                            <span>Mark as "In Progress" & Notify Citizen</span>
+                          </button>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Manual Status Transition & Citizen Email Dispatch Trigger */}
+                    <button
+                      onClick={() => {
+                        setStatusDialogIssue(issue);
+                        setSelectedNewStatus(
+                          issue.status === 'Submitted'
+                            ? 'In Progress'
+                            : issue.status === 'In Progress'
+                            ? 'Resolved'
+                            : 'In Progress'
+                        );
+                        setStatusNoteInput('');
+                      }}
+                      className="w-full py-1.5 bg-white hover:bg-slate-100 text-slate-600 text-[11px] font-medium rounded-lg border border-slate-200 flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      <Mail className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Change Status & Email Citizen</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>

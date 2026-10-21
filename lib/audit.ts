@@ -20,7 +20,8 @@ export interface AuditLogEntry {
     | 'SESSION_LOCKED'
     | 'ADMIN_ISSUE_FLAGGED'
     | 'ADMIN_ISSUE_UNFLAGGED'
-    | 'ADMIN_DELETE_ISSUE';
+    | 'ADMIN_DELETE_ISSUE'
+    | 'EMERGENCY_CREW_DISPATCHED';
   portal: 'auth' | 'citizen' | 'authority' | 'admin';
   status: 'SUCCESS' | 'DENIED' | 'WARNING';
   details: string;

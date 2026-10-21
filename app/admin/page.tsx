@@ -88,6 +88,9 @@ interface AdminIssueReport {
   adminFlagged?: boolean;
   adminFlagReason?: string;
   resolutionProofUrl?: string;
+  isEmergency?: boolean;
+  emergencyType?: string;
+  emergencyResponseStatus?: string;
 }
 
 export default function AdminDashboard() {
@@ -1175,7 +1178,14 @@ export default function AdminDashboard() {
                           return (
                             <tr key={idx} className="hover:bg-slate-50 transition-colors">
                               <td className="py-3 pl-2 font-mono text-xs">
-                                <span className="font-bold text-slate-900 block">#{issue.ticketId}</span>
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="font-bold text-slate-900 block">#{issue.ticketId}</span>
+                                  {(issue.isEmergency || issue.category === 'Fire & Hazard Emergency') && (
+                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-red-600 text-white font-mono animate-pulse">
+                                      🚨 HIGH-ALERT
+                                    </span>
+                                  )}
+                                </div>
                                 <span className="text-[10px] text-slate-500 block font-sans">{issue.category}</span>
                               </td>
 

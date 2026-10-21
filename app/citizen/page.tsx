@@ -59,6 +59,12 @@ import {
   Send,
   ExternalLink,
   Trophy,
+  Flame,
+  Zap,
+  Siren,
+  AlertOctagon,
+  PhoneCall,
+  Radio,
 } from 'lucide-react';
 import {
   triggerStatusChangeEmail,
@@ -142,6 +148,11 @@ interface IssueReport {
     no: number;
   };
   isDisputed?: boolean;
+  isEmergency?: boolean;
+  emergencyType?: 'fire' | 'electrical_breakage' | 'gas_leak' | 'structural_collapse' | 'other_hazard';
+  emergencyResponseStatus?: 'PENDING_DISPATCH' | 'CREW_DISPATCHED' | 'ISOLATED' | 'RESOLVED';
+  emergencyDispatchedAt?: string;
+  emergencyNotes?: string;
 }
 
 function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -159,6 +170,7 @@ function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: num
 }
 
 const CATEGORIES = [
+  'Fire & Hazard Emergency',
   'Roads & Infrastructure',
   'Waste & Sanitation',
   'Water & Drainage',
@@ -183,6 +195,10 @@ export default function CitizenDashboard() {
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [readNotificationIds, setReadNotificationIds] = useState<string[]>([]);
+
+  // Emergency Hazard Reporting State
+  const [isEmergencyMode, setIsEmergencyMode] = useState<boolean>(false);
+  const [emergencyType, setEmergencyType] = useState<'fire' | 'electrical_breakage' | 'gas_leak' | 'structural_collapse' | 'other_hazard'>('fire');
 
   // Issue Form State
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -1013,6 +1029,9 @@ export default function CitizenDashboard() {
         supporters: [user.uid],
         duplicateCount: 0,
         evidencePhotos: [compressedImage],
+        isEmergency: isEmergencyMode || severity === 'Critical' || category === 'Fire & Hazard Emergency',
+        emergencyType: isEmergencyMode ? emergencyType : (category === 'Fire & Hazard Emergency' ? 'fire' : undefined),
+        emergencyResponseStatus: (isEmergencyMode || severity === 'Critical' || category === 'Fire & Hazard Emergency') ? 'PENDING_DISPATCH' : undefined,
       };
 
       // RUN AI DUPLICATE CHECK AGAINST ACTIVE DATABASE COMPLAINTS
@@ -1235,6 +1254,31 @@ export default function CitizenDashboard() {
     }
   };
 
+  const openEmergencyReport = (type: 'fire' | 'electrical_breakage' | 'gas_leak' | 'structural_collapse' = 'fire') => {
+    resetForm();
+    setIsEmergencyMode(true);
+    setEmergencyType(type);
+    setSeverity('Critical');
+    if (type === 'fire') {
+      setCategory('Fire & Hazard Emergency');
+      setIssueType('Active Fire & Smoke Hazard');
+      setDepartment('Fire Brigade & Emergency Services');
+    } else if (type === 'electrical_breakage') {
+      setCategory('Power & Street Lighting');
+      setIssueType('Live Electric Wire Snap / Transformer Hazard');
+      setDepartment('Electricity Board Emergency Grid Response');
+    } else if (type === 'gas_leak') {
+      setCategory('Public Safety & Vandalism');
+      setIssueType('Hazardous Gas Leak / Pipeline Rupture');
+      setDepartment('Disaster Management & Gas Emergency');
+    } else if (type === 'structural_collapse') {
+      setCategory('Roads & Infrastructure');
+      setIssueType('Severe Road Cave-In / Structural Collapse');
+      setDepartment('Public Works Structural Emergency Unit');
+    }
+    setActiveTab('report');
+  };
+
   const resetForm = () => {
     if (recognitionRef.current && isListening) {
       try {
@@ -1251,6 +1295,11 @@ export default function CitizenDashboard() {
     setDescription('');
     setSubmittedTicket(null);
     setManualAddress('');
+    setIsEmergencyMode(false);
+    setEmergencyType('fire');
+    setSeverity('Medium');
+    setCategory(CATEGORIES[1] || 'Roads & Infrastructure');
+    setDepartment('Public Works Dept');
   };
 
   const handleSignOut = async () => {
@@ -1618,15 +1667,25 @@ export default function CitizenDashboard() {
                 </p>
               </div>
 
-              <button
-                onClick={() => {
-                  setActiveTab('report');
-                  resetForm();
-                }}
-                className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95"
-              >
-                <span>{t('report_issue', 'Report New Civic Issue')}</span>
-              </button>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  onClick={() => openEmergencyReport('fire')}
+                  className="px-4 py-2.5 bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-black rounded-xl shadow-md shadow-red-500/25 flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 animate-pulse"
+                >
+                  <Siren className="w-4 h-4" />
+                  <span>Report Emergency Hazard (SOS)</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab('report');
+                    resetForm();
+                  }}
+                  className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95"
+                >
+                  <span>{t('report_issue', 'Report Civic Issue')}</span>
+                </button>
+              </div>
             </div>
 
             {/* Quick Action Banner — Warm Beach Off-white Palette */}
@@ -1666,6 +1725,22 @@ export default function CitizenDashboard() {
                     <MapPin className="w-4 h-4 text-slate-600" />
                     <span>{t('public_feed', 'View Map Feed')}</span>
                   </button>
+                </div>
+
+                {/* Emergency Hotlines bar */}
+                <div className="mt-6 pt-4 border-t border-[#dad0bf] flex flex-wrap items-center gap-3 text-xs">
+                  <span className="font-bold text-red-700 flex items-center gap-1">
+                    <Siren className="w-3.5 h-3.5 text-red-600 animate-pulse" /> Emergency Hotlines:
+                  </span>
+                  <a href="tel:112" className="px-2.5 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg font-mono font-bold transition-colors">
+                    🚨 Police / Disaster: 112
+                  </a>
+                  <a href="tel:101" className="px-2.5 py-1 bg-rose-100 hover:bg-rose-200 text-rose-800 rounded-lg font-mono font-bold transition-colors">
+                    🔥 Fire: 101
+                  </a>
+                  <a href="tel:1912" className="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-lg font-mono font-bold transition-colors">
+                    ⚡ Electricity Grid: 1912
+                  </a>
                 </div>
               </div>
             </div>
@@ -1837,12 +1912,20 @@ export default function CitizenDashboard() {
             {/* Submission Confirmation Card */}
             {submittedTicket ? (
               <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 text-center shadow-sm animate-in fade-in zoom-in duration-200">
-                <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/40">
-                  <CheckCircle2 className="w-8 h-8" />
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border ${
+                  submittedTicket.isEmergency
+                    ? 'bg-red-500/20 text-red-600 border-red-500 animate-pulse'
+                    : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                }`}>
+                  {submittedTicket.isEmergency ? <Siren className="w-8 h-8" /> : <CheckCircle2 className="w-8 h-8" />}
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-1">Issue Reported Successfully!</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-1">
+                  {submittedTicket.isEmergency ? '🚨 High-Alert Emergency Dispatched!' : 'Issue Reported Successfully!'}
+                </h2>
                 <p className="text-xs text-slate-600 mb-6">
-                  Your civic incident report has been submitted, geotagged, and logged into the system.
+                  {submittedTicket.isEmergency
+                    ? 'Your emergency hazard has been registered with maximum urgency. Municipal emergency units and field crews have been notified directly.'
+                    : 'Your civic incident report has been submitted, geotagged, and logged into the system.'}
                 </p>
 
                 <div className="max-w-md mx-auto bg-stone-50 p-4 rounded-xl border border-stone-200 text-left mb-6 space-y-3">
@@ -1898,6 +1981,102 @@ export default function CitizenDashboard() {
                   <p className="text-xs text-slate-600 mb-6">
                     Upload or snap an image of the issue. Location tag is captured automatically, and details will be populated.
                   </p>
+
+                  {/* Emergency Mode Toggle Banner */}
+                  <div
+                    className={`p-4 rounded-2xl mb-6 border transition-all ${
+                      isEmergencyMode
+                        ? 'bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white border-red-500 shadow-lg shadow-red-500/20'
+                        : 'bg-gradient-to-r from-red-50 to-amber-50 text-slate-800 border-red-200 hover:border-red-300'
+                    }`}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-2.5 rounded-xl ${isEmergencyMode ? 'bg-white/20 text-white' : 'bg-red-100 text-red-600'} shrink-0`}>
+                          <Siren className={`w-5 h-5 ${isEmergencyMode ? 'animate-pulse' : ''}`} />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs font-black tracking-wide uppercase ${isEmergencyMode ? 'text-white' : 'text-red-700'}`}>
+                              High-Risk Emergency or Hazard?
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-600 text-white animate-pulse">
+                              SOS DISPATCH
+                            </span>
+                          </div>
+                          <p className={`text-xs mt-0.5 ${isEmergencyMode ? 'text-red-100' : 'text-slate-600'}`}>
+                            Report active fire, fallen live electricity lines, gas leaks, or structural collapse.
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = !isEmergencyMode;
+                          setIsEmergencyMode(next);
+                          if (next) {
+                            setSeverity('Critical');
+                            setCategory('Fire & Hazard Emergency');
+                            setIssueType('Active Fire & Hazard Emergency');
+                            setDepartment('Fire Brigade & Emergency Services');
+                          } else {
+                            setSeverity('Medium');
+                            setCategory(CATEGORIES[1] || 'Roads & Infrastructure');
+                            setIssueType('');
+                            setDepartment('Public Works Dept');
+                          }
+                        }}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                          isEmergencyMode
+                            ? 'bg-white text-red-700 hover:bg-red-50 shadow-md'
+                            : 'bg-red-600 hover:bg-red-700 text-white shadow-sm'
+                        }`}
+                      >
+                        {isEmergencyMode ? '✓ Emergency Mode Active' : 'Enable Emergency High-Alert Mode'}
+                      </button>
+                    </div>
+
+                    {isEmergencyMode && (
+                      <div className="mt-4 pt-4 border-t border-white/20 animate-in fade-in">
+                        <label className="block text-[11px] font-bold text-white mb-2 uppercase tracking-wider">
+                          Select Specific Emergency Hazard Category:
+                        </label>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          {[
+                            { id: 'fire', label: 'Active Fire & Smoke', icon: Flame, dept: 'Fire Brigade & Emergency Services', cat: 'Fire & Hazard Emergency' },
+                            { id: 'electrical_breakage', label: 'Live Wire / Power Grid Hazard', icon: Zap, dept: 'Electricity Board Emergency Grid Response', cat: 'Power & Street Lighting' },
+                            { id: 'gas_leak', label: 'Gas Leak / Pipeline Fumes', icon: AlertOctagon, dept: 'Disaster Management & Gas Emergency', cat: 'Public Safety & Vandalism' },
+                            { id: 'structural_collapse', label: 'Road Cave-In / Collapse', icon: Building2, dept: 'Public Works Structural Emergency Unit', cat: 'Roads & Infrastructure' },
+                          ].map((hazard) => {
+                            const IconComponent = hazard.icon;
+                            const isSelected = emergencyType === hazard.id;
+                            return (
+                              <button
+                                key={hazard.id}
+                                type="button"
+                                onClick={() => {
+                                  setEmergencyType(hazard.id as any);
+                                  setDepartment(hazard.dept);
+                                  setCategory(hazard.cat);
+                                  setIssueType(hazard.label);
+                                  setTitle(hazard.label);
+                                }}
+                                className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between cursor-pointer ${
+                                  isSelected
+                                    ? 'bg-white text-slate-900 border-white shadow-lg'
+                                    : 'bg-black/20 hover:bg-black/30 border-white/20 text-white'
+                                }`}
+                              >
+                                <IconComponent className={`w-4 h-4 mb-1.5 ${isSelected ? 'text-red-600' : 'text-red-300'}`} />
+                                <span className="text-[11px] font-bold leading-tight">{hazard.label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                   {/* SECTION 1: PHOTO UPLOAD / CAMERA CAPTURE */}
                   <div className="mb-8">
@@ -2431,7 +2610,12 @@ export default function CitizenDashboard() {
                       {/* Content */}
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                         <div>
-                          <div className="flex items-center gap-2 mb-2">
+                          <div className="flex items-center gap-2 mb-2 flex-wrap">
+                            {item.isEmergency && (
+                              <span className="px-2 py-0.5 rounded bg-red-600 text-white font-mono font-bold text-[10px] flex items-center gap-1 animate-pulse shadow-xs">
+                                <Siren className="w-3 h-3" /> HIGH ALERT HAZARD
+                              </span>
+                            )}
                             <span className="px-2 py-0.5 rounded bg-stone-100 border border-stone-200 text-[10px] text-stone-700 font-semibold">
                               {item.category}
                             </span>

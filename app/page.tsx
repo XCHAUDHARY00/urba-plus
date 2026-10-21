@@ -423,10 +423,15 @@ export default function UrbaPlusLandingPage() {
         {/* Hero section */}
         <section className="pt-20 pb-16 sm:pt-28 sm:pb-20">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500 tracking-wide uppercase mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-              Civic Infrastructure & Municipal Resolution Platform
-            </span>
+            <div className="flex flex-wrap items-center gap-2 mb-5">
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500 tracking-wide uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                Civic Infrastructure & Municipal Resolution Platform
+              </span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-50 border border-red-200 text-red-700 text-[10px] font-bold tracking-wide uppercase">
+                🚨 High-Alert Hazard SOS Active
+              </span>
+            </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.1] text-slate-900 mb-5">
               Civic infrastructure,<br />
@@ -434,7 +439,7 @@ export default function UrbaPlusLandingPage() {
             </h1>
 
             <p className="text-base text-slate-500 leading-relaxed mb-8 max-w-xl">
-              UrbaPlus lets citizens report defects with a photo. The system auto-categorizes damage, prevents duplicate tickets, dispatches municipal officers, and verifies repairs — closing the redressal loop seamlessly.
+              UrbaPlus lets citizens report civic defects and critical hazards (fire outbreaks, electrical wire breakages, gas leaks) with live GPS. Emergency hazards trigger high-alert SOS dispatches to municipal crews while routine defects undergo spatial deduplication and verified resolution.
             </p>
 
             <div className="flex items-center gap-3">
@@ -525,6 +530,7 @@ export default function UrbaPlusLandingPage() {
           {/* Caption row */}
           <div className="flex flex-wrap items-center gap-4 mt-4">
             {[
+              'Emergency hazard dispatch (SOS)',
               'Automatic defect analysis',
               'GPS geotagging',
               'Duplicate detection',
