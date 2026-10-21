@@ -1614,7 +1614,7 @@ export default function CitizenDashboard() {
               <div>
                 <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">{t('citizen_portal', 'Citizen Dashboard')}</h1>
                 <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                  {t('app_subtitle', 'Report civic problems instantly with automatic GPS geotagging & AI vision analysis.')}
+                  {t('app_subtitle', 'Report civic problems instantly with automatic GPS geotagging and verified municipal resolution.')}
                 </p>
               </div>
 
