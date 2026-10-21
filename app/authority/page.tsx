@@ -936,7 +936,7 @@ export default function AuthorityDashboard() {
             <div>
               <span className="text-slate-900 font-bold text-sm tracking-tight block">{t('authority_portal', 'Municipal Authority Portal')}</span>
               <span className="text-[10px] text-slate-500 font-mono tracking-wider uppercase block flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3" /> {t('ai_verification_enabled', 'AI Verification Active')}
+                <ShieldCheck className="w-3 h-3 text-emerald-600" /> {t('ai_verification_enabled', 'Municipal Verification Active')}
               </span>
             </div>
           </div>
@@ -967,7 +967,7 @@ export default function AuthorityDashboard() {
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">{t('incidents_command', 'Incidents & Resolution Command')}</h1>
             <p className="text-xs text-slate-500 mt-1">
-              {t('authority_subtitle', 'Inspect citizen reports and resolve issues with mandatory 30-second live camera video proof & AI spatial verification.')}
+              {t('authority_subtitle', 'Inspect citizen reports and resolve issues with mandatory 30-second live camera video proof & spatial verification.')}
             </p>
           </div>
 
@@ -1061,7 +1061,7 @@ export default function AuthorityDashboard() {
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-emerald-200 flex flex-col justify-between">
-            <span className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider">{t('ai_resolved', 'AI Resolved')}</span>
+            <span className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider">{t('ai_resolved', 'Verified Resolved')}</span>
             <div className="flex items-baseline justify-between mt-2">
               <span className="text-2xl font-bold font-mono text-emerald-600">{resolvedCount}</span>
               <CheckCircle2 className="w-4 h-4 text-emerald-500" />
@@ -1265,7 +1265,7 @@ export default function AuthorityDashboard() {
                     <div className="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-center">
                       <div className="flex items-center justify-center gap-1.5 text-emerald-700 text-xs font-semibold">
                         <ShieldCheck className="w-4 h-4" />
-                        <span>AI Resolution Audit Passed</span>
+                        <span>Resolution Audit Verified</span>
                       </div>
                       <p className="text-[10px] text-slate-500 mt-1">
                         Resolved by {issue.resolvedBy || 'Authority'}
@@ -1542,7 +1542,7 @@ export default function AuthorityDashboard() {
                 <div className="text-xs text-slate-400">
                   <p className="font-semibold text-white mb-0.5">30-Second Live Video Requirement:</p>
                   <p className="text-[11px] text-slate-400">
-                    Hold camera steadily showing resolved civic work. AI verifies visual fixes, live timetag, and spatial GPS match.
+                    Hold camera steadily showing resolved civic work. System verifies visual fixes, live timetag, and spatial GPS match.
                   </p>
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
@@ -1612,8 +1612,8 @@ export default function AuthorityDashboard() {
                         <div className="space-y-1 text-xs">
                           <h5 className="font-bold text-white text-sm">
                             {aiAuditResult.isAuthentic && aiAuditResult.visualResolutionMatch
-                              ? 'AI Verification Passed: Issue Resolved!'
-                              : 'AI Verification Failed: Invalid Resolution Proof'}
+                              ? 'Verification Passed: Issue Resolved!'
+                              : 'Verification Failed: Invalid Resolution Proof'}
                           </h5>
                           <p className="text-slate-300 leading-relaxed">{aiAuditResult.verificationSummary}</p>
                           {aiAuditResult.rejectionReason && (

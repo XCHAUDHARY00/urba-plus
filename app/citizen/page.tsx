@@ -966,7 +966,7 @@ export default function CitizenDashboard() {
       return;
     }
     if (aiResult?.isCivicIssue === false || aiResult?.confidenceScore === 0) {
-      alert('Report Submission Rejected: AI detected no civic issue in the uploaded photo. Please upload a photo showing an actual municipal defect (such as road pothole, garbage dump, broken light, or water leak).');
+      alert('Report Submission Rejected: No civic issue was detected in the uploaded photo. Please upload a photo showing an actual municipal defect (such as road pothole, garbage dump, broken light, or water leak).');
       return;
     }
     if (!user) return;
@@ -1633,13 +1633,13 @@ export default function CitizenDashboard() {
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#f5f1ea] via-[#ece5d8] to-[#f4eee4] border border-[#dad0bf] p-6 sm:p-8 mb-8 text-slate-900 shadow-sm">
               <div className="relative z-10 max-w-2xl">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-200/90 border border-stone-300 text-stone-800 text-[11px] font-semibold mb-3">
-                  <span>{t('ai_agent', 'AI-Powered Automated Inspection')}</span>
+                  <span>Fast Geotagged Civic Reporting</span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">
-                  {t('authority_subtitle', 'Snap a picture, geotag automatically, and let AI categorize it.')}
+                  Snap a photo, geotag automatically, and submit your report directly.
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed mb-6 font-normal">
-                  {t('app_subtitle', 'Our system verifies location tags, runs multimodal AI image analysis to auto-describe the issue, assigns severity, and routes to the right municipal department.')}
+                  Our system captures location tags, auto-describes the defect, assigns severity, and routes directly to the right municipal department.
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <button
@@ -1687,7 +1687,7 @@ export default function CitizenDashboard() {
                   <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  {t('app_subtitle', 'Upload an image with auto-geotagging. AI automatically analyzes, categorizes, and generates description.')}
+                  Upload a photo with auto-geotagging. Details and categorization are populated automatically.
                 </p>
               </div>
 
@@ -1827,14 +1827,11 @@ export default function CitizenDashboard() {
             <div className="flex items-center justify-between mb-6">
               <button
                 onClick={() => setActiveTab('home')}
-                className="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors"
+                className="text-xs text-slate-500 hover:text-slate-900 flex items-center gap-1.5 transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back to Dashboard</span>
               </button>
-              <div className="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 font-medium">
-                <span>AI Auto-Classification Enabled</span>
-              </div>
             </div>
 
             {/* Submission Confirmation Card */}
@@ -1899,7 +1896,7 @@ export default function CitizenDashboard() {
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8">
                   <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1">File a Civic Incident Report</h1>
                   <p className="text-xs text-slate-600 mb-6">
-                    Upload or snap an image of the issue. Location tag is captured automatically, and AI will analyze and populate details.
+                    Upload or snap an image of the issue. Location tag is captured automatically, and details will be populated.
                   </p>
 
                   {/* SECTION 1: PHOTO UPLOAD / CAMERA CAPTURE */}
@@ -1961,22 +1958,22 @@ export default function CitizenDashboard() {
                           <X className="w-4 h-4" />
                         </button>
 
-                        {/* AI Analyzing Spinner Overlay */}
+                        {/* Image Analyzing Spinner Overlay */}
                         {analyzingImage && (
                           <div className="absolute inset-0 bg-black/85 backdrop-blur-sm flex flex-col items-center justify-center text-white p-6 text-center">
                             <div className="relative mb-3">
                               <RefreshCw className="w-8 h-8 text-blue-400 animate-spin" />
                               <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
                             </div>
-                            <p className="text-sm font-bold tracking-wide text-white">AI Analyzing Image...</p>
+                            <p className="text-sm font-bold tracking-wide text-white">Analyzing Image...</p>
                             <div className="text-xs text-slate-200 mt-2 space-y-1 max-w-sm text-left bg-stone-900/90 border border-stone-700 p-3 rounded-xl">
                               <p className="flex items-center gap-1.5 text-emerald-300 font-medium">
                                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                <span>Step 1: Vision AI checking: Water Logging, Pothole, or Garbage</span>
+                                <span>Step 1: Inspecting photo for civic defect</span>
                               </p>
                               <p className="flex items-center gap-1.5 text-blue-300 font-medium">
                                 <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-                                <span>Step 2: AI autofilling issue details & categorization</span>
+                                <span>Step 2: Auto-filling category and location details</span>
                               </p>
                             </div>
                             <div className="w-56 h-1.5 bg-slate-700 rounded-full overflow-hidden mt-4">
@@ -2008,17 +2005,17 @@ export default function CitizenDashboard() {
                                 <div>
                                   <div className="flex items-center gap-1.5 flex-wrap">
                                     <span className="font-bold text-slate-900 block">
-                                      Vision AI: {aiResult.customVisionDetectedLabel || (
+                                      Detected: {aiResult.customVisionDetectedLabel || (
                                         aiResult.category === 'Water & Drainage' ? 'Water Logging' :
                                         aiResult.category === 'Roads & Infrastructure' ? 'Road Pothole' : 'Garbage & Solid Waste'
                                       )}
                                     </span>
                                     <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[9px] font-mono border border-emerald-300 font-bold">
-                                      AI Verified
+                                      Verified Defect
                                     </span>
                                   </div>
                                   <span className="text-[10px] text-slate-600">
-                                    Confidence: {aiResult.confidenceScore}% • Details Autofilled by AI
+                                    Confidence: {aiResult.confidenceScore}% • Details Auto-Filled
                                   </span>
                                 </div>
                               </div>
@@ -2093,7 +2090,7 @@ export default function CitizenDashboard() {
                       </label>
                       {aiResult && (
                         <span className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Pre-filled by AI (You can edit)
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Auto-filled details (You can edit)
                         </span>
                       )}
                     </div>
@@ -2255,7 +2252,7 @@ export default function CitizenDashboard() {
                           placeholder={
                             isListening
                               ? "Aap bolna shuru kijiye, yaha text type ho jayega..."
-                              : "Provide details of the issue. You can click 'Voice Input / बोलकर लिखें' to speak in Hindi/English, edit manually, or let AI pre-fill it."
+                              : "Provide details of the issue. You can click 'Voice Input / बोलकर लिखें' to speak in Hindi/English, edit manually, or use auto-filled details."
                           }
                           required
                           className={`w-full bg-white border text-xs text-slate-900 placeholder-slate-400 focus:outline-none leading-relaxed rounded-xl p-3.5 transition-all ${
@@ -2273,7 +2270,7 @@ export default function CitizenDashboard() {
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
                             <Info className="w-3.5 h-3.5 text-slate-600" />
-                            <span>AI Vision & Inspection Observations:</span>
+                            <span>Visual Defect Inspection Observations:</span>
                           </span>
                         </div>
                         <ul className="list-disc list-inside space-y-1 text-[11px] text-slate-700">
@@ -2294,7 +2291,7 @@ export default function CitizenDashboard() {
                       <div className="space-y-0.5">
                         <span className="font-bold text-red-200 block text-sm">Submission Rejected — No Civic Defect Found</span>
                         <p className="text-red-300 leading-relaxed">
-                          {aiResult.nonCivicReason || "AI analyzed this image and found no public municipal issue. Please upload a clear photo of road damage, garbage dump, broken light, or water leakage to submit a report."}
+                          {aiResult.nonCivicReason || "No public municipal defect was found in this image. Please upload a clear photo of road damage, garbage dump, broken light, or water leakage to submit a report."}
                         </p>
                       </div>
                     </div>
@@ -3017,7 +3014,7 @@ export default function CitizenDashboard() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded-full text-[11px] font-bold tracking-wider uppercase">
-                    AI Duplicate Match Detected ({duplicateModal.match.overallScore}%)
+                    Duplicate Issue Detected ({duplicateModal.match.overallScore}% match)
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 tracking-tight mt-0.5">
@@ -3027,7 +3024,7 @@ export default function CitizenDashboard() {
             </div>
 
             <p className="text-xs text-slate-600 leading-relaxed mb-5">
-              AI detected an existing report for this exact same location ({duplicateModal.match.distanceMeters}m away) with matching visual features.
+              An existing report was identified for this exact location ({duplicateModal.match.distanceMeters}m away) with matching visual features.
             </p>
 
             {/* Comparison Box */}

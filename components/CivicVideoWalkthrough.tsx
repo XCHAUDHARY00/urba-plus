@@ -41,10 +41,10 @@ const STEPS: StepData[] = [
   {
     id: 1,
     timeCode: '00:08',
-    badge: 'Step 1 · AI Ground Capture',
-    title: 'Instant Citizen Geotagging & AI Vision',
-    subtitle: 'Citizen snaps a photo of a road crater or uncollected garbage. AI Vision analyzes severity, detects civic class, and logs GPS coordinates.',
-    narratorVoice: '“A citizen photographs a municipal defect. The multimodal AI model instantly pinpoints location, identifies hazard severity, and drafts the grievance in under 2 seconds.”',
+    badge: 'Step 1 · Ground Capture',
+    title: 'Instant Citizen Geotagging & Defect Detection',
+    subtitle: 'Citizen snaps a photo of a road crater or uncollected garbage. The system analyzes severity, detects defect type, and logs GPS coordinates.',
+    narratorVoice: '“A citizen photographs a municipal defect. The system instantly pinpoints location, identifies hazard severity, and drafts the grievance in under 2 seconds.”',
     visualType: 'capture',
   },
   {
@@ -53,16 +53,16 @@ const STEPS: StepData[] = [
     badge: 'Step 2 · Spatial Deduplication',
     title: 'Geo-Spatial Deduplication & Auto Routing',
     subtitle: 'Smart radar clustering detects existing nearby complaints, auto-merges citizen support (+1), and routes directly to the designated Ward Engineer.',
-    narratorVoice: '“Instead of flooded duplicate tickets, AI detects identical complaints within 50 meters, aggregates citizen supporters, and escalates priority straight to the Public Works department.”',
+    narratorVoice: '“Instead of flooded duplicate tickets, the system detects identical complaints within 50 meters, aggregates citizen supporters, and escalates priority straight to the Public Works department.”',
     visualType: 'dedup',
   },
   {
     id: 3,
     timeCode: '00:32',
-    badge: 'Step 3 · AI Video Repair Verification',
+    badge: 'Step 3 · Video Repair Verification',
     title: 'Municipal Repair & Automated Video Audit',
-    subtitle: 'Officers execute road restoration. Video AI inspects the asphalt surface before and after, certifying the fix with concrete audit trails.',
-    narratorVoice: '“Municipal authorities carry out asphalt resurfacing. AI conducts frame-by-frame video comparison to mathematically certify that the pothole is completely resolved.”',
+    subtitle: 'Officers execute road restoration. Video inspection verifies the asphalt surface before and after, certifying the fix with concrete audit trails.',
+    narratorVoice: '“Municipal authorities carry out asphalt resurfacing. Video inspection conducts frame-by-frame verification to mathematically certify that the pothole is completely resolved.”',
     visualType: 'repair',
   },
   {
@@ -240,7 +240,7 @@ export default function CivicVideoWalkthrough() {
           <span className="text-slate-600 hidden sm:inline">|</span>
           <div className="hidden sm:flex items-center gap-2 text-xs text-slate-300 font-mono">
             <Video className="w-3.5 h-3.5 text-blue-400" />
-            <span>Interactive App Walkthrough · AI Verification Engine</span>
+            <span>Interactive App Walkthrough · Verification Engine</span>
           </div>
         </div>
 
@@ -345,7 +345,7 @@ export default function CivicVideoWalkthrough() {
                     <span className="font-bold text-white">Ward 14 (Central District)</span>
                   </div>
                   <div className="flex items-center justify-between text-xs border-b border-white/10 pb-2">
-                    <span className="text-slate-400 font-mono">AI Classification:</span>
+                    <span className="text-slate-400 font-mono">Defect Classification:</span>
                     <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold text-[11px] border border-amber-500/30">
                       Roads & Asphalt Infrastructure
                     </span>
@@ -416,7 +416,7 @@ export default function CivicVideoWalkthrough() {
 
                 <div className="space-y-1.5">
                   <span className="text-[11px] font-mono font-bold text-emerald-400 flex items-center justify-between">
-                    <span>After: AI Video Certified</span>
+                    <span>After: Video Verified</span>
                     <span className="text-[9px] bg-emerald-500/20 px-1.5 py-0.5 rounded text-emerald-300">
                       99.1% Confidence
                     </span>

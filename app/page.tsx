@@ -425,7 +425,7 @@ export default function UrbaPlusLandingPage() {
           <div className="max-w-2xl">
             <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500 tracking-wide uppercase mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-              IBM Smarter Cities · AI Municipal Platform
+              Civic Infrastructure & Municipal Resolution Platform
             </span>
 
             <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.1] text-slate-900 mb-5">
@@ -434,7 +434,7 @@ export default function UrbaPlusLandingPage() {
             </h1>
 
             <p className="text-base text-slate-500 leading-relaxed mb-8 max-w-xl">
-              UrbaPlus lets citizens report defects with a photo. AI classifies damage, merges duplicate tickets, dispatches officers, and verifies repairs — closing the loop automatically.
+              UrbaPlus lets citizens report defects with a photo. The system auto-categorizes damage, prevents duplicate tickets, dispatches municipal officers, and verifies repairs — closing the redressal loop seamlessly.
             </p>
 
             <div className="flex items-center gap-3">
@@ -525,7 +525,7 @@ export default function UrbaPlusLandingPage() {
           {/* Caption row */}
           <div className="flex flex-wrap items-center gap-4 mt-4">
             {[
-              'AI photo analysis',
+              'Automatic defect analysis',
               'GPS geotagging',
               'Duplicate detection',
               'Resolution verification',
@@ -548,7 +548,7 @@ export default function UrbaPlusLandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-slate-200 rounded-xl overflow-hidden border border-slate-200">
             {[
               { n: '01', title: 'Capture & tag', desc: 'Citizen photos a defect. GPS coordinates are locked automatically.' },
-              { n: '02', title: 'AI classification', desc: 'AI identifies issue type, severity, and responsible department.' },
+              { n: '02', title: 'Smart classification', desc: 'Identifies issue type, severity, and responsible municipal department automatically.' },
               { n: '03', title: 'Deduplication', desc: 'Spatial radar merges overlapping ward tickets into one tracked case.' },
               { n: '04', title: 'Verify & close', desc: 'Repair video is inspected frame-by-frame. Ticket closes only when verified.' },
             ].map((item) => (
@@ -613,14 +613,13 @@ export default function UrbaPlusLandingPage() {
 
       {/* ── FOOTER ── */}
       <footer className="border-t border-slate-200 bg-[#f9f8f6]">
-        <div className="max-w-6xl mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
-          <span>UrbaPlus · IBM Smarter Cities Hackathon</span>
-          <Link
-            href="/presentation"
-            className="hover:text-slate-700 transition-colors underline underline-offset-2"
-          >
-            Pitch deck →
-          </Link>
+        <div className="max-w-6xl mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+          <span>UrbaPlus · Citizen Infrastructure & Municipal Resolution Platform</span>
+          <div className="flex items-center gap-4 text-slate-400 text-xs">
+            <span>Secure & Geotagged Civic Redressal</span>
+            <span>•</span>
+            <span>© {new Date().getFullYear()} UrbaPlus</span>
+          </div>
         </div>
       </footer>
 
