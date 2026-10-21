@@ -799,7 +799,7 @@ export default function AuthorityDashboard() {
           userId: user?.uid || 'authority_official',
           email: user?.email || 'authority@crowdcivic.org',
           role: 'authority',
-          action: 'ISSUE_STATUS_CHANGED',
+          action: 'ISSUE_STATUS_UPDATED',
           portal: 'authority',
           status: 'SUCCESS',
           details: `Ticket #${issue.ticketId} status transitioned from '${issue.status}' to '${targetStatus}'.`,

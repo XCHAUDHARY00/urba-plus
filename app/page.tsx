@@ -434,7 +434,7 @@ export default function UrbaPlusLandingPage() {
             </h1>
 
             <p className="text-base text-slate-500 leading-relaxed mb-8 max-w-xl">
-              UrbaPlus lets citizens report defects with a photo. Gemini AI classifies damage, merges duplicate tickets, dispatches officers, and verifies repairs — closing the loop automatically.
+              UrbaPlus lets citizens report defects with a photo. AI classifies damage, merges duplicate tickets, dispatches officers, and verifies repairs — closing the loop automatically.
             </p>
 
             <div className="flex items-center gap-3">
@@ -548,7 +548,7 @@ export default function UrbaPlusLandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-slate-200 rounded-xl overflow-hidden border border-slate-200">
             {[
               { n: '01', title: 'Capture & tag', desc: 'Citizen photos a defect. GPS coordinates are locked automatically.' },
-              { n: '02', title: 'AI classification', desc: 'Gemini AI identifies issue type, severity, and responsible department.' },
+              { n: '02', title: 'AI classification', desc: 'AI identifies issue type, severity, and responsible department.' },
               { n: '03', title: 'Deduplication', desc: 'Spatial radar merges overlapping ward tickets into one tracked case.' },
               { n: '04', title: 'Verify & close', desc: 'Repair video is inspected frame-by-frame. Ticket closes only when verified.' },
             ].map((item) => (

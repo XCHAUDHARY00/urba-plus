@@ -310,7 +310,7 @@ export default function AdminDashboard() {
         userId: currentUser?.uid || 'admin_user',
         email: currentUser?.email || 'admin@crowdcivic.org',
         role: 'admin',
-        action: 'ADMIN_ISSUE_STATUS_CHANGED',
+        action: 'ISSUE_STATUS_UPDATED',
         portal: 'admin',
         status: 'SUCCESS',
         details: `Admin transitioned Ticket #${adminStatusModalIssue.ticketId} from '${adminStatusModalIssue.status}' to '${adminTargetStatus}'.`,

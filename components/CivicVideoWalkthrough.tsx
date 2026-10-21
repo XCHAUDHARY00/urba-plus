@@ -9,7 +9,6 @@ import {
   Volume2,
   VolumeX,
   RotateCcw,
-  Sparkles,
   Camera,
   MapPin,
   ShieldCheck,
@@ -44,7 +43,7 @@ const STEPS: StepData[] = [
     timeCode: '00:08',
     badge: 'Step 1 · AI Ground Capture',
     title: 'Instant Citizen Geotagging & AI Vision',
-    subtitle: 'Citizen snaps a photo of a road crater or uncollected garbage. Gemini AI Vision analyzes severity, detects civic class, and logs GPS coordinates.',
+    subtitle: 'Citizen snaps a photo of a road crater or uncollected garbage. AI Vision analyzes severity, detects civic class, and logs GPS coordinates.',
     narratorVoice: '“A citizen photographs a municipal defect. The multimodal AI model instantly pinpoints location, identifies hazard severity, and drafts the grievance in under 2 seconds.”',
     visualType: 'capture',
   },
@@ -62,8 +61,8 @@ const STEPS: StepData[] = [
     timeCode: '00:32',
     badge: 'Step 3 · AI Video Repair Verification',
     title: 'Municipal Repair & Automated Video Audit',
-    subtitle: 'Officers execute road restoration. Gemini Video AI inspects the asphalt surface before and after, certifying the fix with concrete audit trails.',
-    narratorVoice: '“Municipal authorities carry out asphalt resurfacing. Gemini AI conducts frame-by-frame video comparison to mathematically certify that the pothole is completely resolved.”',
+    subtitle: 'Officers execute road restoration. Video AI inspects the asphalt surface before and after, certifying the fix with concrete audit trails.',
+    narratorVoice: '“Municipal authorities carry out asphalt resurfacing. AI conducts frame-by-frame video comparison to mathematically certify that the pothole is completely resolved.”',
     visualType: 'repair',
   },
   {
@@ -294,7 +293,7 @@ export default function CivicVideoWalkthrough() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-mono font-bold mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+              <Radio className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
               <span>{currentStep.badge}</span>
             </div>
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight">
@@ -354,7 +353,7 @@ export default function CivicVideoWalkthrough() {
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-slate-400 font-mono">Action:</span>
                     <span className="text-blue-400 font-semibold flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5" /> Auto-Generated Ticket #CIV-88421
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Auto-Generated Ticket #CIV-88421
                     </span>
                   </div>
                 </div>

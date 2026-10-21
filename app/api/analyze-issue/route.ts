@@ -184,7 +184,7 @@ Return valid JSON strictly matching the schema.`;
       analysis.customVisionDetectedLabel = detectedLabel;
       analysis.confidenceScore = Math.max(analysis.confidenceScore || 88, 85);
 
-      const visionObs = `Gemini AI verified ${detectedLabel} (${analysis.confidenceScore}% confidence)`;
+      const visionObs = `AI verified ${detectedLabel} (${analysis.confidenceScore}% confidence)`;
       if (!analysis.keyObservations) analysis.keyObservations = [];
       // Remove any erroneous pothole observation if detectedClass is garbage
       analysis.keyObservations = analysis.keyObservations.filter((o: string) => {
@@ -214,7 +214,7 @@ Return valid JSON strictly matching the schema.`;
         customVisionDetectedClass: 'garbage',
         customVisionDetectedLabel: 'Garbage & Solid Waste Dump',
         keyObservations: [
-          'Gemini AI verified Garbage & Solid Waste Dump (85% confidence)',
+          'AI verified Garbage & Solid Waste Dump (85% confidence)',
           'Field inspection report pre-filled for rapid municipal dispatch',
           'Geotagged infrastructure incident logged',
         ],
@@ -235,7 +235,7 @@ Return valid JSON strictly matching the schema.`;
         customVisionDetectedClass: 'garbage',
         customVisionDetectedLabel: 'Garbage & Solid Waste Dump',
         keyObservations: [
-          'Gemini AI verified Garbage & Solid Waste Dump (85% confidence)',
+          'AI verified Garbage & Solid Waste Dump (85% confidence)',
           'Geotagged incident initialized',
         ],
       },

@@ -8,7 +8,6 @@ import {
   Flame,
   ShieldCheck,
   CheckCircle2,
-  Sparkles,
   Zap,
   TrendingUp,
   User,
